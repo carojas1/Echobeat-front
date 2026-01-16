@@ -1,0 +1,117 @@
+.mood-container {
+    padding: 20px;
+    padding-bottom: 80px;
+}
+
+.mood-header {
+    margin-bottom: 24px;
+}
+
+.mood-header h2 {
+    color: var(--echobeat-white);
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+}
+
+.mood-header p {
+    color: var(--echobeat-light-purple);
+    font-size: 14px;
+    margin: 0;
+}
+
+.mood-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.mood-card {
+    aspect-ratio: 1;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid transparent;
+}
+
+.mood-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.mood-card:hover::before {
+    opacity: 1;
+}
+
+.mood-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.mood-card h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--echobeat-white);
+    margin: 0;
+    z-index: 1;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.mood-icon {
+    align-self: flex-end;
+    z-index: 1;
+}
+
+.mood-icon ion-icon {
+    font-size: 48px;
+    color: var(--echobeat-white);
+    opacity: 0.9;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* Individual Mood Colors */
+.mood-happy {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+}
+
+.mood-sad {
+    background: linear-gradient(135deg, #4169E1 0%, #1E3A8A 100%);
+}
+
+.mood-energetic {
+    background: linear-gradient(135deg, #FF1744 0%, #D50000 100%);
+}
+
+.mood-relaxed {
+    background: linear-gradient(135deg, #00BFA5 0%, #00796B 100%);
+}
+
+.mood-party {
+    background: linear-gradient(135deg, #9A00FF 0%, #4B2E83 100%);
+}
+
+.mood-focus {
+    background: linear-gradient(135deg, #607D8B 0%, #37474F 100%);
+}
+
+.mood-romantic {
+    background: linear-gradient(135deg, #FF4081 0%, #C2185B 100%);
+}
+
+.mood-chill {
+    background: linear-gradient(135deg, #C7A7FF 0%, #9A00FF 100%);
+}

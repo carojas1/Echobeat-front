@@ -1,0 +1,160 @@
+.mood-header-transparent {
+    --background: transparent;
+}
+
+.mood-toolbar {
+    --background: linear-gradient(180deg, rgba(10, 10, 10, 0.9) 0%, transparent 100%);
+    --border-width: 0;
+    --padding-top: 8px;
+    --padding-bottom: 8px;
+}
+
+.mood-playlist-container {
+    padding-bottom: 100px;
+}
+
+.mood-hero {
+    padding: 100px 24px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.mood-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+}
+
+.mood-title {
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--echobeat-white);
+    margin: 0 0 8px 0;
+    letter-spacing: -1px;
+    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    position: relative;
+    z-index: 1;
+}
+
+.mood-subtitle {
+    font-size: 16px;
+    color: rgba(242, 242, 242, 0.9);
+    margin: 0;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+}
+
+.mood-actions {
+    padding: 24px 24px 32px;
+}
+
+.play-button-large {
+    width: 100%;
+    height: 56px;
+    background: linear-gradient(135deg, #9A00FF 0%, #4B2E83 100%);
+    border: none;
+    border-radius: 28px;
+    color: var(--echobeat-white);
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(154, 0, 255, 0.4);
+}
+
+.play-button-large:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 32px rgba(154, 0, 255, 0.5);
+}
+
+.play-button-large ion-icon {
+    font-size: 24px;
+}
+
+.mood-track-list {
+    padding: 0 16px;
+}
+
+.mood-track-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
+    gap: 12px;
+}
+
+.mood-track-item:hover {
+    background: rgba(75, 46, 131, 0.15);
+}
+
+.mood-track-item:active {
+    background: rgba(75, 46, 131, 0.25);
+}
+
+.track-number {
+    width: 24px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(242, 242, 242, 0.6);
+    flex-shrink: 0;
+}
+
+.track-cover {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.track-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.track-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.track-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--echobeat-white);
+    margin: 0 0 4px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.track-artist {
+    font-size: 13px;
+    color: var(--echobeat-light-purple);
+    margin: 0;
+    opacity: 0.8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.track-duration {
+    font-size: 13px;
+    color: rgba(242, 242, 242, 0.6);
+    font-weight: 500;
+    flex-shrink: 0;
+}

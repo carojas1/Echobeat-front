@@ -1,0 +1,236 @@
+/* Premium Full Screen Player Modal */
+.full-screen-player-modal {
+    --background: #121212;
+    /* Fallback */
+    --ion-background-color: transparent;
+}
+
+.full-screen-player-modal::part(content) {
+    /* Deep, rich dark background */
+    background: linear-gradient(160deg, #1a1a1a 0%, #000000 100%);
+    backdrop-filter: blur(30px);
+}
+
+.player-content-dark {
+    --background: transparent;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.player-body {
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
+    padding-bottom: 50px;
+    /* Space for bottom safe area */
+}
+
+/* Header */
+.player-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    padding-top: 50px;
+    /* Space for status bar */
+}
+
+.header-button {
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.2s;
+    background: transparent;
+}
+
+.header-button:active {
+    color: white;
+}
+
+.header-title {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.header-title strong {
+    font-size: 13px;
+    margin-top: 4px;
+    color: white;
+    letter-spacing: 0.5px;
+}
+
+/* Artwork */
+.player-artwork-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.player-artwork-large {
+    width: 100%;
+    /* Keep aspect ratio square */
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 12px;
+    /* Soft, deep shadow for depth */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    max-width: 350px;
+    max-height: 350px;
+}
+
+/* Track Info */
+.player-track-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    /* Align top in case of multiline title */
+    margin-bottom: 24px;
+    gap: 16px;
+}
+
+.track-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.track-title-large {
+    color: white;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* Letter spacing for modern look */
+    letter-spacing: -0.5px;
+}
+
+.track-artist-large {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 18px;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-like {
+    font-size: 28px;
+    color: rgba(255, 255, 255, 0.3);
+    transition: color 0.2s, transform 0.2s;
+    padding-top: 2px;
+}
+
+.track-like.liked {
+    color: #1DB954;
+    /* Spotify Green */
+}
+
+.track-like:active {
+    transform: scale(1.2);
+}
+
+/* Progress Bar */
+.player-progress-container {
+    margin-bottom: 32px;
+}
+
+ion-range {
+    --bar-background: rgba(255, 255, 255, 0.2);
+    --bar-background-active: #ffffff;
+    --knob-background: #ffffff;
+    --knob-size: 12px;
+    --height: 20px;
+    padding-inline: 0;
+}
+
+.time-labels {
+    display: flex;
+    justify-content: space-between;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    font-family: monospace;
+    /* Monospace for numbers looks tabular */
+    margin-top: -8px;
+    padding: 0 4px;
+}
+
+/* Controls */
+.player-controls-large {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.control-button-prev,
+.control-button-next {
+    font-size: 42px;
+    color: white;
+    transition: transform 0.1s;
+}
+
+.control-button-prev:active,
+.control-button-next:active {
+    transform: scale(0.9);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.control-button-play-large {
+    width: 72px;
+    height: 72px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    font-size: 36px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s;
+}
+
+.control-button-play-large:active {
+    transform: scale(0.92);
+}
+
+.control-button-secondary {
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.6);
+    transition: color 0.2s;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.control-button-secondary:active,
+.control-button-secondary.active {
+    color: white;
+}
+
+.control-button-secondary.active::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    width: 4px;
+    height: 4px;
+    background-color: #1DB954;
+    border-radius: 50%;
+}

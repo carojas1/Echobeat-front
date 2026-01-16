@@ -1,0 +1,239 @@
+.album-header-transparent {
+    --background: transparent;
+}
+
+.album-toolbar {
+    --background: linear-gradient(180deg, rgba(10, 10, 10, 0.9) 0%, transparent 100%);
+    --border-width: 0;
+    --padding-top: 8px;
+    --padding-bottom: 8px;
+}
+
+.header-icon {
+    font-size: 24px;
+    color: var(--echobeat-white);
+    padding: 8px;
+}
+
+.album-detail-container {
+    padding-bottom: 100px;
+}
+
+.album-hero {
+    padding: 80px 24px 32px;
+    background: linear-gradient(180deg, #1a0a2e 0%, #0A0A0A 100%);
+    text-align: center;
+}
+
+.album-cover-large {
+    width: 240px;
+    height: 240px;
+    margin: 0 auto 24px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+}
+
+.album-cover-large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.album-info-main {
+    margin-top: 24px;
+}
+
+.album-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--echobeat-white);
+    margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+}
+
+.album-artist {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--echobeat-light-purple);
+    margin: 0 0 16px 0;
+}
+
+.album-meta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: rgba(242, 242, 242, 0.7);
+    font-weight: 500;
+}
+
+.separator {
+    color: rgba(242, 242, 242, 0.4);
+}
+
+.album-actions {
+    display: flex;
+    gap: 16px;
+    padding: 24px 24px 32px;
+    align-items: center;
+}
+
+.play-button-large {
+    flex: 1;
+    height: 56px;
+    background: linear-gradient(135deg, #9A00FF 0%, #4B2E83 100%);
+    border: none;
+    border-radius: 28px;
+    color: var(--echobeat-white);
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(154, 0, 255, 0.4);
+}
+
+.play-button-large:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 32px rgba(154, 0, 255, 0.5);
+}
+
+.play-button-large ion-icon {
+    font-size: 24px;
+}
+
+.icon-button {
+    width: 56px;
+    height: 56px;
+    background: rgba(75, 46, 131, 0.3);
+    border: 2px solid rgba(154, 0, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.icon-button:hover {
+    background: rgba(75, 46, 131, 0.5);
+    border-color: rgba(154, 0, 255, 0.5);
+    transform: scale(1.05);
+}
+
+.icon-button ion-icon {
+    font-size: 24px;
+    color: var(--echobeat-white);
+}
+
+.track-list {
+    padding: 0 16px;
+}
+
+.track-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
+    gap: 16px;
+}
+
+.track-item:hover {
+    background: rgba(75, 46, 131, 0.15);
+}
+
+.track-item:active {
+    background: rgba(75, 46, 131, 0.25);
+}
+
+.track-number {
+    width: 24px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(242, 242, 242, 0.6);
+}
+
+.track-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.track-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--echobeat-white);
+    margin: 0 0 4px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.explicit-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    background: rgba(242, 242, 242, 0.6);
+    color: #0A0A0A;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.track-artist {
+    font-size: 13px;
+    color: var(--echobeat-light-purple);
+    margin: 0;
+    opacity: 0.8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.track-duration {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: rgba(242, 242, 242, 0.6);
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.duration-icon {
+    font-size: 16px;
+    opacity: 0.5;
+}
+
+.album-footer {
+    padding: 32px 24px;
+    text-align: center;
+    border-top: 1px solid rgba(154, 0, 255, 0.1);
+    margin-top: 24px;
+}
+
+.album-date {
+    font-size: 13px;
+    color: rgba(242, 242, 242, 0.6);
+    margin: 0 0 4px 0;
+}
+
+.album-copyright {
+    font-size: 12px;
+    color: rgba(242, 242, 242, 0.4);
+    margin: 0;
+}

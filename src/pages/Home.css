@@ -1,0 +1,234 @@
+.home-container {
+    padding-bottom: 80px;
+}
+
+.home-header {
+    padding: 16px 20px 20px;
+    background: linear-gradient(180deg, #1a0a2e 0%, #0A0A0A 100%);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.header-top h2 {
+    color: var(--echobeat-white);
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.profile-button {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #9A00FF 0%, #4B2E83 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid var(--echobeat-light-purple);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(154, 0, 255, 0.3);
+}
+
+.profile-button:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 16px rgba(154, 0, 255, 0.4);
+}
+
+.profile-button ion-icon {
+    font-size: 24px;
+    color: var(--echobeat-white);
+}
+
+.search-bar {
+    --background: rgba(75, 46, 131, 0.2);
+    --border-radius: 24px;
+    --box-shadow: none;
+    --color: var(--echobeat-white);
+    --placeholder-color: var(--echobeat-light-purple);
+    --icon-color: var(--echobeat-light-purple);
+    padding: 0;
+    border: 1px solid rgba(154, 0, 255, 0.3);
+}
+
+.search-bar:hover {
+    --background: rgba(75, 46, 131, 0.3);
+}
+
+.albums-section {
+    padding: 20px;
+}
+
+.albums-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.album-card-grid {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.album-card-grid:active {
+    transform: scale(0.98);
+}
+
+.album-cover-grid {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.album-card-grid:hover .album-cover-grid {
+    box-shadow: 0 12px 32px rgba(154, 0, 255, 0.3);
+}
+
+.album-cover-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.album-card-grid:hover .album-cover-grid img {
+    transform: scale(1.05);
+}
+
+.play-overlay {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 48px;
+    height: 48px;
+    background: var(--echobeat-purple);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.album-card-grid:hover .play-overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.play-overlay ion-icon {
+    font-size: 24px;
+    color: var(--echobeat-white);
+    margin-left: 2px;
+}
+
+.album-info h4 {
+    color: var(--echobeat-white);
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 4px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.album-info p {
+    color: var(--echobeat-light-purple);
+    font-size: 13px;
+    margin: 0;
+    opacity: 0.9;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Music Player */
+.music-player {
+    position: fixed;
+    bottom: 56px;
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 10, 0.98);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(154, 0, 255, 0.2);
+    padding: 12px 16px;
+    z-index: 999;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.player-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.player-cover {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.player-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.player-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.player-info h4 {
+    color: var(--echobeat-white);
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 2px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.player-info p {
+    color: var(--echobeat-light-purple);
+    font-size: 12px;
+    margin: 0;
+    font-weight: 500;
+}
+
+.player-controls {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.player-controls ion-icon {
+    font-size: 32px;
+    color: var(--echobeat-white);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.player-controls ion-icon:hover {
+    color: var(--echobeat-purple);
+    transform: scale(1.1);
+}
