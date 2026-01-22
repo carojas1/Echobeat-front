@@ -1,0 +1,341 @@
+/* ========================================
+   NOW PLAYING - Full Screen Premium
+   ======================================== */
+
+.now-playing {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, var(--black-pure) 0%, var(--black-deep) 100%);
+    z-index: var(--z-modal);
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+}
+
+/* Header */
+.now-playing-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-xl);
+    padding-top: env(safe-area-inset-top);
+}
+
+.now-playing-header-title {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.now-playing-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease);
+}
+
+.now-playing-btn:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--blue-bright);
+}
+
+.now-playing-btn:active {
+    transform: scale(0.9);
+}
+
+.now-playing-btn ion-icon {
+    font-size: 28px;
+}
+
+/* Cover Container with Parallax */
+.now-playing-cover-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto var(--spacing-2xl);
+    aspect-ratio: 1;
+}
+
+.now-playing-cover {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-2xl);
+    background-size: cover;
+    background-position: center;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.8),
+        0 0 80px rgba(59, 130, 246, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.now-playing-cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+            transparent 0%,
+            transparent 60%,
+            rgba(0, 0, 0, 0.8) 100%);
+}
+
+.now-playing-cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(59, 130, 246, 0.1) 100%);
+    opacity: 0;
+    transition: opacity var(--duration-slow) var(--ease);
+}
+
+.now-playing-cover:hover .now-playing-cover-overlay {
+    opacity: 1;
+}
+
+/* Song Info */
+.now-playing-info {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+    position: relative;
+}
+
+.now-playing-title {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-weight: var(--weight-bold);
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-sm) 0;
+    letter-spacing: -0.5px;
+}
+
+.now-playing-artist {
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.now-playing-favorite {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--duration-base) var(--ease);
+}
+
+.now-playing-favorite:hover {
+    color: var(--error);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.now-playing-favorite ion-icon {
+    font-size: 32px;
+}
+
+.now-playing-favorite ion-icon[name="heart"] {
+    color: var(--error);
+    filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.6));
+}
+
+/* Progress */
+.now-playing-progress-container {
+    margin-bottom: var(--spacing-xl);
+}
+
+.now-playing-progress {
+    position: relative;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    margin-bottom: var(--spacing-sm);
+}
+
+.now-playing-progress-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: var(--gradient-blue);
+    border-radius: var(--radius-full);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+}
+
+.now-playing-progress-thumb {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: var(--radius-full);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease);
+}
+
+.now-playing-progress:hover .now-playing-progress-thumb {
+    opacity: 1;
+}
+
+.now-playing-time {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    font-weight: var(--weight-medium);
+}
+
+/* Controls */
+.now-playing-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.now-playing-control-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-full);
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--duration-base) var(--ease);
+}
+
+.now-playing-control-btn:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--blue-bright);
+    transform: scale(1.1);
+}
+
+.now-playing-control-btn:active {
+    transform: scale(0.95);
+}
+
+.now-playing-control-btn ion-icon {
+    font-size: 32px;
+}
+
+/* Play Button - Large and Premium */
+.now-playing-play-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-full);
+    background: var(--gradient-blue);
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--duration-base) var(--ease);
+    box-shadow:
+        0 8px 24px rgba(59, 130, 246, 0.4),
+        0 0 40px rgba(59, 130, 246, 0.2);
+}
+
+.now-playing-play-btn:hover {
+    transform: scale(1.05);
+    box-shadow:
+        0 12px 32px rgba(59, 130, 246, 0.6),
+        0 0 60px rgba(59, 130, 246, 0.4);
+}
+
+.now-playing-play-btn:active {
+    transform: scale(0.95);
+}
+
+.now-playing-play-btn ion-icon {
+    font-size: 40px;
+    margin-left: 2px;
+    /* Optical alignment */
+}
+
+/* EQ Toggle */
+.now-playing-eq-toggle {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.now-playing-eq-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-xl);
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: var(--radius-lg);
+    color: var(--blue-bright);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+    transition: all var(--duration-base) var(--ease);
+}
+
+.now-playing-eq-btn:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: var(--blue-electric);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.now-playing-eq-btn ion-icon {
+    font-size: 20px;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .now-playing {
+        padding: var(--spacing-md);
+    }
+
+    .now-playing-cover-container {
+        max-width: 100%;
+    }
+
+    .now-playing-title {
+        font-size: clamp(1.25rem, 6vw, 1.75rem);
+    }
+
+    .now-playing-play-btn {
+        width: 72px;
+        height: 72px;
+    }
+
+    .now-playing-control-btn {
+        width: 48px;
+        height: 48px;
+    }
+
+    .now-playing-control-btn ion-icon {
+        font-size: 28px;
+    }
+}

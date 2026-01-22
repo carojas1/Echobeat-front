@@ -1,100 +1,265 @@
-import React, { useState } from 'react';
-import { IonContent, IonPage, IonIcon, IonSearchbar } from '@ionic/react';
-import { person, play } from 'ionicons/icons';
-import { useHistory } from 'react-router-dom';
-import './Home.css';
+import React from "react";
+import {
+  IonContent,
+  IonPage,
+  IonSearchbar,
+  IonIcon,
+  IonSpinner,
+  IonFab,
+  IonFabButton,
+  IonToast,
+} from "@ionic/react";
+import { person, play, add } from "ionicons/icons";
+import { useHistory } from "react-router-dom";
+import { auth } from "../firebase/config";
+import { usePlayer } from "../contexts/PlayerContext";
+import { DEFAULT_COVER_IMAGE } from "../config/constants";
+import { getSongs } from "../services/api.service";
+import UploadSongModal from "../components/UploadSongModal";
+import "./Home.css";
+
+interface User {
+  displayName: string;
+  photoURL: string | null;
+}
+
+interface Song {
+  id: string;
+  title: string;
+  artist: string;
+  coverUrl: string;
+  audioUrl: string;
+  duration: number;
+}
 
 const Home: React.FC = () => {
   const history = useHistory();
-  const [searchText, setSearchText] = useState('');
+  const { playSong } = usePlayer();
+  const [user, setUser] = React.useState<User | null>(null);
+  const [songs, setSongs] = React.useState<Song[]>([]); // 🔥 Iniciar vacío
+  const [loading, setLoading] = React.useState(false);
+  const [showUploadModal, setShowUploadModal] = React.useState(false);
+  const [showToast, setShowToast] = React.useState(false);
+  const [toastMessage, setToastMessage] = React.useState("");
 
-  const albums = [
-    {
-      id: 'astroworld',
-      name: 'ASTROWORLD',
-      artist: 'Travis Scott',
-      cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/astroworld_cover_1767971071912.png'
-    },
-    {
-      id: 'utopia',
-      name: 'UTOPIA',
-      artist: 'Travis Scott',
-      cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/utopia_cover_1767971115878.png'
-    },
-    {
-      id: 'un-verano-sin-ti',
-      name: 'Un Verano Sin Ti',
-      artist: 'Bad Bunny',
-      cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/bad_bunny_cover_1767971162086.png'
-    },
-    {
-      id: 'manana-sera-bonito',
-      name: 'Mañana Será Bonito',
-      artist: 'Karol G',
-      cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/karol_g_cover_1767971242879.png'
-    },
-    {
-      id: 'genesis',
-      name: 'Génesis',
-      artist: 'Peso Pluma',
-      cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/peso_pluma_cover_1767971277893.png'
-    },
-    {
-      id: 'feliz-cumpleanos-ferxxo',
-      name: 'FELIZ CUMPLEAÑOS FERXXO',
-      artist: 'Feid',
-      cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/feid_cover_1767971309566.png'
-    },
-  ];
+  React.useEffect(() => {
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      setUser({
+        displayName: currentUser.displayName || "Usuario",
+        photoURL: currentUser.photoURL,
+      });
+    }
+  }, []);
+
+  // 🔥 Cargar canciones solo del backend
+  React.useEffect(() => {
+    let isMounted = true; // Flag para evitar setState en componente desmontado
+
+    const loadSongs = async () => {
+      if (isMounted) setLoading(true);
+      try {
+        const response = await getSongs({ page: 1, limit: 50 });
+        if (
+          isMounted &&
+          response &&
+          response.data &&
+          response.data.length > 0
+        ) {
+          const backendSongs = response.data.map((song) => ({
+            id: song.id,
+            title: song.title,
+            artist: song.artist,
+            coverUrl: song.coverUrl || DEFAULT_COVER_IMAGE,
+            audioUrl: song.fileUrl,
+            duration: song.duration || 0,
+          }));
+          setSongs(backendSongs);
+        } else if (isMounted) {
+          setSongs([]);
+        }
+      } catch {
+        if (isMounted) {
+          setSongs([]);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    loadSongs();
+
+    // Cleanup
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handlePlaySong = (song: Song) => {
+    console.log("🎵 Playing song:", song.title, song.audioUrl);
+    playSong({
+      id: song.id,
+      title: song.title,
+      artist: song.artist,
+      coverUrl: song.coverUrl,
+      audioUrl: song.audioUrl,
+      duration: song.duration || 0,
+    });
+  };
+
+  const handleUploadSuccess = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+  };
+
+  const handleUploadError = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+  };
+
+  const handleSongsUpdated = (updatedSongs: Array<{
+    id: string;
+    title: string;
+    artist: string;
+    album?: string;
+    duration: number;
+    fileUrl: string;
+    coverUrl?: string;
+  }>) => {
+    const backendSongs = updatedSongs.map((song) => ({
+      id: song.id,
+      title: song.title,
+      artist: song.artist,
+      coverUrl: song.coverUrl || DEFAULT_COVER_IMAGE,
+      audioUrl: song.fileUrl,
+      duration: song.duration || 0,
+    }));
+    setSongs(backendSongs);
+  };
 
   return (
     <IonPage>
-      <IonContent>
+      <IonContent fullscreen className="home-content">
         <div className="home-container">
-          {/* Header with Profile and Search */}
           <div className="home-header">
-            <div className="header-top">
-              <h2>EchoBeat</h2>
-              <div className="profile-button" onClick={() => history.push('/main/profile')}>
-                <IonIcon icon={person} />
+            <h2>EchoBeat</h2>
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <button
+                onClick={() => history.push("/admin")}
+                style={{
+                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  border: "none",
+                  borderRadius: "12px",
+                  padding: "8px 16px",
+                  color: "white",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                }}
+              >
+                Admin
+              </button>
+              <div
+                className="profile-button"
+                onClick={() => history.push("/main/profile")}
+              >
+                {user?.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt={user.displayName}
+                    className="profile-avatar"
+                  />
+                ) : (
+                  <div className="profile-avatar-placeholder">
+                    <IonIcon icon={person} />
+                  </div>
+                )}
               </div>
             </div>
-            <IonSearchbar
-              value={searchText}
-              onIonInput={(e: any) => setSearchText(e.target.value)}
-              placeholder="¿Qué quieres escuchar?"
-              className="search-bar"
-              mode="ios"
-            />
           </div>
 
-          {/* Albums Grid - Spotify Style */}
-          <div className="albums-section">
-            <div className="albums-grid">
-              {albums.map((album) => (
-                <div
-                  key={album.id}
-                  className="album-card-grid"
-                  onClick={() => history.push(`/main/album/${album.id}`)}
-                >
-                  <div className="album-cover-grid">
-                    <img src={album.cover} alt={album.name} />
-                    <div className="play-overlay">
-                      <IonIcon icon={play} />
+
+          <IonSearchbar
+            placeholder="¿Qué quieres escuchar?"
+            className="search-bar"
+          />
+
+          <div className="section">
+            <div className="section-header">
+              <h3>Descubre</h3>
+            </div>
+
+            {loading ? (
+              <div style={{ textAlign: "center", padding: "40px" }}>
+                <IonSpinner />
+                <p>Cargando canciones...</p>
+              </div>
+            ) : songs.length === 0 ? (
+              <div
+                style={{ textAlign: "center", padding: "40px", opacity: 0.6 }}
+              >
+                <p>🎵 No hay canciones disponibles</p>
+                <p style={{ fontSize: "14px", marginTop: "10px" }}>
+                  El administrador aún no ha subido contenido
+                </p>
+              </div>
+            ) : (
+              <div className="songs-grid">
+                {songs.map((song) => (
+                  <div
+                    key={song.id}
+                    className="song-card glass"
+                    onClick={() => handlePlaySong(song)}
+                  >
+                    <div className="song-cover">
+                      <img
+                        src={song.coverUrl}
+                        alt={song.title}
+                        onError={(e) => {
+                          e.currentTarget.src = DEFAULT_COVER_IMAGE;
+                        }}
+                      />
+                      <div className="song-overlay">
+                        <div className="play-button">
+                          <IonIcon icon={play} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="song-info">
+                      <h4>{song.title}</h4>
+                      <p>{song.artist}</p>
                     </div>
                   </div>
-                  <div className="album-info">
-                    <h4>{album.name}</h4>
-                    <p>{album.artist}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Music Player */}
-        {/* Music Player Removed - will be replaced by global player */}
+        {/* Upload FAB Button - Available to ALL users */}
+        <IonFab vertical="bottom" horizontal="end" slot="fixed">
+          <IonFabButton onClick={() => setShowUploadModal(true)}>
+            <IonIcon icon={add} />
+          </IonFabButton>
+        </IonFab>
+
+        {/* Upload Modal */}
+        <UploadSongModal
+          isOpen={showUploadModal}
+          onClose={() => setShowUploadModal(false)}
+          onSuccess={handleUploadSuccess}
+          onError={handleUploadError}
+          onSongsUpdated={handleSongsUpdated}
+        />
+
+        {/* Toast Messages */}
+        <IonToast
+          isOpen={showToast}
+          onDidDismiss={() => setShowToast(false)}
+          message={toastMessage}
+          duration={3000}
+          position="top"
+          color={toastMessage.includes("✅") ? "success" : "danger"}
+        />
       </IonContent>
     </IonPage>
   );

@@ -1,0 +1,284 @@
+/* ========================================
+   AESTHETIC SEARCH - Pinterest Style
+   ======================================== */
+
+.aesthetic-search {
+    min-height: 100vh;
+    background: var(--black-pure);
+    padding-bottom: 100px;
+}
+
+/* Header */
+.aesthetic-header {
+    padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-xl);
+    background: var(--gradient-header);
+    text-align: center;
+}
+
+.aesthetic-header h2 {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-weight: var(--weight-bold);
+    background: var(--gradient-blue);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--spacing-sm);
+}
+
+.aesthetic-header p {
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+}
+
+/* Search Bar */
+.aesthetic-search-bar {
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
+}
+
+.aesthetic-searchbar {
+    --background: var(--glass-bg);
+    --border-radius: var(--radius-xl);
+    --box-shadow: var(--shadow-md);
+    --icon-color: var(--accent-blue);
+    --color: var(--text-primary);
+    --placeholder-color: var(--text-secondary);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+}
+
+/* Filters */
+.aesthetic-filters {
+    padding: 0 var(--spacing-lg) var(--spacing-xl);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.filter-chips {
+    display: flex;
+    gap: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+}
+
+.filter-chip {
+    flex-shrink: 0;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+    transition: all var(--duration-base) var(--ease);
+    white-space: nowrap;
+}
+
+.filter-chip:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: var(--blue-bright);
+}
+
+.filter-chip.active {
+    background: var(--gradient-blue);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+/* Loading */
+.aesthetic-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-3xl);
+    gap: var(--spacing-lg);
+}
+
+.aesthetic-loading ion-spinner {
+    --color: var(--blue-electric);
+    transform: scale(1.5);
+}
+
+.aesthetic-loading p {
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+}
+
+/* Masonry Grid */
+.masonry-grid {
+    display: flex;
+    margin-left: calc(-1 * var(--spacing-md));
+    width: auto;
+    padding: 0 var(--spacing-lg);
+}
+
+.masonry-column {
+    padding-left: var(--spacing-md);
+    background-clip: padding-box;
+}
+
+.masonry-item {
+    position: relative;
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all var(--duration-base) var(--ease);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.masonry-item:hover {
+    transform: translateY(-4px);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.8),
+        0 0 40px rgba(59, 130, 246, 0.2);
+}
+
+.masonry-item.selected {
+    box-shadow:
+        0 0 0 4px var(--blue-electric),
+        0 8px 24px rgba(59, 130, 246, 0.6);
+    transform: translateY(-4px);
+}
+
+.masonry-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform var(--duration-slow) var(--ease);
+}
+
+.masonry-item:hover img {
+    transform: scale(1.05);
+}
+
+/* Overlay */
+.masonry-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg,
+            transparent 0%,
+            rgba(0, 0, 0, 0.8) 100%);
+    padding: var(--spacing-md);
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease);
+}
+
+.masonry-item:hover .masonry-overlay {
+    opacity: 1;
+}
+
+.masonry-photographer {
+    font-size: var(--text-xs);
+    color: white;
+    margin: 0;
+    font-weight: var(--weight-medium);
+}
+
+/* Selected Badge */
+.masonry-selected-badge {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    width: 40px;
+    height: 40px;
+    background: var(--blue-electric);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6);
+    animation: scaleIn 0.3s var(--ease-spring);
+}
+
+.masonry-selected-badge ion-icon {
+    font-size: 28px;
+    color: white;
+}
+
+/* Empty State */
+.aesthetic-empty {
+    text-align: center;
+    padding: var(--spacing-3xl);
+    color: var(--text-secondary);
+}
+
+.aesthetic-empty p {
+    margin-bottom: var(--spacing-sm);
+}
+
+.aesthetic-empty-hint {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}
+
+/* Set Cover Button */
+.set-cover-container {
+    position: fixed;
+    bottom: calc(56px + env(safe-area-inset-bottom) + var(--spacing-lg));
+    left: var(--spacing-lg);
+    right: var(--spacing-lg);
+    z-index: var(--z-sticky);
+}
+
+.set-cover-btn {
+    width: 100%;
+    height: 60px;
+    background: var(--gradient-blue);
+    border: none;
+    border-radius: var(--radius-xl);
+    color: white;
+    font-size: var(--text-base);
+    font-weight: var(--weight-bold);
+    cursor: pointer;
+    transition: all var(--duration-base) var(--ease);
+    box-shadow:
+        0 8px 24px rgba(59, 130, 246, 0.4),
+        0 0 40px rgba(59, 130, 246, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.set-cover-btn:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        0 12px 32px rgba(59, 130, 246, 0.6),
+        0 0 60px rgba(59, 130, 246, 0.4);
+}
+
+.set-cover-btn:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .masonry-grid {
+        padding: 0 var(--spacing-md);
+    }
+
+    .filter-chips {
+        padding-right: var(--spacing-md);
+    }
+
+    .aesthetic-header h2 {
+        font-size: clamp(1.25rem, 6vw, 1.75rem);
+    }
+}
+
+/* Skeleton Loading */
+.masonry-skeleton {
+    width: 100%;
+    padding-top: 150%;
+    background: linear-gradient(90deg,
+            rgba(30, 58, 138, 0.1) 0%,
+            rgba(59, 130, 246, 0.15) 50%,
+            rgba(30, 58, 138, 0.1) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-md);
+}

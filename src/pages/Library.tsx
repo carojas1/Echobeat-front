@@ -1,199 +1,135 @@
-import React, { useState } from 'react';
-import { IonContent, IonPage, IonIcon } from '@ionic/react';
-import { musicalNotes, heart, disc } from 'ionicons/icons';
-import { useHistory } from 'react-router-dom';
-import './Library.css';
+import React, { useState, useEffect } from "react";
+import { IonContent, IonPage, IonIcon, IonSpinner } from "@ionic/react";
+import { musicalNotes, play, add, heart } from "ionicons/icons";
+import { useHistory } from "react-router-dom";
+import { auth } from "../firebase/config";
+import "./Library.css";
+
+interface User {
+  displayName: string;
+  photoURL: string | null;
+}
+
+interface Playlist {
+  id: string;
+  name: string;
+  songCount: number;
+  coverUrl: string;
+}
 
 const Library: React.FC = () => {
-    const history = useHistory();
-    const [activeTab, setActiveTab] = useState('playlists');
+  const history = useHistory();
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
 
-    const playlists = [
-        { id: 1, name: 'Mis Favoritas', description: '45 canciones', icon: heart },
-        { id: 2, name: 'Rock Clásico', description: '32 canciones', icon: musicalNotes },
-        { id: 3, name: 'Workout Mix', description: '28 canciones', icon: disc },
-        { id: 4, name: 'Estudio', description: '56 canciones', icon: musicalNotes },
-    ];
+  useEffect(() => {
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      setUser({
+        displayName: currentUser.displayName || "Usuario",
+        photoURL: currentUser.photoURL,
+      });
+    }
 
-    const likedSongs = [
-        {
-            id: 1,
-            name: 'SICKO MODE',
-            artist: 'Travis Scott',
-            duration: '5:13',
-            cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/astroworld_cover_1767971071912.png'
-        },
-        {
-            id: 2,
-            name: 'Tití Me Preguntó',
-            artist: 'Bad Bunny',
-            duration: '4:03',
-            cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/bad_bunny_cover_1767971162086.png'
-        },
-        {
-            id: 3,
-            name: 'Provenza',
-            artist: 'Karol G',
-            duration: '3:32',
-            cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/karol_g_cover_1767971242879.png'
-        },
-        {
-            id: 4,
-            name: 'FE!N',
-            artist: 'Travis Scott',
-            duration: '3:12',
-            cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/utopia_cover_1767971115878.png'
-        },
-        {
-            id: 5,
-            name: 'Ella Baila Sola',
-            artist: 'Peso Pluma',
-            duration: '2:42',
-            cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/peso_pluma_cover_1767971277893.png'
-        },
-    ];
+    // ✅ No mock data - will load from backend in the future
+    setPlaylists([]);
+    setLoading(false);
+  }, []);
 
-    const albumsList = [
-        {
-            id: 'astroworld',
-            name: 'ASTROWORLD',
-            artist: 'Travis Scott',
-            year: '2018',
-            cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/astroworld_cover_1767971071912.png'
-        },
-        {
-            id: 'utopia',
-            name: 'UTOPIA',
-            artist: 'Travis Scott',
-            year: '2023',
-            cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/utopia_cover_1767971115878.png'
-        },
-        {
-            id: 'un-verano-sin-ti',
-            name: 'Un Verano Sin Ti',
-            artist: 'Bad Bunny',
-            year: '2022',
-            cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/bad_bunny_cover_1767971162086.png'
-        },
-        {
-            id: 'manana-sera-bonito',
-            name: 'Mañana Será Bonito',
-            artist: 'Karol G',
-            year: '2023',
-            cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/karol_g_cover_1767971242879.png'
-        },
-        {
-            id: 'genesis',
-            name: 'Génesis',
-            artist: 'Peso Pluma',
-            year: '2023',
-            cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/peso_pluma_cover_1767971277893.png'
-        },
-        {
-            id: 'feliz-cumpleanos-ferxxo',
-            name: 'FELIZ CUMPLEAÑOS FERXXO',
-            artist: 'Feid',
-            year: '2022',
-            cover: 'C:/Users/User/.gemini/antigravity/brain/c4f0242e-0d7a-4372-8405-ce94974537c9/feid_cover_1767971309566.png'
-        },
-    ];
+  return (
+    <IonPage>
+      <IonContent>
+        <div className="library-container">
+          {/* Header con Avatar */}
+          <div className="library-header">
+            <div className="header-top">
+              <h2>Biblioteca</h2>
+              <div
+                className="profile-avatar-btn"
+                onClick={() => history.push("/main/profile")}
+              >
+                {user?.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt={user.displayName}
+                    className="avatar-image"
+                  />
+                ) : (
+                  <div className="avatar-placeholder">
+                    <IonIcon icon={musicalNotes} />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
 
-    const renderContent = () => {
-        switch (activeTab) {
-            case 'playlists':
-                return (
-                    <div className="library-list">
-                        {playlists.map((playlist) => (
-                            <div key={playlist.id} className="library-item">
-                                <div className="library-cover">
-                                    <IonIcon icon={playlist.icon} />
-                                </div>
-                                <div className="library-info">
-                                    <h4>{playlist.name}</h4>
-                                    <p>{playlist.description}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                );
-            case 'liked':
-                return (
-                    <div className="library-list">
-                        {likedSongs.map((song) => (
-                            <div key={song.id} className="library-item">
-                                <div className="library-cover library-cover-image">
-                                    <img src={song.cover} alt={song.name} />
-                                </div>
-                                <div className="library-info">
-                                    <h4>{song.name}</h4>
-                                    <p>{song.artist}</p>
-                                </div>
-                                <div className="library-meta">{song.duration}</div>
-                            </div>
-                        ))}
-                    </div>
-                );
-            case 'albums':
-                return (
-                    <div className="library-list">
-                        {albumsList.map((album) => (
-                            <div
-                                key={album.id}
-                                className="library-item"
-                                onClick={() => history.push(`/main/album/${album.id}`)}
-                            >
-                                <div className="library-cover library-cover-image">
-                                    <img src={album.cover} alt={album.name} />
-                                </div>
-                                <div className="library-info">
-                                    <h4>{album.name}</h4>
-                                    <p>{album.artist}</p>
-                                </div>
-                                <div className="library-meta">{album.year}</div>
-                            </div>
-                        ))}
-                    </div>
-                );
-            default:
-                return null;
-        }
-    };
+          {/* Quick Actions */}
+          <div className="library-quick-actions">
+            <button className="quick-action-btn primary">
+              <IonIcon icon={add} />
+              <span>Nueva Playlist</span>
+            </button>
+            <button className="quick-action-btn">
+              <IonIcon icon={heart} />
+              <span>Favoritas</span>
+            </button>
+          </div>
 
-    return (
-        <IonPage>
-            <IonContent>
-                <div className="library-container">
-                    <div className="library-header">
-                        <h2>Tu Biblioteca</h2>
-                        <p>Toda tu música en un solo lugar</p>
-                    </div>
-
-                    <div className="library-tabs">
-                        <div
-                            className={`library-tab ${activeTab === 'playlists' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('playlists')}
-                        >
-                            Playlists
+          {/* Playlists */}
+          {loading ? (
+            <div className="library-loading">
+              <IonSpinner name="crescent" />
+            </div>
+          ) : playlists.length === 0 ? (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "60px 20px",
+                opacity: 0.6,
+              }}
+            >
+              <p style={{ fontSize: "48px", marginBottom: "16px" }}>🎵</p>
+              <p style={{ fontSize: "18px", marginBottom: "8px" }}>
+                No tienes playlists aún
+              </p>
+              <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.6)" }}>
+                Crea tu primera playlist para empezar
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="library-section">
+                <h3 className="section-title">Tus Playlists</h3>
+                <div className="playlists-grid">
+                  {playlists.map((playlist) => (
+                    <div
+                      key={playlist.id}
+                      className="playlist-card glass"
+                      onClick={() =>
+                        history.push(`/main/playlist/${playlist.id}`)
+                      }
+                    >
+                      <div className="playlist-cover">
+                        <img src={playlist.coverUrl} alt={playlist.name} />
+                        <div className="playlist-overlay">
+                          <IonIcon icon={play} className="play-icon" />
                         </div>
-                        <div
-                            className={`library-tab ${activeTab === 'liked' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('liked')}
-                        >
-                            Me gusta
-                        </div>
-                        <div
-                            className={`library-tab ${activeTab === 'albums' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('albums')}
-                        >
-                            Álbumes
-                        </div>
+                      </div>
+                      <div className="playlist-info">
+                        <h4>{playlist.name}</h4>
+                        <p>{playlist.songCount} canciones</p>
+                      </div>
                     </div>
-
-                    {renderContent()}
+                  ))}
                 </div>
-            </IonContent>
-        </IonPage>
-    );
+              </div>
+            </>
+          )}
+        </div>
+      </IonContent>
+    </IonPage>
+  );
 };
 
 export default Library;

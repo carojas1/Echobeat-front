@@ -1,53 +1,147 @@
+/* ========================================
+   MOOD PAGE - All Moods Premium
+   ======================================== */
+
 .mood-container {
-    padding: 20px;
-    padding-bottom: 80px;
+    min-height: 100vh;
+    background: var(--black-pure);
+    padding-bottom: 140px;
 }
 
+/* Header */
 .mood-header {
-    margin-bottom: 24px;
+    padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-xl);
+    background: linear-gradient(180deg, #0A0A0A 0%, #000000 100%);
+}
+
+.header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-sm);
 }
 
 .mood-header h2 {
-    color: var(--echobeat-white);
-    font-size: 28px;
-    font-weight: 700;
-    margin: 0 0 8px 0;
+    font-size: clamp(2rem, 6vw, 2.5rem);
+    font-weight: var(--weight-extrabold);
+    background: linear-gradient(135deg, #FFFFFF 0%, #60A5FA 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -1px;
 }
 
-.mood-header p {
-    color: var(--echobeat-light-purple);
-    font-size: 14px;
+.mood-subtitle {
+    font-size: var(--text-lg);
+    color: rgba(255, 255, 255, 0.6);
     margin: 0;
 }
 
-.mood-grid {
+/* Avatar */
+.profile-avatar-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    border: 2px solid transparent;
+}
+
+.profile-avatar-btn:hover {
+    transform: scale(1.1);
+    border-color: #3B82F6;
+}
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-placeholder ion-icon {
+    font-size: 24px;
+    color: white;
+}
+
+/* Moods Grid */
+.moods-grid {
+    padding: var(--spacing-lg);
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
 }
 
 .mood-card {
-    aspect-ratio: 1;
-    border-radius: 16px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    padding: var(--spacing-xl);
+    border-radius: 20px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
-    border: 2px solid transparent;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+.mood-card:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.mood-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.mood-card:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.mood-card:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.mood-card:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.mood-card:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+.mood-card:nth-child(7) {
+    animation-delay: 0.35s;
+}
+
+.mood-card:nth-child(8) {
+    animation-delay: 0.4s;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .mood-card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
     opacity: 0;
     transition: opacity 0.3s;
 }
@@ -57,61 +151,131 @@
 }
 
 .mood-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
-    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-8px);
+    box-shadow:
+        0 16px 48px rgba(0, 0, 0, 0.8),
+        0 0 40px rgba(59, 130, 246, 0.2);
 }
 
-.mood-card h3 {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--echobeat-white);
-    margin: 0;
-    z-index: 1;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+.mood-card:active {
+    transform: translateY(-4px) scale(0.98);
 }
 
 .mood-icon {
-    align-self: flex-end;
-    z-index: 1;
+    font-size: 56px;
+    margin-bottom: var(--spacing-md);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
-.mood-icon ion-icon {
-    font-size: 48px;
-    color: var(--echobeat-white);
-    opacity: 0.9;
-    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+.mood-card h3 {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    color: white;
+    margin: 0 0 var(--spacing-xs) 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Individual Mood Colors */
-.mood-happy {
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+.mood-description {
+    font-size: var(--text-sm);
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 var(--spacing-lg) 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.mood-sad {
-    background: linear-gradient(135deg, #4169E1 0%, #1E3A8A 100%);
+/* Song Preview */
+.mood-song-preview {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    margin-top: var(--spacing-md);
 }
 
-.mood-energetic {
-    background: linear-gradient(135deg, #FF1744 0%, #D50000 100%);
+.mood-song-cover-small {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
-.mood-relaxed {
-    background: linear-gradient(135deg, #00BFA5 0%, #00796B 100%);
+.mood-song-cover-small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.mood-party {
-    background: linear-gradient(135deg, #9A00FF 0%, #4B2E83 100%);
+.mood-song-info-small {
+    flex: 1;
+    min-width: 0;
 }
 
-.mood-focus {
-    background: linear-gradient(135deg, #607D8B 0%, #37474F 100%);
+.mood-song-info-small h5 {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: white;
+    margin: 0 0 2px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.mood-romantic {
-    background: linear-gradient(135deg, #FF4081 0%, #C2185B 100%);
+.mood-song-info-small p {
+    font-size: var(--text-xs);
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.mood-chill {
-    background: linear-gradient(135deg, #C7A7FF 0%, #9A00FF 100%);
+.mood-play-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s;
+}
+
+.mood-card:hover .mood-play-btn {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.mood-play-btn ion-icon {
+    font-size: 24px;
+    color: white;
+    margin-left: 2px;
+}
+
+/* Responsive */
+@media (min-width: 640px) {
+    .moods-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .moods-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .mood-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 1400px) {
+    .moods-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }

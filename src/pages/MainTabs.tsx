@@ -1,14 +1,14 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/react';
-import { home, heart, musicalNotes } from 'ionicons/icons';
+import { home, sparkles, musicalNotes } from 'ionicons/icons';
+import './MainTabs.css';
 import Home from './Home';
 import Mood from './Mood';
 import Library from './Library';
 import Profile from './Profile';
 import AlbumDetail from './AlbumDetail';
 import MoodPlaylist from './MoodPlaylist';
-import MiniPlayer from '../components/MiniPlayer';
 
 const MainTabs: React.FC = () => {
     return (
@@ -26,26 +26,28 @@ const MainTabs: React.FC = () => {
                 <Route exact path="/main/library">
                     <Library />
                 </Route>
-                <Route exact path="/main/profile">
-                    <Profile />
-                </Route>
                 <Route exact path="/main/album/:albumId">
                     <AlbumDetail />
+                </Route>
+                {/* Profile fuera del TabBar - solo desde avatar */}
+                <Route exact path="/main/profile">
+                    <Profile />
                 </Route>
                 <Route exact path="/main">
                     <Redirect to="/main/home" />
                 </Route>
             </IonRouterOutlet>
 
-            <IonTabBar slot="bottom">
+            {/* SOLO 3 TABS - Sin Profile */}
+            <IonTabBar slot="bottom" className="premium-tabbar">
                 <IonTabButton tab="home" href="/main/home">
                     <IonIcon icon={home} />
                     <IonLabel>Inicio</IonLabel>
                 </IonTabButton>
 
                 <IonTabButton tab="mood" href="/main/mood">
-                    <IonIcon icon={heart} />
-                    <IonLabel>Mood</IonLabel>
+                    <IonIcon icon={sparkles} />
+                    <IonLabel>Ambiente</IonLabel>
                 </IonTabButton>
 
                 <IonTabButton tab="library" href="/main/library">
@@ -53,9 +55,6 @@ const MainTabs: React.FC = () => {
                     <IonLabel>Biblioteca</IonLabel>
                 </IonTabButton>
             </IonTabBar>
-
-            {/* Global Mini Player */}
-            <MiniPlayer />
         </IonTabs>
     );
 };

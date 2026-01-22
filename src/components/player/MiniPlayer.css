@@ -1,0 +1,198 @@
+/* ========================================
+   MINI PLAYER - Aesthetic Premium
+   ======================================== */
+
+.mini-player {
+    position: fixed;
+    bottom: calc(56px + env(safe-area-inset-bottom));
+    /* Above tab bar */
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(30px);
+    border-top: 1px solid rgba(59, 130, 246, 0.2);
+    box-shadow:
+        0 -8px 32px rgba(0, 0, 0, 0.8),
+        0 0 40px rgba(59, 130, 246, 0.1);
+    z-index: var(--z-fixed);
+    cursor: pointer;
+    transition: all var(--duration-base) var(--ease);
+}
+
+.mini-player:hover {
+    background: rgba(20, 20, 20, 0.98);
+    box-shadow:
+        0 -12px 48px rgba(0, 0, 0, 0.9),
+        0 0 60px rgba(59, 130, 246, 0.2);
+}
+
+.mini-player:active {
+    transform: scale(0.99);
+}
+
+/* Progress bar */
+.mini-player-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.mini-player-progress-fill {
+    height: 100%;
+    background: var(--gradient-blue);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+    transition: width 0.1s linear;
+}
+
+.mini-player-progress:hover .mini-player-progress-fill {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+}
+
+/* Content */
+.mini-player-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+}
+
+/* Cover */
+.mini-player-cover {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    position: relative;
+}
+
+.mini-player-cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(59, 130, 246, 0.2) 100%);
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease);
+}
+
+.mini-player:hover .mini-player-cover::after {
+    opacity: 1;
+}
+
+.mini-player-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Info */
+.mini-player-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.mini-player-title {
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+    margin: 0 0 4px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mini-player-artist {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Controls */
+.mini-player-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-shrink: 0;
+}
+
+.mini-player-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease);
+    position: relative;
+}
+
+.mini-player-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-full);
+    background: rgba(59, 130, 246, 0.1);
+    transform: scale(0);
+    transition: transform var(--duration-fast) var(--ease);
+}
+
+.mini-player-btn:hover::before {
+    transform: scale(1);
+}
+
+.mini-player-btn:active {
+    transform: scale(0.9);
+}
+
+.mini-player-btn ion-icon {
+    font-size: 28px;
+    position: relative;
+    z-index: 1;
+}
+
+.mini-player-btn:hover ion-icon {
+    color: var(--blue-bright);
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
+}
+
+.mini-player-btn-close {
+    font-size: 20px;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .mini-player-cover {
+        width: 48px;
+        height: 48px;
+    }
+
+    .mini-player-title {
+        font-size: var(--text-sm);
+    }
+
+    .mini-player-artist {
+        font-size: var(--text-xs);
+    }
+
+    .mini-player-btn {
+        width: 44px;
+        height: 44px;
+    }
+
+    .mini-player-btn ion-icon {
+        font-size: 24px;
+    }
+}

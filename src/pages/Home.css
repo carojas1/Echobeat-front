@@ -1,234 +1,305 @@
+/* ========================================
+   HOME PAGE - Premium Design
+   ======================================== */
+
 .home-container {
-    padding-bottom: 80px;
+    min-height: 100vh;
+    background: var(--black-pure);
+    padding-bottom: 140px;
+    /* Space for player + tabs */
 }
 
+/* Header */
 .home-header {
-    padding: 16px 20px 20px;
-    background: linear-gradient(180deg, #1a0a2e 0%, #0A0A0A 100%);
+    padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-lg);
+    background: linear-gradient(180deg, #0A0A0A 0%, #000000 100%);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 10;
+    backdrop-filter: blur(20px);
 }
 
 .header-top {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-lg);
 }
 
-.header-top h2 {
-    color: var(--echobeat-white);
-    font-size: 24px;
-    font-weight: 800;
-    margin: 0;
-    letter-spacing: -0.5px;
+.home-header h2 {
+    font-size: clamp(2rem, 6vw, 2.5rem);
+    font-weight: var(--weight-extrabold);
+    background: linear-gradient(135deg, #FFFFFF 0%, #60A5FA 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -1px;
 }
 
-.profile-button {
+/* Avatar */
+.profile-avatar-btn {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #9A00FF 0%, #4B2E83 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: 2px solid var(--echobeat-light-purple);
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(154, 0, 255, 0.3);
-}
-
-.profile-button:hover {
-    transform: scale(1.08);
-    box-shadow: 0 6px 16px rgba(154, 0, 255, 0.4);
-}
-
-.profile-button ion-icon {
-    font-size: 24px;
-    color: var(--echobeat-white);
-}
-
-.search-bar {
-    --background: rgba(75, 46, 131, 0.2);
-    --border-radius: 24px;
-    --box-shadow: none;
-    --color: var(--echobeat-white);
-    --placeholder-color: var(--echobeat-light-purple);
-    --icon-color: var(--echobeat-light-purple);
-    padding: 0;
-    border: 1px solid rgba(154, 0, 255, 0.3);
-}
-
-.search-bar:hover {
-    --background: rgba(75, 46, 131, 0.3);
-}
-
-.albums-section {
-    padding: 20px;
-}
-
-.albums-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-}
-
-.album-card-grid {
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.album-card-grid:active {
-    transform: scale(0.98);
-}
-
-.album-cover-grid {
-    width: 100%;
-    aspect-ratio: 1;
-    border-radius: 8px;
     overflow: hidden;
-    margin-bottom: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    transition: all 0.3s ease;
-    position: relative;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    border: 2px solid transparent;
 }
 
-.album-card-grid:hover .album-cover-grid {
-    box-shadow: 0 12px 32px rgba(154, 0, 255, 0.3);
+.profile-avatar-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+    border-color: #3B82F6;
 }
 
-.album-cover-grid img {
+.avatar-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
 }
 
-.album-card-grid:hover .album-cover-grid img {
-    transform: scale(1.05);
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.play-overlay {
+.avatar-placeholder ion-icon {
+    font-size: 24px;
+    color: white;
+}
+
+/* Search Bar */
+.search-bar {
+    --background: rgba(255, 255, 255, 0.05);
+    --border-radius: 24px;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    --icon-color: #60A5FA;
+    --color: white;
+    --placeholder-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+/* Loading */
+.home-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-3xl);
+}
+
+.home-loading ion-spinner {
+    --color: #3B82F6;
+    transform: scale(1.5);
+}
+
+/* Content */
+.home-content {
+    padding: var(--spacing-xl) var(--spacing-lg);
+}
+
+.section-header {
+    margin-bottom: var(--spacing-lg);
+}
+
+.section-header h3 {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    color: white;
+    margin: 0 0 4px 0;
+    letter-spacing: -0.5px;
+}
+
+.section-header p {
+    font-size: var(--text-sm);
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+/* Songs Grid */
+.songs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+}
+
+.song-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+.song-card:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.song-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.song-card:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.song-card:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.song-card:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.song-card:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.song-card:hover {
+    transform: translateY(-8px);
+    box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.8),
+        0 0 40px rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.song-card:active {
+    transform: translateY(-4px) scale(0.98);
+}
+
+/* Song Cover */
+.song-cover {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: #0A0A0A;
+}
+
+.song-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.song-card:hover .song-cover img {
+    transform: scale(1.1);
+}
+
+/* Overlay */
+.song-overlay {
     position: absolute;
-    bottom: 8px;
-    right: 8px;
-    width: 48px;
-    height: 48px;
-    background: var(--echobeat-purple);
-    border-radius: 50%;
+    inset: 0;
+    background: linear-gradient(180deg,
+            transparent 0%,
+            transparent 40%,
+            rgba(0, 0, 0, 0.8) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transform: translateY(8px);
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.album-card-grid:hover .play-overlay {
+.song-card:hover .song-overlay {
     opacity: 1;
-    transform: translateY(0);
 }
 
-.play-overlay ion-icon {
-    font-size: 24px;
-    color: var(--echobeat-white);
-    margin-left: 2px;
+.play-btn-wrapper {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        0 8px 24px rgba(59, 130, 246, 0.5),
+        0 0 40px rgba(59, 130, 246, 0.3);
+    transform: scale(0.8);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.album-info h4 {
-    color: var(--echobeat-white);
-    font-size: 14px;
-    font-weight: 700;
+.song-card:hover .play-btn-wrapper {
+    transform: scale(1);
+}
+
+.play-icon {
+    font-size: 32px;
+    color: white;
+    margin-left: 3px;
+    /* Optical alignment */
+}
+
+/* Song Info */
+.song-info {
+    padding: 12px;
+}
+
+.song-info h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
     margin: 0 0 4px 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.album-info p {
-    color: var(--echobeat-light-purple);
+.song-info p {
     font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
     margin: 0;
-    opacity: 0.9;
-    font-weight: 500;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-/* Music Player */
-.music-player {
-    position: fixed;
-    bottom: 56px;
-    left: 0;
-    right: 0;
-    background: rgba(10, 10, 10, 0.98);
-    backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(154, 0, 255, 0.2);
-    padding: 12px 16px;
-    z-index: 999;
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.3);
+/* Responsive */
+@media (max-width: 768px) {
+    .songs-grid {
+        gap: 12px;
+    }
+
+    .home-content {
+        padding: 16px;
+    }
 }
 
-.player-content {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+@media (min-width: 768px) {
+    .songs-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
-.player-cover {
-    width: 48px;
-    height: 48px;
-    border-radius: 6px;
-    overflow: hidden;
-    flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
+@media (min-width: 1024px) {
+    .songs-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
 
-.player-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.player-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.player-info h4 {
-    color: var(--echobeat-white);
-    font-size: 14px;
-    font-weight: 600;
-    margin: 0 0 2px 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.player-info p {
-    color: var(--echobeat-light-purple);
-    font-size: 12px;
-    margin: 0;
-    font-weight: 500;
-}
-
-.player-controls {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-}
-
-.player-controls ion-icon {
-    font-size: 32px;
-    color: var(--echobeat-white);
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.player-controls ion-icon:hover {
-    color: var(--echobeat-purple);
-    transform: scale(1.1);
+    .home-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
 }

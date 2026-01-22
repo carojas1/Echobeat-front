@@ -1,0 +1,311 @@
+/* ========================================
+   GLOBAL NOW PLAYING MODAL
+   ======================================== */
+
+.now-playing-modal {
+    --backdrop-opacity: 0.9;
+}
+
+.now-playing-modal::part(backdrop) {
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(20px);
+}
+
+.now-playing-page {
+    height: 100%;
+    background: linear-gradient(180deg, #000000 0%, #0A0A0A 100%);
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+/* Header */
+.now-playing-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-xl);
+    padding-top: env(safe-area-inset-top);
+}
+
+.now-playing-header h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.close-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.close-btn:hover {
+    background: rgba(59, 130, 246, 0.1);
+    transform: scale(1.1);
+}
+
+.close-btn ion-icon {
+    font-size: 28px;
+}
+
+/* Cover */
+.now-playing-cover-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-2xl);
+    max-height: 60vh;
+}
+
+.now-playing-cover {
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1;
+    border-radius: 24px;
+    background-size: cover;
+    background-position: center;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.8),
+        0 0 80px rgba(59, 130, 246, 0.2);
+    position: relative;
+    overflow: hidden;
+    animation: scaleIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+/* Song Info */
+.now-playing-info {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    position: relative;
+}
+
+.now-playing-info h2 {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-weight: 700;
+    color: white;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
+}
+
+.now-playing-info p {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+}
+
+.favorite-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.favorite-btn:hover {
+    color: #EF4444;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.favorite-btn ion-icon {
+    font-size: 32px;
+}
+
+/* Progress */
+.now-playing-progress-section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.progress-bar {
+    position: relative;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #2563EB 0%, #3B82F6 50%, #60A5FA 100%);
+    border-radius: 9999px;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+}
+
+.progress-thumb {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.progress-bar:hover .progress-thumb {
+    opacity: 1;
+}
+
+.progress-time {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 500;
+}
+
+/* Controls */
+.now-playing-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: var(--spacing-xl);
+}
+
+.control-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.control-btn:hover {
+    background: rgba(59, 130, 246, 0.1);
+    transform: scale(1.1);
+}
+
+.control-btn ion-icon {
+    font-size: 32px;
+}
+
+.play-btn-large {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow:
+        0 8px 24px rgba(59, 130, 246, 0.4),
+        0 0 40px rgba(59, 130, 246, 0.2);
+}
+
+.play-btn-large:hover {
+    transform: scale(1.05);
+    box-shadow:
+        0 12px 32px rgba(59, 130, 246, 0.6),
+        0 0 60px rgba(59, 130, 246, 0.4);
+}
+
+.play-btn-large ion-icon {
+    font-size: 36px;
+    margin-left: 2px;
+    /* optical alignment */
+}
+
+/* EQ Toggle */
+.eq-toggle-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.eq-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 999px;
+    color: #60A5FA;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.eq-toggle-btn:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: #3B82F6;
+    transform: translateY(-2px);
+}
+
+.eq-toggle-btn.active {
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.eq-toggle-btn ion-icon {
+    font-size: 20px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .now-playing-page {
+        padding: 16px;
+    }
+
+    .now-playing-cover {
+        max-width: 100%;
+    }
+
+    .play-btn-large {
+        width: 64px;
+        height: 64px;
+    }
+
+    .control-btn {
+        width: 48px;
+        height: 48px;
+    }
+}
