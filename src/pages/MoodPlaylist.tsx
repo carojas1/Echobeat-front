@@ -62,6 +62,12 @@ const MoodPlaylist: React.FC = () => {
                         !urlStr.startsWith('http')) {
                         return null;
                     }
+
+                    // ✅ Validar MOOD estricto (si el backend devuelve canciones incorrectas)
+                    if (String(s.mood).toLowerCase() !== String(backendMood).toLowerCase()) {
+                        console.warn(`⚠️ Canción descartada por mood incorrecto: ${s.title} (${s.mood} != ${backendMood})`);
+                        return null;
+                    }
                     
                     // ✅ Corregir puerto si apunta a 3000
                     let correctedUrl = String(fileUrl);

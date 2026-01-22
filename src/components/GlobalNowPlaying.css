@@ -669,3 +669,166 @@
     font-weight: 700;
     font-variant-numeric: tabular-nums;
 }
+
+/* ========================================
+   EQ VERTICAL SLIDERS (ULTRA PREMIUM)
+   ======================================== */
+.eq-container-stable {
+    background: linear-gradient(180deg, rgba(20, 20, 35, 0.98) 0%, rgba(10, 10, 20, 0.98) 100%);
+    border-radius: 28px;
+    padding: 24px 20px;
+    margin: 20px 0 100px 0;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.6),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+}
+
+.eq-header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 0 4px;
+}
+
+.eq-title {
+    font-size: 18px;
+    font-weight: 800;
+    background: linear-gradient(to right, #fff, #a5b4fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
+}
+
+/* Scroll de presets más limpio */
+.eq-presets-grid-scroll {
+    display: flex;
+    overflow-x: auto;
+    padding: 4px 4px 20px 4px;
+    margin-bottom: 10px;
+    gap: 12px;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.eq-p-btn {
+    flex: 0 0 auto;
+    padding: 12px 20px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.eq-p-btn:active {
+    transform: scale(0.95);
+}
+
+.eq-p-btn.active {
+    background: #3B82F6;
+    color: white;
+    border-color: #3B82F6;
+    box-shadow: 0 8px 20px -4px rgba(59, 130, 246, 0.5); 
+    transform: translateY(-2px);
+}
+
+/* Botón Karaoke destacado */
+.eq-p-btn.special {
+    border: 1px solid rgba(236, 72, 153, 0.3);
+    color: #F472B6;
+    background: rgba(236, 72, 153, 0.05);
+}
+
+.eq-p-btn.active.special {
+    background: linear-gradient(135deg, #EC4899, #be185d);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 8px 24px -4px rgba(236, 72, 153, 0.6);
+}
+
+/* Contenedor de sliders */
+.eq-sliders-vertical-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    padding: 20px 10px;
+    height: 260px; /* Más alto */
+    background: rgba(0,0,0,0.2);
+    border-radius: 20px;
+}
+
+.eq-slider-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 70px;
+    position: relative;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+/* Track visual más ancho y estilizado */
+.slider-track-container {
+    position: relative;
+    width: 48px; /* Más ancho */
+    flex-grow: 1;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Relleno visual con gradiente intenso */
+.slider-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, #2563EB, #60A5FA);
+    border-radius: 0 0 12px 12px;
+    pointer-events: none;
+    transition: height 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Input rotado invisible pero funcional */
+.eq-vertical-slider {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px; /* Largo suficiente para cubrir altura */
+    height: 48px; /* Ancho coincidente */
+    transform: translate(-50%, -50%) rotate(-90deg);
+    background: transparent;
+    appearance: none; /* Propiedad estándar */
+    -webkit-appearance: none;
+    z-index: 10;
+    cursor: grab;
+    opacity: 0; /* Totalmente invisible, delegamos en slider-fill */
+}
+
+/* Indicador de valor flotante */
+.slider-val {
+    font-size: 16px;
+    color: #fff;
+    font-weight: 800;
+    margin-bottom: 4px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.slider-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #94A3B8;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
