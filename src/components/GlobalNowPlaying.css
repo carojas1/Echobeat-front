@@ -309,3 +309,363 @@
         height: 48px;
     }
 }
+
+/* ========================================
+   EQUALIZER SECTION
+   ======================================== */
+.eq-section {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 8px;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.eq-presets-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.eq-preset-chip {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    color: #60A5FA;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.eq-preset-chip:hover {
+    background: rgba(59, 130, 246, 0.2);
+}
+
+.eq-preset-chip.active {
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+    border-color: transparent;
+    color: white;
+}
+
+.eq-sliders-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.eq-slider-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.eq-slider-item span:first-child {
+    width: 60px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.eq-slider-item input[type="range"] {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+    outline: none;
+}
+
+.eq-slider-item input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    transition: transform 0.2s;
+}
+
+.eq-slider-item input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.eq-slider-item .eq-val {
+    width: 40px;
+    text-align: right;
+    font-size: 13px;
+    color: #60A5FA;
+    font-weight: 600;
+}
+
+/* ========================================
+   EQ SIMPLE PRESETS
+   ======================================== */
+.eq-simple-section {
+    margin-top: 16px;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.eq-presets-simple {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.preset-btn {
+    padding: 10px 20px;
+    border-radius: 20px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #60A5FA;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.preset-btn:hover {
+    background: rgba(59, 130, 246, 0.2);
+    transform: scale(1.05);
+}
+
+.preset-btn.active {
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+/* ========================================
+   STABLE EQUALIZER - PREMIUM DESIGN
+   ======================================== */
+.eq-container-stable {
+    background: rgba(20, 20, 30, 0.95);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 16px 0;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.eq-header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.eq-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+}
+
+.eq-reset-btn-small {
+    padding: 6px 16px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.eq-reset-btn-small:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.eq-presets-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.eq-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 8px;
+    border-radius: 14px;
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.eq-btn:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+}
+
+.eq-btn.active {
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+    border-color: transparent;
+    color: white;
+    box-shadow: 
+        0 4px 16px rgba(59, 130, 246, 0.4),
+        0 0 20px rgba(59, 130, 246, 0.2);
+    transform: scale(1.02);
+}
+
+.eq-btn-icon {
+    font-size: 24px;
+    margin-bottom: 4px;
+}
+
+.eq-btn-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.eq-toggle-bottom {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s;
+    margin-top: 8px;
+    margin-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+.eq-toggle-bottom:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ========================================
+   EQ PRESETS ROW - SIMPLE CHIPS
+   ======================================== */
+.eq-presets-row-simple {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.eq-chip {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    color: #60A5FA;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.eq-chip:hover {
+    background: rgba(59, 130, 246, 0.2);
+}
+
+.eq-chip.active {
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* ========================================
+   EQ SLIDERS SECTION
+   ======================================== */
+.eq-sliders-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.eq-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.eq-slider-label {
+    width: 60px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+.eq-slider {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(to right, 
+        rgba(59, 130, 246, 0.3) 0%, 
+        rgba(59, 130, 246, 0.1) 50%, 
+        rgba(59, 130, 246, 0.3) 100%);
+    border-radius: 10px;
+    outline: none;
+}
+
+.eq-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.5);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.eq-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.7);
+}
+
+.eq-slider::-webkit-slider-thumb:active {
+    transform: scale(1.1);
+}
+
+.eq-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.5);
+}
+
+.eq-slider-value {
+    width: 40px;
+    text-align: right;
+    font-size: 13px;
+    color: #60A5FA;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}

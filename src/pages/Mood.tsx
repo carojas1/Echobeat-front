@@ -93,11 +93,8 @@ const Mood: React.FC = () => {
   }, []);
 
   const handleMoodClick = (moodId: string) => {
-    // Navegar a una página de playlist filtrada por mood
-    // Por ahora solo mostramos un mensaje
-    alert(
-      `Función de filtrado por ${moodId} - próximamente disponible cuando el admin suba canciones`,
-    );
+    // Navegar a la página de playlist filtrada por mood
+    history.push(`/main/mood/${moodId}`);
   };
 
   return (

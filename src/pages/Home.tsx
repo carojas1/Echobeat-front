@@ -91,13 +91,29 @@ const Home: React.FC = () => {
 
             // ✅ si falta algo crítico, retorna null (se filtra después)
             if (!s?.id || !s?.title || !s?.artist || !fileUrl) return null;
+            
+            // ✅ Filtrar URLs falsas/mock
+            const urlStr = String(fileUrl).toLowerCase();
+            if (urlStr.includes('example.com') || 
+                urlStr.includes('placeholder') || 
+                urlStr.includes('sample.mp3') ||
+                !urlStr.startsWith('http')) {
+              console.warn('⚠️ Canción con URL inválida ignorada:', s.title, fileUrl);
+              return null;
+            }
+
+            // ✅ Corregir puerto si apunta a 3000
+            let correctedUrl = String(fileUrl);
+            if (correctedUrl.includes('localhost:3000')) {
+              correctedUrl = correctedUrl.replace('localhost:3000', 'localhost:1753');
+            }
 
             return {
               id: String(s.id),
               title: String(s.title),
               artist: String(s.artist),
               coverUrl: s.coverUrl || DEFAULT_COVER_IMAGE,
-              audioUrl: String(fileUrl),
+              audioUrl: correctedUrl,
               duration: Number(s.duration || 0),
             };
           })

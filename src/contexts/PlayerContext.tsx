@@ -166,7 +166,14 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const playSong = useCallback(async (song: Song) => {
     if (!song?.audioUrl) {
       console.error("❌ Song sin audioUrl:", song);
-      throw new Error("Song sin audioUrl");
+      return; // No lanzar error, solo retornar
+    }
+
+    // Validar URL
+    const urlStr = song.audioUrl.toLowerCase();
+    if (urlStr.includes('example.com') || !urlStr.startsWith('http')) {
+      console.error("❌ URL inválida:", song.audioUrl);
+      return;
     }
 
     // ✅ Token anti-race: si otro playSong se llama, este se aborta
@@ -174,20 +181,25 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     console.log("🎵 PlayerContext: Playing", song.title, "| URL:", song.audioUrl);
 
-    const { audio, ac } = ensureGraph();
-    await ac.resume();
+    try {
+      const { audio, ac } = ensureGraph();
+      await ac.resume();
 
-    setCurrentSong(song);
-    audio.src = song.audioUrl;
-    audio.load(); // ✅ Important: reset audio state before playing
+      setCurrentSong(song);
+      audio.src = song.audioUrl;
+      audio.load(); // ✅ Important: reset audio state before playing
 
-    // ✅ Si otro playSong fue llamado mientras tanto, abortar este
-    if (token !== playTokenRef.current) {
-      console.log("⏭️ Play aborted (newer request)");
-      return;
+      // ✅ Si otro playSong fue llamado mientras tanto, abortar este
+      if (token !== playTokenRef.current) {
+        console.log("⏭️ Play aborted (newer request)");
+        return;
+      }
+
+      await safePlay();
+    } catch (e) {
+      console.error("❌ Error playing song:", e);
+      // No re-lanzar el error para no crashear la UI
     }
-
-    await safePlay();
   }, [ensureGraph, safePlay]);
 
   // Toggle play/pause
