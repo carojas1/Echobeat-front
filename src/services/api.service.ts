@@ -1,8 +1,8 @@
 // Backend API Configuration
-import { getAuth } from 'firebase/auth';
-import { authFetch } from './authFetch';
+import { getAuth } from "firebase/auth";
+import { authFetch } from "./authFetch";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:1753/api/v1";
 
 // ==================== AUTH ====================
 
@@ -10,7 +10,7 @@ export function getCurrentUser() {
   const auth = getAuth();
   const user = auth.currentUser;
   if (!user) return null;
-  
+
   return {
     uid: user.uid,
     email: user.email,
@@ -27,7 +27,11 @@ export function isAuthenticated(): boolean {
 export function isAdmin(): boolean {
   const auth = getAuth();
   const user = auth.currentUser;
-  return user?.email === "carojas@sudamericano.edu.ec";
+  const ADMIN_EMAILS = [
+    "carojas@sudamericano.edu.ec",
+    "andres2007benavides@gmail.com"
+  ];
+  return user?.email ? ADMIN_EMAILS.includes(user.email) : false;
 }
 
 export async function logout(): Promise<void> {
@@ -62,10 +66,19 @@ export async function getSongs(params?: {
     const queryParams = new URLSearchParams(
       Object.entries(params || {}).map(([k, v]) => [k, String(v)]),
     );
-    const res = await authFetch(`${API_URL}/songs?${queryParams}`);
+    // ✅ Usar fetch normal (público, sin auth)
+    const res = await fetch(`${API_URL}/songs?${queryParams}`);
     if (!res.ok) throw new Error("Failed to fetch songs");
-    return res.json();
-  } catch {
+    const json = await res.json();
+    console.log("🔍 Backend response:", json);
+    
+    // ✅ Manejar formato: { success, data: { songs: [...] } }
+    const songs = json?.data?.songs || json?.songs || json?.data || [];
+    const total = json?.data?.total || json?.total || songs.length;
+    
+    return { data: songs, total };
+  } catch (e) {
+    console.error("❌ getSongs error:", e);
     return { data: [], total: 0 };
   }
 }
@@ -119,7 +132,7 @@ export async function updateUser(
     method: "PATCH",
     body: JSON.stringify(data),
   });
-  
+
   if (!res.ok) throw new Error("Failed to update user");
   return res.json();
 }
@@ -128,30 +141,46 @@ export async function deleteUser(id: string): Promise<void> {
   const res = await authFetch(`${API_URL}/admin/users/${id}`, {
     method: "DELETE",
   });
-  
+
   if (!res.ok) throw new Error("Failed to delete user");
 }
 
 // ==================== SONGS - UPLOAD ====================
 
 export async function uploadSong(formData: FormData): Promise<Song> {
-  const res = await authFetch("http://localhost:3000/api/v1/songs/upload", {
-    method: "POST",
-    body: formData,
-  });
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 60000); // 60s
 
-  if (!res.ok) {
-    throw new Error(await res.text());
+  try {
+    const res = await authFetch("http://localhost:1753/api/v1/songs/upload", {
+      method: "POST",
+      body: formData,
+      signal: controller.signal,
+    });
+
+    if (res.status === 401) throw new Error("Sesión expirada. Inicia sesión.");
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(text || `Error ${res.status}`);
+    }
+    return await res.json();
+  } catch (e: any) {
+    if (e?.name === "AbortError") {
+      throw new Error(
+        "Upload tardó demasiado (timeout). Revisa backend/Cloudinary.",
+      );
+    }
+    throw e;
+  } finally {
+    window.clearTimeout(timeout);
   }
-
-  return res.json();
 }
 
 export async function deleteSong(id: string): Promise<void> {
   const res = await authFetch(`${API_URL}/admin/songs/${id}`, {
     method: "DELETE",
   });
-  
+
   if (!res.ok) throw new Error("Failed to delete song");
 }
 
@@ -167,7 +196,7 @@ export async function updateSong(
     method: "PATCH",
     body: JSON.stringify(data),
   });
-  
+
   if (!res.ok) throw new Error("Failed to update song");
   return res.json();
 }

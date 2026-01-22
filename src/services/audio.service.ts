@@ -15,6 +15,12 @@ export interface EQSettings {
     preset: string;
 }
 
+export interface PlayResult {
+    ok: boolean;
+    reason?: 'ABORTED' | 'STALE_PLAY_ATTEMPT' | 'NO_SOURCE' | 'INVALID_URL' | 'LOAD_ERROR' | 'UNKNOWN';
+    message?: string;
+}
+
 class AudioService {
     private audioContext: AudioContext | null = null;
     private audioElement: HTMLAudioElement | null = null;
@@ -27,6 +33,9 @@ class AudioService {
 
     private currentSong: Song | null = null;
     private isPlaying: boolean = false;
+
+    // ✅ Play attempt counter to cancel stale plays
+    private playAttemptId: number = 0;
 
     private presets = {
         flat: { bass: 0, mid: 0, treble: 0 },
@@ -47,16 +56,18 @@ class AudioService {
             // Create the audio element first
             this.audioElement = new Audio();
             this.audioElement.volume = 1.0;
+            this.audioElement.preload = 'auto'; // ✅ Preload for faster playback
 
-            // CRITICAL: Setup Web Audio API IMMEDIATELY, before any playback
-            // This prevents the "already playing" problem
+            // Setup Web Audio API IMMEDIATELY
             this.setupAudioGraphImmediately();
 
             // Add event listeners for debugging
             this.audioElement.addEventListener('loadstart', () => console.log('📥 Loading audio...'));
             this.audioElement.addEventListener('canplay', () => console.log('✅ Audio ready to play'));
             this.audioElement.addEventListener('playing', () => console.log('▶️ Audio playing'));
-            this.audioElement.addEventListener('error', (e) => console.error('❌ Audio error:', e));
+            this.audioElement.addEventListener('error', () => {
+                this.logAudioError('Audio error event');
+            });
 
             console.log('✅ Audio system initialized');
         } catch (error) {
@@ -64,8 +75,68 @@ class AudioService {
         }
     }
 
+    // ✅ Diagnostic helper for NotSupportedError
+    private logAudioError(context: string) {
+        if (!this.audioElement) {
+            console.error(`❌ ${context}: No audio element`);
+            return;
+        }
+
+        const audio = this.audioElement;
+        const mediaError = audio.error;
+
+        console.group(`❌ ${context}`);
+        console.log('audio.src:', audio.src);
+        console.log('audio.currentSrc:', audio.currentSrc);
+        console.log('canPlayType("audio/mpeg"):', audio.canPlayType('audio/mpeg'));
+        console.log('canPlayType("audio/wav"):', audio.canPlayType('audio/wav'));
+        console.log('canPlayType("audio/ogg"):', audio.canPlayType('audio/ogg'));
+        console.log('readyState:', audio.readyState, this.getReadyStateLabel(audio.readyState));
+        console.log('networkState:', audio.networkState, this.getNetworkStateLabel(audio.networkState));
+
+        if (mediaError) {
+            console.log('error.code:', mediaError.code, this.getMediaErrorLabel(mediaError.code));
+            console.log('error.message:', mediaError.message || '(no message)');
+        }
+
+        if (audio.networkState === 0 || audio.readyState === 0) {
+            console.warn('⚠️ URL no es audio válido, responde con HTML/401/CORS, o no existe');
+        }
+        console.groupEnd();
+    }
+
+    private getReadyStateLabel(state: number): string {
+        const labels: Record<number, string> = {
+            0: 'HAVE_NOTHING',
+            1: 'HAVE_METADATA',
+            2: 'HAVE_CURRENT_DATA',
+            3: 'HAVE_FUTURE_DATA',
+            4: 'HAVE_ENOUGH_DATA'
+        };
+        return labels[state] || 'UNKNOWN';
+    }
+
+    private getNetworkStateLabel(state: number): string {
+        const labels: Record<number, string> = {
+            0: 'NETWORK_EMPTY',
+            1: 'NETWORK_IDLE',
+            2: 'NETWORK_LOADING',
+            3: 'NETWORK_NO_SOURCE'
+        };
+        return labels[state] || 'UNKNOWN';
+    }
+
+    private getMediaErrorLabel(code: number): string {
+        const labels: Record<number, string> = {
+            1: 'MEDIA_ERR_ABORTED',
+            2: 'MEDIA_ERR_NETWORK',
+            3: 'MEDIA_ERR_DECODE',
+            4: 'MEDIA_ERR_SRC_NOT_SUPPORTED'
+        };
+        return labels[code] || 'UNKNOWN';
+    }
+
     private setupAudioGraphImmediately() {
-        // Setup IMMEDIATELY so EQ is always available
         if (!this.audioElement) {
             console.error('❌ No audio element');
             return;
@@ -74,10 +145,8 @@ class AudioService {
         try {
             console.log('🔧 Setting up Web Audio API (immediate)...');
 
-            // Create AudioContext
-            this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+            this.audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
 
-            // CRITICAL: Create source BEFORE any playback starts
             this.sourceNode = this.audioContext.createMediaElementSource(this.audioElement);
 
             // Create EQ filters
@@ -112,16 +181,65 @@ class AudioService {
         }
     }
 
-    async play(song: Song) {
+    // ✅ Validate URL before loading
+    private isValidAudioUrl(url: string | undefined | null): boolean {
+        if (!url || typeof url !== 'string') return false;
+        const trimmed = url.trim();
+        if (!trimmed) return false;
+        // Must start with http/https or be a blob/data URL
+        return trimmed.startsWith('http://') ||
+               trimmed.startsWith('https://') ||
+               trimmed.startsWith('blob:') ||
+               trimmed.startsWith('data:');
+    }
+
+    // ✅ Load audio source (pause, reset, set src, load)
+    load(url: string): boolean {
         if (!this.audioElement) {
-            console.error('❌ Audio element not initialized');
-            return;
+            console.error('❌ No audio element for load');
+            return false;
+        }
+
+        if (!this.isValidAudioUrl(url)) {
+            console.error('❌ Invalid audio URL:', url);
+            return false;
         }
 
         try {
-            console.log('🎵 Playing:', song.title);
+            // Pause current playback
+            this.audioElement.pause();
+            // Reset time
+            this.audioElement.currentTime = 0;
+            // Set new source
+            this.audioElement.src = url;
+            // Force load
+            this.audioElement.load();
+            return true;
+        } catch (error) {
+            console.error('❌ Error loading audio:', error);
+            return false;
+        }
+    }
 
-            // Resume audio context if it exists and is suspended
+    async play(song: Song): Promise<PlayResult> {
+        if (!this.audioElement) {
+            console.error('❌ Audio element not initialized');
+            return { ok: false, reason: 'LOAD_ERROR', message: 'Audio element not initialized' };
+        }
+
+        // ✅ Increment play attempt ID to cancel previous attempts
+        const thisAttemptId = ++this.playAttemptId;
+
+        try {
+            console.log('🎵 Playing:', song.title, '| URL:', song.audioUrl);
+
+            // ✅ Validate URL first
+            if (!this.isValidAudioUrl(song.audioUrl)) {
+                console.error('❌ Invalid audio URL:', song.audioUrl);
+                return { ok: false, reason: 'INVALID_URL', message: `URL inválida: ${song.audioUrl}` };
+            }
+
+            // Resume audio context if suspended
             if (this.audioContext?.state === 'suspended') {
                 try {
                     await this.audioContext.resume();
@@ -131,19 +249,61 @@ class AudioService {
                 }
             }
 
+            // ✅ Check if this attempt is still valid
+            if (thisAttemptId !== this.playAttemptId) {
+                console.log('⏭️ Stale play attempt canceled (new song selected)');
+                return { ok: false, reason: 'STALE_PLAY_ATTEMPT', message: 'Canceled by newer play request' };
+            }
+
             // Set the song
             this.currentSong = song;
-            this.audioElement.src = song.audioUrl;
 
-            // Play the audio - NO Web Audio API setup here!
+            // ✅ Load the audio properly
+            const loaded = this.load(song.audioUrl);
+            if (!loaded) {
+                return { ok: false, reason: 'LOAD_ERROR', message: 'Failed to load audio source' };
+            }
+
+            // ✅ Check again if still valid after load
+            if (thisAttemptId !== this.playAttemptId) {
+                console.log('⏭️ Stale play attempt canceled after load');
+                return { ok: false, reason: 'STALE_PLAY_ATTEMPT', message: 'Canceled by newer play request' };
+            }
+
+            // Play the audio
             await this.audioElement.play();
             this.isPlaying = true;
 
             console.log('✅ Audio playing!');
-        } catch (error) {
+            return { ok: true };
+
+        } catch (error: unknown) {
+            // ✅ Handle AbortError as normal (user changed song quickly)
+            if (error instanceof Error && error.name === 'AbortError') {
+                console.log('⏸️ Play aborted (normal - user paused or changed song)');
+                return { ok: false, reason: 'ABORTED', message: 'Play request was interrupted' };
+            }
+
+            // ✅ Handle NotSupportedError with diagnostic
+            if (error instanceof Error && error.name === 'NotSupportedError') {
+                this.logAudioError('NotSupportedError - no supported source');
+                return { 
+                    ok: false, 
+                    reason: 'NO_SOURCE', 
+                    message: 'No se pudo reproducir: formato no soportado o URL inválida' 
+                };
+            }
+
+            // Other errors
             console.error('❌ Play error:', error);
+            this.logAudioError('Play error');
             this.isPlaying = false;
-            throw error;
+
+            return { 
+                ok: false, 
+                reason: 'UNKNOWN', 
+                message: error instanceof Error ? error.message : 'Unknown error' 
+            };
         }
     }
 
@@ -157,21 +317,35 @@ class AudioService {
         }
     }
 
-    resume() {
+    async resume(): Promise<PlayResult> {
         try {
-            if (!this.audioElement) return;
-            this.audioElement.play();
+            if (!this.audioElement) {
+                return { ok: false, reason: 'LOAD_ERROR', message: 'No audio element' };
+            }
+
+            // Resume audio context if suspended
+            if (this.audioContext?.state === 'suspended') {
+                await this.audioContext.resume();
+            }
+
+            await this.audioElement.play();
             this.isPlaying = true;
-        } catch (error) {
+            return { ok: true };
+        } catch (error: unknown) {
+            if (error instanceof Error && error.name === 'AbortError') {
+                return { ok: false, reason: 'ABORTED', message: 'Resume interrupted' };
+            }
             console.error('❌ Resume error:', error);
+            return { ok: false, reason: 'UNKNOWN', message: error instanceof Error ? error.message : 'Unknown' };
         }
     }
 
-    togglePlayPause() {
+    async togglePlayPause(): Promise<PlayResult> {
         if (this.isPlaying) {
             this.pause();
+            return { ok: true };
         } else {
-            this.resume();
+            return await this.resume();
         }
     }
 
@@ -197,7 +371,8 @@ class AudioService {
 
     getDuration(): number {
         try {
-            return this.audioElement?.duration || 0;
+            const dur = this.audioElement?.duration;
+            return dur && !isNaN(dur) ? dur : 0;
         } catch {
             return 0;
         }
@@ -206,7 +381,7 @@ class AudioService {
     getProgress(): number {
         try {
             const duration = this.getDuration();
-            if (!duration || isNaN(duration)) return 0;
+            if (!duration) return 0;
             const current = this.getCurrentTime();
             if (isNaN(current)) return 0;
             return current / duration;
@@ -216,7 +391,6 @@ class AudioService {
     }
 
     setEQ(settings: Partial<EQSettings>) {
-        // If Web Audio API is not available, silently fail
         if (!this.isAudioGraphSetup || !this.bassFilter || !this.midFilter || !this.trebleFilter) {
             console.warn('⚠️ EQ not available (Web Audio API failed at startup)');
             return;
@@ -267,6 +441,11 @@ class AudioService {
         } catch (error) {
             console.error('❌ Error setting volume:', error);
         }
+    }
+
+    // ✅ Get audio element for external listeners (e.g., 'ended' event)
+    getAudioElement(): HTMLAudioElement | null {
+        return this.audioElement;
     }
 }
 

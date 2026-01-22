@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import {
   IonModal,
   IonHeader,
@@ -64,25 +64,29 @@ const UploadSongModal: React.FC<UploadSongModalProps> = ({
   const [toastMessage, setToastMessage] = useState("");
   const [toastColor, setToastColor] = useState<"success" | "danger">("success");
 
-  const showErr = (msg: string) => {
+  // ✅ RESET SOLO cuando el modal ya está cerrado (isOpen=false)
+  useEffect(() => {
+    if (!isOpen) {
+      setIsDragOver(false);
+      setIsUploading(false);
+      setNewSong({ title: "", artist: "", album: "", mood: "happy" });
+      setSelectedFile(null);
+    }
+  }, [isOpen]);
+
+  const showErr = useCallback((msg: string) => {
     setToastColor("danger");
     setToastMessage(`❌ ${msg}`);
     setShowToast(true);
     onError?.(msg);
-  };
+  }, [onError]);
 
-  const showOk = (msg: string) => {
+  const showOk = useCallback((msg: string) => {
     setToastColor("success");
     setToastMessage(msg);
     setShowToast(true);
     onSuccess?.(msg);
-  };
-
-  const resetForm = () => {
-    setNewSong({ title: "", artist: "", album: "", mood: "happy" });
-    setSelectedFile(null);
-    // Nota: el input real se limpia cuando vuelves a abrir el selector
-  };
+  }, [onSuccess]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -118,48 +122,39 @@ const UploadSongModal: React.FC<UploadSongModalProps> = ({
         showErr("Solo se permiten archivos de audio");
       }
     },
-    [onError],
+    [showErr],
   );
 
-  // ✅ Lee duración real; si falla -> 180
-  const getSafeDurationSeconds = async (file: File): Promise<number> => {
-    const blobUrl = URL.createObjectURL(file);
-    const audio = new Audio();
+  // ✅ Lee duración con timeout de 2.5s - nunca se queda pegado
+  const getDurationSafe = (file: File, timeoutMs = 2500): Promise<number> => {
+    return new Promise((resolve) => {
+      const url = URL.createObjectURL(file);
+      const audio = new Audio();
+      let done = false;
 
-    try {
+      const finish = (value: number) => {
+        if (done) return;
+        done = true;
+        try { URL.revokeObjectURL(url); } catch { /* ignore */ }
+        resolve(value);
+      };
+
+      const t = window.setTimeout(() => finish(180), timeoutMs); // fallback 3 min
+
       audio.preload = "metadata";
-      audio.src = blobUrl;
+      audio.onloadedmetadata = () => {
+        window.clearTimeout(t);
+        const d = Number(audio.duration);
+        finish(Number.isFinite(d) && d >= 1 ? Math.floor(d) : 180);
+      };
 
-      const durationRaw = await new Promise<number>((resolve, reject) => {
-        const timer = window.setTimeout(() => {
-          reject(new Error("No se pudo leer la duración (timeout)"));
-        }, 3000);
+      audio.onerror = () => {
+        window.clearTimeout(t);
+        finish(180);
+      };
 
-        const onLoaded = () => {
-          window.clearTimeout(timer);
-          // a veces duration sale Infinity o NaN dependiendo del codec
-          resolve(audio.duration);
-        };
-
-        const onErrorEv = () => {
-          window.clearTimeout(timer);
-          reject(new Error("No se pudo leer la duración (error metadata)"));
-        };
-
-        audio.addEventListener("loadedmetadata", onLoaded, { once: true });
-        audio.addEventListener("error", onErrorEv, { once: true });
-      });
-
-      const parsed = Number(durationRaw);
-      if (Number.isFinite(parsed) && parsed >= 1) {
-        return Math.max(1, Math.floor(parsed));
-      }
-      return 180;
-    } catch {
-      return 180;
-    } finally {
-      URL.revokeObjectURL(blobUrl);
-    }
+      audio.src = url;
+    });
   };
 
   // ✅ Normaliza cualquier respuesta a array (evita .map crash)
@@ -206,8 +201,8 @@ const UploadSongModal: React.FC<UploadSongModalProps> = ({
       if (!newSong.artist?.trim()) throw new Error("Artista requerido");
       if (!newSong.mood?.trim()) throw new Error("Mood requerido");
 
-      // ✅ duración segura SIEMPRE (int >= 1)
-      const safeDuration = await getSafeDurationSeconds(selectedFile);
+      // ✅ duración segura SIEMPRE (int >= 1, timeout 2.5s)
+      const safeDuration = await getDurationSafe(selectedFile);
 
       // Create FormData - EXACT keys as backend expects
       const fd = new FormData();
@@ -229,26 +224,20 @@ const UploadSongModal: React.FC<UploadSongModalProps> = ({
 
       showOk("✅ Canción subida correctamente");
 
-      resetForm();
-
-      // Close modal after delay to avoid removeChild error
-      setTimeout(() => {
-        onClose();
-      }, 350);
+      // ✅ Cerrar modal directamente - el useEffect se encarga del reset
+      onClose();
     } catch (error: unknown) {
       const errorMsg =
         error instanceof Error ? error.message : "Error al subir canción";
       showErr(errorMsg);
     } finally {
-      setTimeout(() => {
-        setIsUploading(false);
-      }, 200);
+      setIsUploading(false);
     }
   };
 
+  // ✅ Cerrar sin doble cierre - el reset lo hace useEffect cuando isOpen=false
   const handleClose = () => {
     if (isUploading) return;
-    resetForm();
     onClose();
   };
 
@@ -256,8 +245,10 @@ const UploadSongModal: React.FC<UploadSongModalProps> = ({
     <>
       <IonModal
         isOpen={isOpen}
-        onDidDismiss={handleClose}
         keepContentsMounted={true}
+        onDidDismiss={() => {
+          // ✅ NO llames onClose aquí - el padre ya controla isOpen
+        }}
       >
         <IonHeader>
           <IonToolbar>
@@ -405,17 +396,9 @@ const UploadSongModal: React.FC<UploadSongModalProps> = ({
             onClick={handleUpload}
             disabled={isUploading || !newSong.title || !newSong.artist || !selectedFile}
           >
-            {isUploading ? (
-              <>
-                <IonSpinner name="crescent" />
-                <span style={{ marginLeft: "8px" }}>Subiendo...</span>
-              </>
-            ) : (
-              <>
-                <IonIcon slot="start" icon={cloudUpload} />
-                Subir Canción
-              </>
-            )}
+            <IonIcon slot="start" icon={cloudUpload} />
+            <span style={{ marginRight: isUploading ? 10 : 0 }}>Subir Canción</span>
+            {isUploading && <IonSpinner name="crescent" />}
           </IonButton>
         </IonContent>
       </IonModal>

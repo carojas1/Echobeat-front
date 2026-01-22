@@ -6,8 +6,11 @@ import { auth, googleProvider } from '../firebase/config';
 import Logo from '../components/Logo';
 import './Login.css';
 
-// Admin email
-const ADMIN_EMAIL = 'carojas@sudamericano.edu.ec';
+// Admin emails
+const ADMIN_EMAILS = [
+  'carojas@sudamericano.edu.ec',
+  'andres2007benavides@gmail.com'
+];
 
 const Login: React.FC = () => {
   const history = useHistory();
@@ -19,7 +22,7 @@ const Login: React.FC = () => {
 
   const redirectAfterLogin = (userEmail: string | null) => {
     // Si es admin, va al panel de admin
-    if (userEmail === ADMIN_EMAIL) {
+    if (userEmail && ADMIN_EMAILS.includes(userEmail)) {
       history.push('/admin');
     } else {
       history.push('/main/home');
