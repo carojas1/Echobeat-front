@@ -28,8 +28,7 @@ export function isAdmin(): boolean {
   const auth = getAuth();
   const user = auth.currentUser;
   const ADMIN_EMAILS = [
-    "carojas@sudamericano.edu.ec",
-    "andres2007benavides@gmail.com"
+    "carojas@sudamericano.edu.ec"
   ];
   return user?.email ? ADMIN_EMAILS.includes(user.email) : false;
 }

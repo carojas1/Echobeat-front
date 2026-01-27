@@ -9,7 +9,7 @@ import {
   IonFabButton,
   IonToast,
 } from "@ionic/react";
-import { person, play, add } from "ionicons/icons";
+import { person, play, add, cloudDownload } from "ionicons/icons";
 import { useHistory } from "react-router-dom";
 import { auth } from "../firebase/config";
 import { usePlayer } from "../contexts/PlayerContext";
@@ -272,7 +272,7 @@ const Home: React.FC = () => {
                 </p>
               </div>
             ) : (
-              <div className="songs-grid">
+                <div className="songs-grid">
                 {songs.filter(isValidSong).map((song) => (
                   <div
                     key={song.id}
@@ -288,6 +288,16 @@ const Home: React.FC = () => {
                         }}
                       />
                       <div className="song-overlay">
+                        <button
+                          className="download-button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(song.audioUrl, '_blank');
+                          }}
+                          title="Descargar"
+                        >
+                          <IonIcon icon={cloudDownload} />
+                        </button>
                         <div className="play-button">
                           <IonIcon icon={play} />
                         </div>

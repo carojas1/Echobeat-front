@@ -23,7 +23,7 @@ ion-tab-button {
 }
 
 ion-tab-button.tab-selected {
-    --color: #1DB954;
+    --color: #3B82F6;
 }
 
 ion-tab-button ion-icon {
@@ -48,5 +48,5 @@ ion-tab-button ion-label {
 }
 
 .light-theme ion-tab-button.tab-selected {
-    --color: #1DB954;
+    --color: #3B82F6;
 }

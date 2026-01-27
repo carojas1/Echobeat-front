@@ -8,8 +8,7 @@ import './Login.css';
 
 // Admin emails
 const ADMIN_EMAILS = [
-  'carojas@sudamericano.edu.ec',
-  'andres2007benavides@gmail.com'
+  'carojas@sudamericano.edu.ec'
 ];
 
 const Login: React.FC = () => {

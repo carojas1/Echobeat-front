@@ -96,7 +96,7 @@
 
 .mood-name-input:focus {
     outline: none;
-    border-color: #1DB954;
+    border-color: #3B82F6;
 }
 
 .mood-name-input::placeholder {
@@ -128,7 +128,7 @@
 }
 
 .emoji-btn.selected {
-    border-color: #1DB954;
+    border-color: #3B82F6;
     background: rgba(29, 185, 84, 0.15);
 }
 
@@ -202,7 +202,7 @@
 }
 
 .songs-loading ion-spinner {
-    color: #1DB954;
+    color: #3B82F6;
 }
 
 .no-songs {
@@ -289,7 +289,7 @@
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    background: #1DB954;
+    background: #3B82F6;
     display: flex;
     align-items: center;
     justify-content: center;

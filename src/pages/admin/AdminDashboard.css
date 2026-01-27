@@ -86,8 +86,9 @@
 }
 
 .admin-overview h2 {
+    font-family: 'Dancing Script', 'Brush Script MT', cursive;
     color: #fff;
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 800;
     margin-bottom: 8px;
     background: linear-gradient(135deg, #ffffff 0%, #60a5fa 100%);

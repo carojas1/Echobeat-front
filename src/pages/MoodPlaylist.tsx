@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { IonContent, IonPage, IonIcon, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonSpinner } from '@ionic/react';
-import { play } from 'ionicons/icons';
+import { play, cloudDownload } from 'ionicons/icons';
 import { useParams } from 'react-router-dom';
 import { usePlayer } from '../contexts/PlayerContext';
 import { DEFAULT_COVER_IMAGE } from '../config/constants';
@@ -193,6 +193,16 @@ const MoodPlaylist: React.FC = () => {
                                             <h4 className={`track-title ${isCurrentTrack ? 'highlight' : ''}`}>{song.title}</h4>
                                             <p className="track-artist">{song.artist}</p>
                                         </div>
+                                        <button
+                                            className="track-download-btn"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                window.open(song.audioUrl, '_blank');
+                                            }}
+                                            title="Descargar"
+                                        >
+                                            <IonIcon icon={cloudDownload} />
+                                        </button>
                                         <div className="track-duration">
                                             {isCurrentTrack && isPlaying ? 'Reproduciendo' : formatDuration(song.duration)}
                                         </div>

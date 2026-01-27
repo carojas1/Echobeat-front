@@ -29,7 +29,7 @@
 
 .mini-progress-fill {
     height: 100%;
-    background: #1DB954;
+    background: linear-gradient(90deg, #2563EB 0%, #3B82F6 100%);
     transition: width 0.3s linear;
 }
 

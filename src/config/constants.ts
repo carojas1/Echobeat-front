@@ -1,14 +1,12 @@
 // Constantes de la aplicación EchoBeat
 
-// 🎨 Imagen por defecto para covers de canciones (diseño elegante oscuro)
-export const DEFAULT_COVER_IMAGE =
-  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Cdefs%3E%3ClinearGradient id="bg" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%231a1a2e"%3E%3C/stop%3E%3Cstop offset="100%25" style="stop-color:%2316161a"%3E%3C/stop%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill="url(%23bg)" width="200" height="200"/%3E%3Ctext x="50%25" y="50%25" font-size="48" text-anchor="middle" dy=".35em" fill="%23404040" font-family="Arial"%3E♪%3C/text%3E%3C/svg%3E';
+// 🎨 Imagen por defecto para covers de canciones (logo EchoBeat)
+export const DEFAULT_COVER_IMAGE = '/echobeat-logo.png';
 
 // 📧 Emails de administradores
 export const ADMIN_EMAIL = "carojas@sudamericano.edu.ec";
 export const ADMIN_EMAILS = [
-  "carojas@sudamericano.edu.ec",
-  "andres2007benavides@gmail.com"
+  "carojas@sudamericano.edu.ec"
 ];
 
 // 🔑 Keys de localStorage

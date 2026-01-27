@@ -8,7 +8,8 @@ import {
     playSkipBack,
     heart,
     heartOutline,
-    micOffOutline
+    micOffOutline,
+    cloudDownload
 } from 'ionicons/icons';
 import { usePlayer } from '../contexts/PlayerContext';
 import { DEFAULT_COVER_IMAGE } from '../config/constants';
@@ -232,12 +233,21 @@ export const GlobalNowPlaying: React.FC = () => {
                 <div className="now-playing-info">
                     <h2>{currentSong.title}</h2>
                     <p>{currentSong.artist}</p>
-                    <button
-                        className="favorite-btn"
-                        onClick={() => setIsFavorite(!isFavorite)}
-                    >
-                        <IonIcon icon={isFavorite ? heart : heartOutline} />
-                    </button>
+                    <div className="now-playing-actions">
+                        <button
+                            className="download-btn"
+                            onClick={() => window.open(currentSong.audioUrl, '_blank')}
+                            title="Descargar canción"
+                        >
+                            <IonIcon icon={cloudDownload} />
+                        </button>
+                        <button
+                            className="favorite-btn"
+                            onClick={() => setIsFavorite(!isFavorite)}
+                        >
+                            <IonIcon icon={isFavorite ? heart : heartOutline} />
+                        </button>
+                    </div>
                 </div>
 
                 <div className="now-playing-progress-section">

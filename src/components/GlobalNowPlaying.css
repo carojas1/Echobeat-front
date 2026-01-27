@@ -113,10 +113,6 @@
 }
 
 .favorite-btn {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -132,11 +128,46 @@
 
 .favorite-btn:hover {
     color: #EF4444;
-    transform: translateY(-50%) scale(1.1);
+    transform: scale(1.1);
 }
 
 .favorite-btn ion-icon {
     font-size: 32px;
+}
+
+/* Actions container */
+.now-playing-actions {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 8px;
+}
+
+/* Download button */
+.download-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #60A5FA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.download-btn:hover {
+    background: #3B82F6;
+    color: white;
+    transform: scale(1.1);
+}
+
+.download-btn ion-icon {
+    font-size: 24px;
 }
 
 /* Progress */

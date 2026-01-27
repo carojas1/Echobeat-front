@@ -20,7 +20,8 @@
 }
 
 .library-header h2 {
-    font-size: 26px;
+    font-family: 'Dancing Script', 'Brush Script MT', cursive;
+    font-size: 32px;
     font-weight: 700;
     color: #fff;
     margin: 0;
@@ -89,12 +90,12 @@
 }
 
 .quick-action-btn.primary {
-    background: #1DB954;
+    background: #3B82F6;
     color: #000;
 }
 
 .quick-action-btn.primary:hover {
-    background: #1ed760;
+    background: #60A5FA;
 }
 
 .quick-action-btn.mood-create-btn {
@@ -102,7 +103,7 @@
 }
 
 .quick-action-btn.mood-create-btn ion-icon {
-    color: #1DB954;
+    color: #3B82F6;
 }
 
 /* Section */
@@ -256,7 +257,7 @@
 
 .play-icon {
     font-size: 36px;
-    color: #1DB954;
+    color: #3B82F6;
 }
 
 .delete-pl-btn {
@@ -342,7 +343,7 @@
 }
 
 .library-loading ion-spinner {
-    color: #1DB954;
+    color: #3B82F6;
 }
 
 /* Responsive */
@@ -379,7 +380,7 @@
 }
 
 .light-theme .quick-action-btn.primary {
-    background: #1DB954;
+    background: #3B82F6;
     color: #000;
 }
 

@@ -217,3 +217,28 @@
     font-weight: 500;
     flex-shrink: 0;
 }
+
+/* Download button */
+.track-download-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.8);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.track-download-btn:hover {
+    background: #3B82F6;
+    transform: scale(1.1);
+}
+
+.track-download-btn ion-icon {
+    font-size: 18px;
+    color: #fff;
+}

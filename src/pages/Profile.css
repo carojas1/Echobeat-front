@@ -52,7 +52,8 @@ ion-back-button {
 
 /* Name & Email */
 .profile-name {
-    font-size: 24px;
+    font-family: 'Dancing Script', 'Brush Script MT', cursive;
+    font-size: 32px;
     font-weight: 700;
     color: #fff;
     margin: 0 0 8px 0;
@@ -172,7 +173,7 @@ ion-back-button {
 /* Toggle */
 ion-toggle {
     --background: #333;
-    --background-checked: #1DB954;
+    --background-checked: #3B82F6;
     --handle-background: #fff;
     --handle-background-checked: #fff;
 }
@@ -229,7 +230,7 @@ ion-toggle {
 /* Volume Slider */
 .volume-slider-settings {
     --bar-background: #333;
-    --bar-background-active: #1DB954;
+    --bar-background-active: #3B82F6;
     --knob-background: #fff;
     --knob-size: 16px;
     --bar-height: 4px;
@@ -273,7 +274,7 @@ ion-toggle {
 
 .privacy-icon-large {
     font-size: 64px;
-    color: #1DB954;
+    color: #3B82F6;
     margin-bottom: 20px;
 }
 
