@@ -6,7 +6,7 @@ import { usePlayer } from '../contexts/PlayerContext';
 import { DEFAULT_COVER_IMAGE } from '../config/constants';
 import './MoodPlaylist.css';
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:1753/api/v1";
+const API_URL = import.meta.env.VITE_API_URL || "https://echobeatback-production.up.railway.app/api/v1";
 
 // Mapeo de moods a info visual
 const moodInfo: { [key: string]: { name: string; color: string; backendMood: string } } = {
@@ -69,18 +69,12 @@ const MoodPlaylist: React.FC = () => {
                         return null;
                     }
                     
-                    // ✅ Corregir puerto si apunta a 3000
-                    let correctedUrl = String(fileUrl);
-                    if (correctedUrl.includes('localhost:3000')) {
-                        correctedUrl = correctedUrl.replace('localhost:3000', 'localhost:1753');
-                    }
-                    
                     return {
                         id: String(s.id),
                         title: String(s.title || "Sin título"),
                         artist: String(s.artist || "Artista desconocido"),
                         coverUrl: s.coverUrl || DEFAULT_COVER_IMAGE,
-                        audioUrl: correctedUrl,
+                        audioUrl: String(fileUrl),
                         duration: Number(s.duration || 0),
                     };
                 }).filter(Boolean) as Song[];

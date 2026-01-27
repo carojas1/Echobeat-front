@@ -1,8 +1,8 @@
 // Constantes de la aplicación EchoBeat
 
-// 🎨 Imagen por defecto para covers de canciones (SVG embebido en data URI)
+// 🎨 Imagen por defecto para covers de canciones (diseño elegante oscuro)
 export const DEFAULT_COVER_IMAGE =
-  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Cdefs%3E%3ClinearGradient id="grad" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%231E3A8A;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%233B82F6;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill="url(%23grad)" width="200" height="200"/%3E%3Ctext x="50%25" y="50%25" font-size="80" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" opacity="0.9"%3E♪%3C/text%3E%3C/svg%3E';
+  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Cdefs%3E%3ClinearGradient id="bg" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%231a1a2e"%3E%3C/stop%3E%3Cstop offset="100%25" style="stop-color:%2316161a"%3E%3C/stop%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill="url(%23bg)" width="200" height="200"/%3E%3Ctext x="50%25" y="50%25" font-size="48" text-anchor="middle" dy=".35em" fill="%23404040" font-family="Arial"%3E♪%3C/text%3E%3C/svg%3E';
 
 // 📧 Emails de administradores
 export const ADMIN_EMAIL = "carojas@sudamericano.edu.ec";
@@ -39,7 +39,7 @@ export const PAGINATION = {
 
 // 🌐 URL del backend (configurable por ambiente)
 export const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:1753/api/v1";
+  import.meta.env.VITE_API_URL || "https://echobeatback-production.up.railway.app/api/v1";
 
 // 🎨 Géneros musicales
 export const MUSIC_GENRES = [

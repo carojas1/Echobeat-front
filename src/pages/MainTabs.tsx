@@ -9,6 +9,8 @@ import Library from './Library';
 import Profile from './Profile';
 import AlbumDetail from './AlbumDetail';
 import MoodPlaylist from './MoodPlaylist';
+import PlaylistDetail from './PlaylistDetail';
+import CustomMoodPlaylist from './CustomMoodPlaylist';
 
 const MainTabs: React.FC = () => {
     return (
@@ -23,11 +25,17 @@ const MainTabs: React.FC = () => {
                 <Route exact path="/main/mood/:moodId">
                     <MoodPlaylist />
                 </Route>
+                <Route exact path="/main/custom-mood/:moodId">
+                    <CustomMoodPlaylist />
+                </Route>
                 <Route exact path="/main/library">
                     <Library />
                 </Route>
                 <Route exact path="/main/album/:albumId">
                     <AlbumDetail />
+                </Route>
+                <Route exact path="/main/playlist/:playlistId">
+                    <PlaylistDetail />
                 </Route>
                 {/* Profile fuera del TabBar - solo desde avatar */}
                 <Route exact path="/main/profile">

@@ -102,18 +102,12 @@ const Home: React.FC = () => {
               return null;
             }
 
-            // ✅ Corregir puerto si apunta a 3000
-            let correctedUrl = String(fileUrl);
-            if (correctedUrl.includes('localhost:3000')) {
-              correctedUrl = correctedUrl.replace('localhost:3000', 'localhost:1753');
-            }
-
             return {
               id: String(s.id),
               title: String(s.title),
               artist: String(s.artist),
               coverUrl: s.coverUrl || DEFAULT_COVER_IMAGE,
-              audioUrl: correctedUrl,
+              audioUrl: String(fileUrl),
               duration: Number(s.duration || 0),
             };
           })

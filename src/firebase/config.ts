@@ -1,9 +1,9 @@
-// Firebase configuration
+// Firebase configuration - Robusto para APK
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, browserLocalPersistence, setPersistence } from 'firebase/auth';
 
 // Modo desarrollo
-export const DEV_MODE = true;
+export const DEV_MODE = false;
 
 // Firebase config
 const firebaseConfig = {
@@ -16,10 +16,26 @@ const firebaseConfig = {
     measurementId: "G-QR9MZGRSB4"
 };
 
-// Initialize Firebase - SIEMPRE inicializar
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+
+// Configurar persistencia LOCAL (sobrevive a recargas y cierres de app)
+setPersistence(auth, browserLocalPersistence)
+    .then(() => {
+        console.log('✅ Firebase Auth: Persistencia LOCAL configurada');
+    })
+    .catch((error) => {
+        console.warn('⚠️ Firebase Auth: No se pudo configurar persistencia:', error.message);
+    });
+
+// Provider de Google
 export const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({
+    prompt: 'select_account'
+});
+
+// Analytics deshabilitado para evitar errores
 export const analytics = null;
 
 export default app;

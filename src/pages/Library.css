@@ -1,52 +1,40 @@
 /* ========================================
-   LIBRARY PAGE - Premium Design
+   LIBRARY PAGE - ELEGANTE Y MODERNO
    ======================================== */
 
 .library-container {
     min-height: 100vh;
-    background: var(--black-pure);
-    padding-bottom: 120px;
+    background: #121212;
+    padding-bottom: 100px;
 }
 
 /* Header */
 .library-header {
-    padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-lg);
-    background: var(--gradient-dark);
+    padding: 56px 20px 16px;
 }
 
 .header-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: var(--spacing-lg);
 }
 
 .library-header h2 {
-    font-size: clamp(2rem, 6vw, 2.5rem);
-    font-weight: var(--weight-extrabold);
-    background: var(--gradient-blue);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: -1px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
 }
 
-/* Avatar button */
+/* Avatar */
 .profile-avatar-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: var(--radius-full);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
-    transition: all var(--duration-base) var(--ease);
-    box-shadow: var(--shadow-md);
-    border: 2px solid transparent;
-}
-
-.profile-avatar-btn:hover {
-    transform: scale(1.1);
-    box-shadow: var(--shadow-glow);
-    border-color: var(--blue-electric);
+    background: #333;
+    border: none;
 }
 
 .avatar-image {
@@ -58,132 +46,208 @@
 .avatar-placeholder {
     width: 100%;
     height: 100%;
-    background: var(--gradient-blue);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .avatar-placeholder ion-icon {
-    font-size: 24px;
-    color: white;
+    font-size: 18px;
+    color: #fff;
 }
 
 /* Quick Actions */
 .library-quick-actions {
     display: flex;
-    gap: var(--spacing-md);
-    padding: 0 var(--spacing-lg) var(--spacing-xl);
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 20px 24px;
 }
 
 .quick-action-btn {
-    flex: 1;
-    height: 56px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-xl);
-    color: var(--text-primary);
-    font-size: var(--text-sm);
-    font-weight: var(--weight-semibold);
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: var(--spacing-sm);
+    gap: 8px;
+    padding: 12px 18px;
+    background: #282828;
+    border: none;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    transition: all var(--duration-base) var(--ease);
+    transition: all 0.2s ease;
 }
 
 .quick-action-btn:hover {
-    background: rgba(59, 130, 246, 0.1);
-    border-color: var(--blue-electric);
-    transform: translateY(-2px);
-}
-
-.quick-action-btn.primary {
-    background: var(--gradient-blue);
-    border: none;
-    box-shadow: var(--shadow-glow);
+    background: #333;
+    transform: scale(1.02);
 }
 
 .quick-action-btn ion-icon {
-    font-size: 24px;
+    font-size: 18px;
 }
 
-/* Loading */
-.library-loading {
-    display: flex;
-    justify-content: center;
-    padding: var(--spacing-3xl);
+.quick-action-btn.primary {
+    background: #1DB954;
+    color: #000;
 }
 
-.library-loading ion-spinner {
-    --color: var(--blue-electric);
-    transform: scale(1.5);
+.quick-action-btn.primary:hover {
+    background: #1ed760;
+}
+
+.quick-action-btn.mood-create-btn {
+    background: #282828;
+}
+
+.quick-action-btn.mood-create-btn ion-icon {
+    color: #1DB954;
 }
 
 /* Section */
 .library-section {
-    padding: var(--spacing-xl) var(--spacing-lg);
+    padding: 0 20px;
+    margin-bottom: 28px;
 }
 
 .section-title {
-    font-size: var(--text-xl);
-    font-weight: var(--weight-bold);
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-lg);
-    letter-spacing: -0.5px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 16px 0;
+}
+
+/* Custom Moods */
+.moods-horizontal {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.moods-horizontal::-webkit-scrollbar {
+    display: none;
+}
+
+.custom-mood-card {
+    flex-shrink: 0;
+    width: 130px;
+    padding: 18px 14px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    transition: all 0.25s ease;
+}
+
+.custom-mood-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.delete-mood-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.custom-mood-card:hover .delete-mood-btn {
+    opacity: 1;
+}
+
+.delete-mood-btn:hover {
+    background: #e74c3c;
+}
+
+.delete-mood-btn ion-icon {
+    font-size: 14px;
+}
+
+.mood-emoji {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.mood-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.mood-songs {
+    font-size: 12px;
+    color: #888;
 }
 
 /* Playlists Grid */
 .playlists-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-lg);
+    gap: 16px;
 }
 
 .playlist-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-xl);
+    background: #1a1a1a;
+    border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
-    transition: all var(--duration-base) var(--ease);
+    transition: all 0.25s ease;
+    border: none;
 }
 
 .playlist-card:hover {
+    background: #252525;
     transform: translateY(-4px);
-    box-shadow: var(--shadow-glow);
-    border-color: var(--blue-electric);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .playlist-cover {
     position: relative;
     aspect-ratio: 1;
-    overflow: hidden;
+    background: #1a1a2e;
 }
 
 .playlist-cover img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform var(--duration-slow) var(--ease);
+    transition: transform 0.3s ease;
 }
 
 .playlist-card:hover .playlist-cover img {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .playlist-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 12px;
     opacity: 0;
-    transition: opacity var(--duration-base) var(--ease);
+    transition: opacity 0.25s;
 }
 
 .playlist-card:hover .playlist-overlay {
@@ -191,121 +255,176 @@
 }
 
 .play-icon {
-    font-size: 48px;
-    color: white;
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+    font-size: 36px;
+    color: #1DB954;
+}
+
+.delete-pl-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.playlist-card:hover .delete-pl-btn {
+    opacity: 1;
+}
+
+.delete-pl-btn:hover {
+    background: #e74c3c;
+}
+
+.delete-pl-btn ion-icon {
+    font-size: 16px;
 }
 
 .playlist-info {
-    padding: var(--spacing-md);
+    padding: 14px;
 }
 
 .playlist-info h4 {
-    font-size: var(--text-base);
-    font-weight: var(--weight-semibold);
-    color: var(--text-primary);
-    margin: 0 0 var(--spacing-xs) 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.playlist-info p {
-    font-size: var(--text-xs);
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-/* Recent List */
-.recent-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-}
-
-.recent-item {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md);
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-lg);
-    cursor: pointer;
-    transition: all var(--duration-base) var(--ease);
-}
-
-.recent-item:hover {
-    background: rgba(59, 130, 246, 0.1);
-    border-color: var(--blue-electric);
-    transform: translateX(4px);
-}
-
-.recent-cover {
-    width: 56px;
-    height: 56px;
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    flex-shrink: 0;
-}
-
-.recent-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.recent-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.recent-info h4 {
-    font-size: var(--text-base);
-    font-weight: var(--weight-semibold);
-    color: var(--text-primary);
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
     margin: 0 0 4px 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.recent-info p {
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
+.playlist-info p {
+    font-size: 13px;
+    color: #888;
     margin: 0;
 }
 
-.recent-play-icon {
-    font-size: 28px;
-    color: var(--blue-bright);
-    flex-shrink: 0;
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
 }
 
-/* Mobile */
-@media (max-width: 768px) {
+.empty-icon {
+    font-size: 52px;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.empty-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 8px 0;
+}
+
+.empty-subtitle {
+    font-size: 14px;
+    color: #888;
+    margin: 0;
+}
+
+/* Loading */
+.library-loading {
+    display: flex;
+    justify-content: center;
+    padding: 60px;
+}
+
+.library-loading ion-spinner {
+    color: #1DB954;
+}
+
+/* Responsive */
+@media (min-width: 640px) {
     .playlists-grid {
-        gap: var(--spacing-md);
-    }
-
-    .library-quick-actions {
-        flex-direction: column;
-    }
-
-    .quick-action-btn {
-        width: 100%;
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
-/* Desktop */
-@media (min-width: 1024px) {
-    .playlists-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
+/* ===== TEMA CLARO ===== */
+.light-theme .library-container {
+    background: #f5f5f5;
+}
 
-    .library-container {
-        max-width: 1200px;
-        margin: 0 auto;
-    }
+.light-theme .library-header h2 {
+    color: #1a1a1a;
+}
+
+.light-theme .profile-avatar-btn {
+    background: #e0e0e0;
+}
+
+.light-theme .avatar-placeholder ion-icon {
+    color: #666;
+}
+
+.light-theme .quick-action-btn {
+    background: #e8e8e8;
+    color: #1a1a1a;
+}
+
+.light-theme .quick-action-btn:hover {
+    background: #ddd;
+}
+
+.light-theme .quick-action-btn.primary {
+    background: #1DB954;
+    color: #000;
+}
+
+.light-theme .section-title {
+    color: #1a1a1a;
+}
+
+.light-theme .custom-mood-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.light-theme .mood-name {
+    color: #1a1a1a;
+}
+
+.light-theme .mood-songs {
+    color: #666;
+}
+
+.light-theme .playlist-card {
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.light-theme .playlist-card:hover {
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.light-theme .playlist-cover {
+    background: #e8e8e8;
+}
+
+.light-theme .playlist-info h4 {
+    color: #1a1a1a;
+}
+
+.light-theme .playlist-info p {
+    color: #666;
+}
+
+.light-theme .empty-title {
+    color: #1a1a1a;
+}
+
+.light-theme .empty-subtitle {
+    color: #666;
 }

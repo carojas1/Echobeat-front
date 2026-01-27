@@ -19,6 +19,7 @@ const StableEqualizer: React.FC<{ visible: boolean }> = React.memo(({ visible })
     const [active, setActive] = useState<string>('flat');
 
     // Safe setter with error handling
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const safeSetEQ = useCallback((settings: any) => {
         try {
             setEQ(settings);

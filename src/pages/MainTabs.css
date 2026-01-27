@@ -1,67 +1,52 @@
 /* ========================================
-   PREMIUM TAB BAR STYLES
+   MAIN TABS - ELEGANTE
    ======================================== */
 
 .premium-tabbar {
-    --background: rgba(10, 10, 10, 0.95);
-    --border: 1px solid rgba(59, 130, 246, 0.15);
-    backdrop-filter: blur(30px);
-    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.8);
+    background: #121212;
+    border-top: 1px solid #1e1e1e;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+ion-tab-bar {
+    --background: transparent;
+    --border: none;
+    border: none;
     height: 60px;
 }
 
-.premium-tabbar ion-tab-button {
-    --color: rgba(163, 163, 163, 0.8);
-    --color-selected: #3B82F6;
-    --ripple-color: rgba(59, 130, 246, 0.2);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+ion-tab-button {
+    --color: #888;
+    --color-selected: #fff;
+    background: transparent;
+    transition: all 0.2s ease;
 }
 
-.premium-tabbar ion-tab-button.tab-selected {
-    --color: #3B82F6;
+ion-tab-button.tab-selected {
+    --color: #1DB954;
 }
 
-.premium-tabbar ion-tab-button ion-icon {
-    font-size: 26px;
+ion-tab-button ion-icon {
+    font-size: 24px;
     margin-bottom: 4px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.premium-tabbar ion-tab-button.tab-selected ion-icon {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
-}
-
-.premium-tabbar ion-label {
+ion-tab-button ion-label {
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    margin-top: 2px;
+    font-weight: 500;
 }
 
-/* Indicador superior */
-.premium-tabbar::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent 0%, #3B82F6 50%, transparent 100%);
-    opacity: 0.5;
+/* ===== TEMA CLARO ===== */
+.light-theme .premium-tabbar {
+    background: #fff;
+    border-top: 1px solid #e0e0e0;
 }
 
-/* Mobile optimizations */
-@media (max-width: 768px) {
-    .premium-tabbar {
-        height: 56px;
-    }
+.light-theme ion-tab-button {
+    --color: #888;
+    --color-selected: #1a1a1a;
+}
 
-    .premium-tabbar ion-tab-button ion-icon {
-        font-size: 24px;
-    }
-
-    .premium-tabbar ion-label {
-        font-size: 10px;
-    }
+.light-theme ion-tab-button.tab-selected {
+    --color: #1DB954;
 }

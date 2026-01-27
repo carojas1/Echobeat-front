@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IonContent, IonPage, IonToast, IonButton, IonSpinner } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
-import { signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase/config';
 import Logo from '../components/Logo';
 import './Login.css';
@@ -19,13 +19,55 @@ const Login: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  // Verificar si ya hay sesión activa
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Usuario ya autenticado, guardar datos y redirigir
+        try {
+          const idToken = await user.getIdToken(true);
+          localStorage.setItem('fb_token', idToken);
+          localStorage.setItem('user_email', user.email || '');
+          localStorage.setItem('user_name', user.displayName || '');
+          localStorage.setItem('user_photo', user.photoURL || '');
+          
+          // Redirigir según rol
+          if (user.email && ADMIN_EMAILS.includes(user.email)) {
+            history.replace('/admin');
+          } else {
+            history.replace('/main/home');
+          }
+        } catch (error) {
+          console.error('Error obteniendo token:', error);
+        }
+      }
+      setCheckingAuth(false);
+    });
+
+    return () => unsubscribe();
+  }, [history]);
+
+  const saveUserData = async (user: { getIdToken: (force: boolean) => Promise<string>; email: string | null; displayName: string | null; photoURL: string | null }) => {
+    try {
+      const idToken = await user.getIdToken(true);
+      localStorage.setItem('fb_token', idToken);
+      localStorage.setItem('user_email', user.email || '');
+      localStorage.setItem('user_name', user.displayName || '');
+      localStorage.setItem('user_photo', user.photoURL || '');
+      return true;
+    } catch (error) {
+      console.error('Error guardando datos de usuario:', error);
+      return false;
+    }
+  };
 
   const redirectAfterLogin = (userEmail: string | null) => {
-    // Si es admin, va al panel de admin
     if (userEmail && ADMIN_EMAILS.includes(userEmail)) {
-      history.push('/admin');
+      history.replace('/admin');
     } else {
-      history.push('/main/home');
+      history.replace('/main/home');
     }
   };
 
@@ -41,11 +83,7 @@ const Login: React.FC = () => {
     setLoading(true);
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      
-      // 🔥 Get Firebase ID Token and store it
-      const idToken = await result.user.getIdToken(true);
-      localStorage.setItem('fb_token', idToken);
-      localStorage.setItem('user_email', result.user.email || '');
+      await saveUserData(result.user);
       
       setToastMessage('✅ ¡Bienvenido de nuevo!');
       setShowToast(true);
@@ -54,10 +92,13 @@ const Login: React.FC = () => {
       console.error('Login error:', error);
       let msg = 'Error al iniciar sesión';
       if (error && typeof error === 'object' && 'code' in error) {
-        if (error.code === 'auth/user-not-found') msg = 'Usuario no encontrado';
-        if (error.code === 'auth/wrong-password') msg = 'Contraseña incorrecta';
-        if (error.code === 'auth/invalid-credential') msg = 'Correo o contraseña incorrectos';
-        if (error.code === 'auth/too-many-requests') msg = 'Demasiados intentos. Intenta más tarde';
+        const code = (error as { code?: string }).code;
+        if (code === 'auth/user-not-found') msg = 'Usuario no encontrado';
+        else if (code === 'auth/wrong-password') msg = 'Contraseña incorrecta';
+        else if (code === 'auth/invalid-credential') msg = 'Correo o contraseña incorrectos';
+        else if (code === 'auth/too-many-requests') msg = 'Muchos intentos. Espera un momento';
+        else if (code === 'auth/network-request-failed') msg = 'Sin conexión a internet';
+        else if (code === 'auth/invalid-email') msg = 'Correo electrónico inválido';
       }
       setToastMessage(msg);
       setShowToast(true);
@@ -70,23 +111,40 @@ const Login: React.FC = () => {
     setLoading(true);
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      
-      // 🔥 Get Firebase ID Token and store it
-      const idToken = await result.user.getIdToken(true);
-      localStorage.setItem('fb_token', idToken);
-      localStorage.setItem('user_email', result.user.email || '');
+      await saveUserData(result.user);
 
       setToastMessage('✅ ¡Login exitoso con Google!');
       setShowToast(true);
       setTimeout(() => redirectAfterLogin(result.user.email), 500);
     } catch (error: unknown) {
       console.error('Google login error:', error);
-      setToastMessage('Error iniciando sesión con Google');
+      let msg = 'Error iniciando sesión con Google';
+      if (error && typeof error === 'object' && 'code' in error) {
+        const code = (error as { code?: string }).code;
+        if (code === 'auth/popup-closed-by-user') msg = 'Login cancelado';
+        else if (code === 'auth/network-request-failed') msg = 'Sin conexión a internet';
+        else if (code === 'auth/popup-blocked') msg = 'Popup bloqueado. Permite popups';
+      }
+      setToastMessage(msg);
       setShowToast(true);
     } finally {
       setLoading(false);
     }
   };
+
+  // Mostrar loading mientras verifica auth
+  if (checkingAuth) {
+    return (
+      <IonPage className="login-page">
+        <IonContent className="ion-padding">
+          <div className="login-container" style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <IonSpinner name="crescent" style={{ width: 48, height: 48 }} />
+            <p style={{ marginTop: 16, color: '#888' }}>Verificando sesión...</p>
+          </div>
+        </IonContent>
+      </IonPage>
+    );
+  }
 
   return (
     <IonPage className="login-page">
@@ -111,6 +169,7 @@ const Login: React.FC = () => {
                   onChange={e => setEmail(e.target.value)}
                   placeholder="ejemplo@email.com"
                   disabled={loading}
+                  autoComplete="email"
                 />
               </div>
 
@@ -122,6 +181,7 @@ const Login: React.FC = () => {
                   onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
                   disabled={loading}
+                  autoComplete="current-password"
                 />
               </div>
 
@@ -150,7 +210,7 @@ const Login: React.FC = () => {
             </button>
           </div>
 
-          {/* Sección de Registro Separada */}
+          {/* Sección de Registro */}
           <div className="register-section">
             <p>¿Aún no tienes cuenta?</p>
             <IonButton
@@ -158,6 +218,7 @@ const Login: React.FC = () => {
               expand="block"
               color="secondary"
               onClick={() => history.push('/register')}
+              disabled={loading}
             >
               CREAR CUENTA GRATIS
             </IonButton>

@@ -3,23 +3,24 @@
 }
 
 .mood-toolbar {
-    --background: linear-gradient(180deg, rgba(10, 10, 10, 0.9) 0%, transparent 100%);
+    --background: linear-gradient(180deg, rgba(10, 10, 20, 0.95) 0%, transparent 100%);
     --border-width: 0;
     --padding-top: 8px;
     --padding-bottom: 8px;
 }
 
 .mood-playlist-container {
-    padding-bottom: 100px;
+    padding-bottom: 120px;
 }
 
 .mood-hero {
-    padding: 100px 24px 40px;
+    padding: 110px 24px 50px;
     text-align: center;
     position: relative;
     overflow: hidden;
 }
 
+/* Animated glow effect */
 .mood-hero::before {
     content: '';
     position: absolute;
@@ -27,58 +28,116 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+    background: 
+        radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.2) 0%, transparent 60%),
+        radial-gradient(circle at 30% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 70% 60%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+    animation: hero-glow 8s ease infinite;
+}
+
+@keyframes hero-glow {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
 }
 
 .mood-title {
-    font-size: 48px;
+    font-size: 52px;
     font-weight: 900;
-    color: var(--echobeat-white);
-    margin: 0 0 8px 0;
-    letter-spacing: -1px;
-    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    color: #fff;
+    margin: 0 0 12px 0;
+    letter-spacing: -1.5px;
+    text-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(255, 255, 255, 0.1);
     position: relative;
     z-index: 1;
+    animation: title-entrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+}
+
+@keyframes title-entrance {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .mood-subtitle {
-    font-size: 16px;
-    color: rgba(242, 242, 242, 0.9);
+    font-size: 17px;
+    color: rgba(242, 242, 242, 0.85);
     margin: 0;
     font-weight: 600;
     position: relative;
     z-index: 1;
+    animation: title-entrance 0.8s 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
 }
 
 .mood-actions {
-    padding: 24px 24px 32px;
+    padding: 24px 24px 36px;
 }
 
 .play-button-large {
     width: 100%;
-    height: 56px;
-    background: linear-gradient(135deg, #9A00FF 0%, #4B2E83 100%);
+    height: 60px;
+    background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 50%, #5B21B6 100%);
     border: none;
-    border-radius: 28px;
-    color: var(--echobeat-white);
-    font-size: 16px;
+    border-radius: 30px;
+    color: #fff;
+    font-size: 17px;
     font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 8px 24px rgba(154, 0, 255, 0.4);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 
+        0 10px 30px rgba(139, 92, 246, 0.5),
+        0 0 50px rgba(139, 92, 246, 0.25);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Shine effect */
+.play-button-large::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: left 0.6s ease;
+}
+
+.play-button-large:hover::before {
+    left: 100%;
 }
 
 .play-button-large:hover {
-    transform: scale(1.02);
-    box-shadow: 0 12px 32px rgba(154, 0, 255, 0.5);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 
+        0 15px 40px rgba(139, 92, 246, 0.6),
+        0 0 70px rgba(139, 92, 246, 0.4);
+}
+
+.play-button-large:active {
+    transform: translateY(-2px) scale(0.98);
 }
 
 .play-button-large ion-icon {
-    font-size: 24px;
+    font-size: 26px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .mood-track-list {

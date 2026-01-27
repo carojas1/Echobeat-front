@@ -42,7 +42,7 @@ class AudioService {
         pop: { bass: 2, mid: 4, treble: 2, midQ: 1 },
         rock: { bass: 4, mid: -2, treble: 4, midQ: 1 },
         vocal: { bass: -2, mid: 6, treble: 2, midQ: 1 },
-        karaoke: { bass: 4, mid: -40, treble: 4, midQ: 0.1 } // ⚡️ Nuclear option: -40dB with very wide Q (0.1)
+        karaoke: { bass: 4, mid: -40, treble: 4, midQ: 0.1 } 
     };
 
     constructor() {
@@ -65,6 +65,7 @@ class AudioService {
         if (this.isAudioGraphSetup) return;
 
         try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
             this.audioContext = new AudioContextClass();
             

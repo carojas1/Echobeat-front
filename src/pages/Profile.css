@@ -1,210 +1,147 @@
 /* ========================================
-   PROFILE PAGE - Premium Blue Design
+   PROFILE PAGE - LIMPIO Y MODERNO
    ======================================== */
 
 .profile-container {
     min-height: 100vh;
-    background: var(--background-dark);
-    padding-bottom: 80px;
+    background: #121212;
+    padding-bottom: 100px;
 }
 
-/* ===== Profile Header ===== */
+/* Header */
+ion-header ion-toolbar {
+    --background: #121212;
+    --color: #fff;
+    --border-color: transparent;
+}
+
+ion-back-button {
+    --color: #fff;
+}
+
+/* Profile Header */
 .profile-header {
-    position: relative;
-    padding: var(--spacing-2xl) var(--spacing-lg);
-    background: var(--gradient-primary);
-    border-bottom-left-radius: var(--spacing-2xl);
-    border-bottom-right-radius: var(--spacing-2xl);
+    padding: 32px 20px 40px;
     text-align: center;
-    animation: fadeIn 0.6s var(--transition-base);
-    box-shadow: var(--shadow-2xl);
-    overflow: hidden;
+    background: linear-gradient(180deg, #1a1a1a 0%, #121212 100%);
 }
 
-.profile-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="rgba(96,165,250,0.1)"/></svg>');
-    opacity: 0.3;
-    animation: float 20s infinite ease-in-out;
-}
-
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-20px);
-    }
-}
-
-/* ===== Avatar Section ===== */
+/* Avatar */
 .profile-avatar {
-    position: relative;
-    width: 120px;
-    height: 120px;
-    margin: 0 auto var(--spacing-lg);
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    border-radius: var(--radius-full);
-    border: 4px solid rgba(255, 255, 255, 0.2);
-    box-shadow: var(--shadow-xl);
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 20px;
+    background: #282828;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    transition: all var(--transition-base);
-    animation: scaleIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.profile-avatar:hover {
-    transform: scale(1.05) rotate(5deg);
-    border-color: var(--light-blue);
-    box-shadow: 0 0 0 8px rgba(96, 165, 250, 0.2), var(--shadow-2xl);
 }
 
 .profile-avatar ion-icon {
-    font-size: 60px;
-    color: var(--pale-blue);
+    font-size: 44px;
+    color: #888;
 }
 
 .avatar-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: var(--radius-full);
 }
 
-/* ===== Name & Email ===== */
+/* Name & Email */
 .profile-name {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 700;
-    color: var(--pale-blue);
-    margin-bottom: var(--spacing-sm);
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    letter-spacing: -0.5px;
+    color: #fff;
+    margin: 0 0 8px 0;
 }
 
 .profile-email {
     font-size: 14px;
-    color: rgba(241, 245, 249, 0.8);
-    margin-bottom: var(--spacing-xl);
+    color: #888;
+    margin: 0 0 28px 0;
 }
 
-/* ===== Stats Cards ===== */
+/* Stats */
 .profile-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--spacing-md);
-    margin-top: var(--spacing-xl);
-    animation: fadeInUp 0.6s 0.2s var(--transition-base) backwards;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
 }
 
 .stat-item {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    padding: var(--spacing-lg);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--glass-border);
-    transition: all var(--transition-base);
-    cursor: pointer;
-}
-
-.stat-item:hover {
-    background: rgba(59, 130, 246, 0.15);
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--accent-blue);
-}
-
-.stat-item:active {
-    transform: translateY(-2px) scale(0.98);
+    background: #1e1e1e;
+    padding: 16px 24px;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 90px;
 }
 
 .stat-value {
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--pale-blue);
-    margin-bottom: var(--spacing-xs);
-    font-variant-numeric: tabular-nums;
+    font-size: 24px;
+    margin: 0 0 4px 0;
 }
 
 .stat-label {
     font-size: 12px;
-    color: rgba(241, 245, 249, 0.7);
+    color: #888;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    font-weight: 600;
+    font-weight: 500;
+    margin: 0;
 }
 
-/* ===== Menu Section ===== */
+/* Section */
 .profile-section {
-    padding: var(--spacing-xl) var(--spacing-lg);
-    animation: fadeInUp 0.6s 0.4s var(--transition-base) backwards;
+    padding: 24px 20px;
 }
 
 .section-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-lg);
-    letter-spacing: -0.5px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 0 16px 4px;
 }
 
+/* Menu */
 .profile-menu {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-sm);
+    gap: 8px;
 }
 
-/* ===== Menu Items ===== */
 .menu-item {
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-lg);
-    background: var(--surface);
-    border-radius: var(--radius-lg);
-    transition: all var(--transition-base);
+    gap: 16px;
+    padding: 16px;
+    background: #1e1e1e;
+    border-radius: 12px;
     cursor: pointer;
-    border: 1px solid transparent;
-    min-height: 72px;
-    /* Touch target */
+    transition: background 0.2s;
 }
 
 .menu-item:hover {
-    background: var(--surface-hover);
-    transform: translateX(4px);
-    border-color: var(--accent-blue);
-    box-shadow: var(--shadow-md);
-}
-
-.menu-item:active {
-    transform: translateX(2px) scale(0.99);
+    background: #282828;
 }
 
 .menu-icon {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--gradient-accent);
-    border-radius: var(--radius-md);
-    flex-shrink: 0;
-    box-shadow: var(--shadow-sm);
+    background: #282828;
+    border-radius: 10px;
 }
 
 .menu-icon ion-icon {
-    font-size: 24px;
-    color: white;
+    font-size: 22px;
+    color: #fff;
 }
 
 .menu-content {
@@ -213,179 +150,270 @@
 
 .menu-title {
     font-size: 16px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-xs);
+    font-weight: 500;
+    color: #fff;
+    margin: 0 0 4px 0;
 }
 
 .menu-subtitle {
     font-size: 13px;
-    color: var(--text-secondary);
-    line-height: 1.4;
+    color: #666;
+    margin: 0;
 }
 
-.menu-arrow {
-    color: var(--text-muted);
+.menu-action {
+    color: #666;
+}
+
+.menu-action ion-icon {
     font-size: 20px;
-    transition: all var(--transition-fast);
 }
 
-.menu-item:hover .menu-arrow {
-    color: var(--accent-blue);
-    transform: translateX(4px);
+/* Toggle */
+ion-toggle {
+    --background: #333;
+    --background-checked: #1DB954;
+    --handle-background: #fff;
+    --handle-background-checked: #fff;
 }
 
-/* ===== Settings Panel ===== */
+/* Settings Panel */
 .settings-panel {
-    margin-top: var(--spacing-lg);
-    padding: var(--spacing-lg);
-    background: var(--surface);
-    border-radius: var(--radius-lg);
-    border-left: 4px solid var(--accent-blue);
-    animation: fadeIn 0.3s var(--transition-base);
-    box-shadow: var(--shadow-md);
+    margin-top: 16px;
+    padding: 20px;
+    background: #1e1e1e;
+    border-radius: 12px;
 }
 
-.setting-item {
+.setting-header {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.setting-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 64px;
+    padding: 12px 0;
+    border-bottom: 1px solid #282828;
+}
+
+.setting-row:last-child {
+    border-bottom: none;
+}
+
+.setting-row-col {
+    padding: 12px 0;
+    border-bottom: 1px solid #282828;
+}
+
+.setting-row-col:last-child {
+    border-bottom: none;
 }
 
 .setting-info {
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
-    flex: 1;
+    gap: 12px;
+    color: #fff;
+    font-size: 15px;
 }
 
-.setting-icon {
-    font-size: 28px;
-    color: var(--accent-blue);
+.setting-icon-small {
+    font-size: 20px;
+    color: #888;
 }
 
-.setting-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-xs);
+/* Volume Slider */
+.volume-slider-settings {
+    --bar-background: #333;
+    --bar-background-active: #1DB954;
+    --knob-background: #fff;
+    --knob-size: 16px;
+    --bar-height: 4px;
+    margin-top: 12px;
+    padding: 0;
 }
 
-.setting-description {
-    font-size: 13px;
-    color: var(--text-secondary);
-}
-
-.theme-toggle {
-    --handle-width: 24px;
-    --handle-height: 24px;
-    --background: var(--surface-hover);
-    --background-checked: var(--gradient-accent);
-}
-
-/* ===== Logout Button ===== */
+/* Logout Button */
 .logout-button {
-    margin: var(--spacing-xl) var(--spacing-lg);
+    margin: 32px 20px;
     --background: transparent;
     --background-hover: rgba(239, 68, 68, 0.1);
-    --border-radius: var(--radius-lg);
-    --border-width: 2px;
-    --border-color: rgba(239, 68, 68, 0.3);
-    --color: #EF4444;
+    --border-radius: 12px;
+    --border-width: 1px;
+    --border-style: solid;
+    --border-color: #333;
+    --color: #e74c3c;
     font-weight: 600;
-    height: 56px;
+    height: 52px;
     text-transform: none;
-    letter-spacing: 0.5px;
-    transition: all var(--transition-base);
-    animation: fadeInUp 0.6s 0.6s var(--transition-base) backwards;
 }
 
 .logout-button:hover {
-    --border-color: #EF4444;
-    --background: rgba(239, 68, 68, 0.15);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(239, 68, 68, 0.2);
-}
-
-.logout-button:active {
-    transform: translateY(0) scale(0.98);
+    --border-color: #e74c3c;
 }
 
 .logout-button ion-icon {
     font-size: 20px;
-    margin-right: var(--spacing-sm);
+    margin-right: 8px;
 }
 
-/* ===== Mobile Optimizations ===== */
-@media (max-width: 768px) {
-    .profile-header {
-        padding: var(--spacing-xl) var(--spacing-md);
-        border-bottom-left-radius: var(--spacing-xl);
-        border-bottom-right-radius: var(--spacing-xl);
-    }
-
-    .profile-avatar {
-        width: 100px;
-        height: 100px;
-    }
-
-    .profile-avatar ion-icon {
-        font-size: 50px;
-    }
-
-    .profile-name {
-        font-size: 24px;
-    }
-
-    .profile-stats {
-        gap: var(--spacing-sm);
-    }
-
-    .stat-item {
-        padding: var(--spacing-md);
-    }
-
-    .stat-value {
-        font-size: 24px;
-    }
-
-    .stat-label {
-        font-size: 11px;
-    }
-
-    .menu-icon {
-        width: 40px;
-        height: 40px;
-    }
-
-    .menu-icon ion-icon {
-        font-size: 20px;
-    }
+/* Privacy Modal */
+.privacy-modal {
+    --background: #1a1a1a;
 }
 
-/* ===== Dark/Light Theme Adjustments ===== */
+.privacy-content {
+    text-align: center;
+    padding: 24px;
+}
+
+.privacy-icon-large {
+    font-size: 64px;
+    color: #1DB954;
+    margin-bottom: 20px;
+}
+
+.privacy-content h3 {
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 24px;
+}
+
+.privacy-content ion-list {
+    background: transparent;
+}
+
+.privacy-content ion-item {
+    --background: #1e1e1e;
+    --color: #fff;
+    --border-color: transparent;
+    border-radius: 12px;
+    margin-bottom: 8px;
+}
+
+.privacy-content ion-item ion-icon {
+    color: #888;
+    font-size: 22px;
+}
+
+.privacy-content ion-label h2 {
+    color: #888 !important;
+    font-size: 12px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.privacy-content ion-label p {
+    color: #fff !important;
+    font-size: 15px !important;
+}
+
+.mono-text {
+    font-family: monospace;
+    font-size: 12px !important;
+    word-break: break-all;
+}
+
+/* Animation */
+.fade-in {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Light Theme */
+.light-theme .profile-container {
+    background: #f5f5f5;
+}
+
 .light-theme .profile-header {
-    background: var(--gradient-primary);
-    box-shadow: none;
+    background: linear-gradient(180deg, #e8e8e8 0%, #f5f5f5 100%);
+}
+
+.light-theme .profile-avatar {
+    background: #ddd;
+}
+
+.light-theme .profile-avatar ion-icon {
+    color: #666;
+}
+
+.light-theme .profile-name {
+    color: #1a1a1a;
+}
+
+.light-theme .profile-email {
+    color: #666;
 }
 
 .light-theme .stat-item {
-    background: rgba(37, 99, 235, 0.05);
-    border-color: rgba(37, 99, 235, 0.1);
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.light-theme .stat-label {
+    color: #666;
+}
+
+.light-theme .section-title {
+    color: #666;
 }
 
 .light-theme .menu-item {
-    background: white;
-    border: 1px solid rgba(148, 163, 184, 0.1);
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .light-theme .menu-item:hover {
-    background: var(--surface);
-    border-color: var(--accent-blue);
+    background: #f0f0f0;
+}
+
+.light-theme .menu-icon {
+    background: #e8e8e8;
+}
+
+.light-theme .menu-icon ion-icon {
+    color: #333;
+}
+
+.light-theme .menu-title {
+    color: #1a1a1a;
+}
+
+.light-theme .menu-subtitle {
+    color: #888;
 }
 
 .light-theme .settings-panel {
-    background: white;
-    border-color: var(--accent-blue);
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.light-theme .setting-row,
+.light-theme .setting-row-col {
+    border-color: #e8e8e8;
+}
+
+.light-theme .setting-info {
+    color: #1a1a1a;
+}
+
+.light-theme .logout-button {
+    --border-color: #ddd;
+}
+
+.light-theme ion-header ion-toolbar {
+    --background: #f5f5f5;
+    --color: #1a1a1a;
+}
+
+.light-theme ion-toggle {
+    --background: #ddd;
 }

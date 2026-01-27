@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useMemo, useRef, useState, useCallback, useEffect } from "react";
 
 // ============ TYPES ============
-type EQ = { bass: number; mid: number; treble: number };
+type EQ = { bass: number; mid: number; treble: number; midQ?: number };
 
 export interface Song {
   id: string;
@@ -18,11 +18,13 @@ interface PlayerContextType {
   isPlaying: boolean;
   progress: number;
   duration: number;
+  volume: number;
   eq: EQ;
   playSong: (song: Song) => Promise<void>;
   togglePlayPause: () => Promise<void>;
   seek: (position: number) => void;
   setEQ: (next: Partial<EQ>) => void;
+  setVolume: (vol: number) => void;
   showNowPlaying: boolean;
   setShowNowPlaying: (show: boolean) => void;
 }
@@ -50,7 +52,8 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [eq, setEqState] = useState<EQ>({ bass: 0, mid: 0, treble: 0 });
+  const [volume, setVolumeState] = useState(1);
+  const [eq, setEqState] = useState<EQ>({ bass: 0, mid: 0, treble: 0, midQ: 1 });
   const [showNowPlaying, setShowNowPlaying] = useState(false);
 
   // ✅ Token anti-race para playSong
@@ -62,9 +65,10 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       audioRef.current = new Audio();
       audioRef.current.crossOrigin = "anonymous";
       audioRef.current.preload = "auto";
+      audioRef.current.volume = volume;
     }
     return audioRef.current;
-  }, []);
+  }, [volume]);
 
   // Setup Web Audio API graph with EQ
   const ensureGraph = useCallback(() => {
@@ -92,7 +96,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       midRef.current = ac.createBiquadFilter();
       midRef.current.type = "peaking";
       midRef.current.frequency.value = 1000;
-      midRef.current.Q.value = 1;
+      midRef.current.Q.value = eq.midQ || 1;
       midRef.current.gain.value = eq.mid;
     }
     if (!trebleRef.current) {
@@ -110,7 +114,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     trebleRef.current.connect(ac.destination);
 
     return { audio, ac };
-  }, [ensureAudio, eq.bass, eq.mid, eq.treble]);
+  }, [ensureAudio, eq.bass, eq.mid, eq.treble, eq.midQ]);
 
   // Update progress
   useEffect(() => {
@@ -143,10 +147,22 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setEqState((prev) => {
       const merged = { ...prev, ...next };
       if (bassRef.current) bassRef.current.gain.value = merged.bass;
-      if (midRef.current) midRef.current.gain.value = merged.mid;
+      if (midRef.current) {
+          midRef.current.gain.value = merged.mid;
+          if (merged.midQ !== undefined) midRef.current.Q.value = merged.midQ;
+      }
       if (trebleRef.current) trebleRef.current.gain.value = merged.treble;
       return merged;
     });
+  }, []);
+
+  // Set Volume
+  const setVolume = useCallback((vol: number) => {
+      const v = Math.max(0, Math.min(1, vol));
+      setVolumeState(v);
+      if (audioRef.current) {
+          audioRef.current.volume = v;
+      }
   }, []);
 
   // ✅ Safe play that ignores AbortError
@@ -236,15 +252,17 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       isPlaying,
       progress,
       duration,
+      volume,
       eq,
       playSong,
       togglePlayPause,
       seek,
       setEQ,
+      setVolume,
       showNowPlaying,
       setShowNowPlaying,
     }),
-    [currentSong, isPlaying, progress, duration, eq, playSong, togglePlayPause, seek, setEQ, showNowPlaying],
+    [currentSong, isPlaying, progress, duration, volume, eq, playSong, togglePlayPause, seek, setEQ, setVolume, showNowPlaying],
   );
 
   return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>;

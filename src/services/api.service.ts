@@ -1,8 +1,8 @@
 // Backend API Configuration
 import { getAuth } from "firebase/auth";
-import { authFetch } from "./authFetch";
+import { authFetch } from "./auth-fetch";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:1753/api/v1";
+const API_URL = import.meta.env.VITE_API_URL || "https://echobeatback-production.up.railway.app/api/v1";
 
 // ==================== AUTH ====================
 
@@ -152,7 +152,7 @@ export async function uploadSong(formData: FormData): Promise<Song> {
   const timeout = window.setTimeout(() => controller.abort(), 60000); // 60s
 
   try {
-    const res = await authFetch("http://localhost:1753/api/v1/songs/upload", {
+    const res = await authFetch("https://echobeatback-production.up.railway.app/api/v1/songs/upload", {
       method: "POST",
       body: formData,
       signal: controller.signal,

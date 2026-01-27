@@ -13,63 +13,63 @@ interface Mood {
   gradient: string;
 }
 
-// Mood categories - sin canciones precargadas
+// Mood categories - diseño minimalista oscuro
 const MOODS: Mood[] = [
   {
     id: "feliz",
     name: "Feliz",
     description: "Canciones alegres",
     icon: "😊",
-    gradient: "linear-gradient(135deg, #FCD34D 0%, #F59E0B 100%)",
+    gradient: "linear-gradient(145deg, rgba(252, 211, 77, 0.15) 0%, rgba(20, 20, 30, 0.95) 40%)",
   },
   {
     id: "triste",
     name: "Triste",
     description: "Música emotiva",
     icon: "😢",
-    gradient: "linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%)",
+    gradient: "linear-gradient(145deg, rgba(96, 165, 250, 0.15) 0%, rgba(20, 20, 30, 0.95) 40%)",
   },
   {
     id: "energico",
     name: "Enérgico",
     description: "Ritmos potentes",
     icon: "⚡",
-    gradient: "linear-gradient(135deg, #F472B6 0%, #EC4899 100%)",
+    gradient: "linear-gradient(145deg, rgba(244, 114, 182, 0.15) 0%, rgba(20, 20, 30, 0.95) 40%)",
   },
   {
     id: "relajado",
     name: "Relajado",
     description: "Melodías suaves",
     icon: "🌙",
-    gradient: "linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%)",
+    gradient: "linear-gradient(145deg, rgba(167, 139, 250, 0.15) 0%, rgba(20, 20, 30, 0.95) 40%)",
   },
   {
     id: "enfocado",
     name: "Enfocado",
     description: "Para concentrarte",
     icon: "🎯",
-    gradient: "linear-gradient(135deg, #34D399 0%, #10B981 100%)",
+    gradient: "linear-gradient(145deg, rgba(52, 211, 153, 0.15) 0%, rgba(20, 20, 30, 0.95) 40%)",
   },
   {
     id: "romantico",
     name: "Romántico",
     description: "Canciones de amor",
     icon: "❤️",
-    gradient: "linear-gradient(135deg, #FB7185 0%, #F43F5E 100%)",
+    gradient: "linear-gradient(145deg, rgba(251, 113, 133, 0.15) 0%, rgba(20, 20, 30, 0.95) 40%)",
   },
   {
     id: "motivador",
     name: "Motivador",
     description: "Alcanza tus metas",
     icon: "🔥",
-    gradient: "linear-gradient(135deg, #FBBF24 0%, #F97316 100%)",
+    gradient: "linear-gradient(145deg, rgba(251, 191, 36, 0.15) 0%, rgba(20, 20, 30, 0.95) 40%)",
   },
   {
     id: "nostalgico",
     name: "Nostálgico",
     description: "Recuerdos del pasado",
     icon: "🌅",
-    gradient: "linear-gradient(135deg, #818CF8 0%, #6366F1 100%)",
+    gradient: "linear-gradient(145deg, rgba(129, 140, 248, 0.15) 0%, rgba(20, 20, 30, 0.95) 40%)",
   },
 ];
 

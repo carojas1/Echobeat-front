@@ -1,0 +1,384 @@
+/* ========================================
+   CUSTOM MOOD PLAYLIST - ELEGANTE
+   ======================================== */
+
+.custom-mood-container {
+    min-height: 100vh;
+    background: #121212;
+    padding-bottom: 100px;
+}
+
+/* Loading & Error */
+.custom-mood-loading,
+.custom-mood-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #121212;
+    color: #fff;
+}
+
+.custom-mood-loading ion-spinner {
+    color: #1DB954;
+}
+
+.custom-mood-error button {
+    margin-top: 16px;
+    padding: 14px 32px;
+    background: #1DB954;
+    border: none;
+    border-radius: 30px;
+    color: #000;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.custom-mood-error button:hover {
+    transform: scale(1.05);
+    background: #1ed760;
+}
+
+/* Hero Section */
+.mood-hero {
+    padding: 56px 20px 28px;
+}
+
+.back-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 28px;
+    transition: background 0.2s;
+}
+
+.back-btn:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.back-btn ion-icon {
+    font-size: 22px;
+}
+
+.mood-info {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.mood-emoji {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.mood-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 8px 0;
+}
+
+.mood-subtitle {
+    font-size: 15px;
+    color: #888;
+    margin: 0;
+}
+
+/* Action Buttons */
+.mood-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.play-btn-large {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.play-btn-large:hover:not(:disabled) {
+    transform: scale(1.08);
+}
+
+.play-btn-large:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.play-btn-large ion-icon {
+    font-size: 28px;
+    color: #000;
+    margin-left: 3px;
+}
+
+.shuffle-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #282828;
+    border: none;
+    color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.shuffle-btn:hover:not(:disabled) {
+    color: #fff;
+    background: #333;
+}
+
+.shuffle-btn:disabled {
+    opacity: 0.4;
+}
+
+.shuffle-btn ion-icon {
+    font-size: 22px;
+}
+
+/* Songs Section */
+.songs-section {
+    padding: 0 20px;
+}
+
+.empty-songs {
+    text-align: center;
+    padding: 60px 20px;
+    color: #888;
+}
+
+.empty-songs ion-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.empty-songs p {
+    font-size: 18px;
+    margin: 0 0 8px 0;
+    color: #fff;
+}
+
+.empty-songs span {
+    font-size: 14px;
+}
+
+/* Songs List */
+.songs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.song-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.song-row:hover {
+    background: #1a1a1a;
+}
+
+.song-row.playing {
+    background: #1a1a1a;
+}
+
+.song-number {
+    width: 20px;
+    text-align: right;
+    font-size: 14px;
+    color: #666;
+    flex-shrink: 0;
+}
+
+.song-row .song-cover {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #282828;
+    position: relative;
+}
+
+.song-row .song-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.song-row .cover-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+}
+
+/* Now Playing Indicator */
+.now-playing-indicator {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+.now-playing-indicator .bar {
+    width: 3px;
+    height: 14px;
+    background: #1DB954;
+    border-radius: 2px;
+    animation: equalize 0.5s ease-in-out infinite alternate;
+}
+
+.now-playing-indicator .bar:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.now-playing-indicator .bar:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+@keyframes equalize {
+    0% { height: 5px; }
+    100% { height: 16px; }
+}
+
+.song-row .song-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.song-row .song-info h4 {
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0 0 4px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.song-row .song-info p {
+    font-size: 13px;
+    color: #888;
+    margin: 0;
+}
+
+.remove-song-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.song-row:hover .remove-song-btn {
+    opacity: 1;
+}
+
+.remove-song-btn:hover {
+    color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.remove-song-btn ion-icon {
+    font-size: 18px;
+}
+
+/* ===== TEMA CLARO ===== */
+.light-theme .custom-mood-container {
+    background: #f5f5f5;
+}
+
+.light-theme .custom-mood-loading,
+.light-theme .custom-mood-error {
+    background: #f5f5f5;
+    color: #1a1a1a;
+}
+
+.light-theme .back-btn {
+    background: rgba(0, 0, 0, 0.1);
+    color: #1a1a1a;
+}
+
+.light-theme .back-btn:hover {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.light-theme .mood-title {
+    color: #1a1a1a;
+}
+
+.light-theme .mood-subtitle {
+    color: #666;
+}
+
+.light-theme .shuffle-btn {
+    background: #e8e8e8;
+    color: #666;
+}
+
+.light-theme .shuffle-btn:hover:not(:disabled) {
+    background: #ddd;
+    color: #1a1a1a;
+}
+
+.light-theme .empty-songs p {
+    color: #1a1a1a;
+}
+
+.light-theme .song-row:hover {
+    background: #e8e8e8;
+}
+
+.light-theme .song-row.playing {
+    background: #e8e8e8;
+}
+
+.light-theme .song-row .song-cover {
+    background: #e0e0e0;
+}
+
+.light-theme .song-row .song-info h4 {
+    color: #1a1a1a;
+}
+
+.light-theme .song-row .song-info p {
+    color: #666;
+}

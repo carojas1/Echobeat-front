@@ -697,6 +697,7 @@
     font-size: 18px;
     font-weight: 800;
     background: linear-gradient(to right, #fff, #a5b4fc);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     letter-spacing: 0.5px;

@@ -17,11 +17,31 @@ const Register: React.FC = () => {
     const [toastMessage, setToastMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const saveUserData = async (user: any) => {
+        try {
+            const idToken = await user.getIdToken(true);
+            localStorage.setItem('fb_token', idToken);
+            localStorage.setItem('user_email', user.email || '');
+            localStorage.setItem('user_name', user.displayName || '');
+            localStorage.setItem('user_photo', user.photoURL || '');
+            return true;
+        } catch (error) {
+            console.error('Error guardando datos:', error);
+            return false;
+        }
+    };
+
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!name || !email || !password || !confirmPassword) {
             setToastMessage('Completa todos los campos');
+            setShowToast(true);
+            return;
+        }
+
+        if (password.length < 6) {
+            setToastMessage('La contraseña debe tener al menos 6 caracteres');
             setShowToast(true);
             return;
         }
@@ -36,24 +56,20 @@ const Register: React.FC = () => {
         try {
             const result = await createUserWithEmailAndPassword(auth, email, password);
             await updateProfile(result.user, { displayName: name });
-            
-            // 🔥 Get Firebase ID Token and store it
-            const idToken = await result.user.getIdToken(true);
-            localStorage.setItem('fb_token', idToken);
-            localStorage.setItem('user_email', result.user.email || '');
+            await saveUserData(result.user);
 
-            setToastMessage('✅ Cuenta creada exitosamente');
+            setToastMessage('✅ ¡Cuenta creada exitosamente!');
             setShowToast(true);
-            setTimeout(() => history.push('/main/home'), 1000);
+            setTimeout(() => history.replace('/main/home'), 1000);
         } catch (error: unknown) {
             console.error('Register error:', error);
             let msg = 'Error al registrar';
             if (error && typeof error === 'object' && 'code' in error) {
-                if (error.code === 'auth/email-already-in-use') {
-                    msg = '⚠️ El correo ya está registrado. Ve a LOGIN para iniciar sesión.';
-                }
-                if (error.code === 'auth/weak-password') msg = 'La contraseña debe tener al menos 6 caracteres';
-                if (error.code === 'auth/invalid-email') msg = 'Email inválido';
+                const code = (error as any).code;
+                if (code === 'auth/email-already-in-use') msg = 'Este correo ya está registrado';
+                else if (code === 'auth/weak-password') msg = 'Contraseña muy débil (mínimo 6 caracteres)';
+                else if (code === 'auth/invalid-email') msg = 'Correo electrónico inválido';
+                else if (code === 'auth/network-request-failed') msg = 'Sin conexión a internet';
             }
             setToastMessage(msg);
             setShowToast(true);
@@ -66,18 +82,20 @@ const Register: React.FC = () => {
         setLoading(true);
         try {
             const result = await signInWithPopup(auth, googleProvider);
-            
-            // 🔥 Get Firebase ID Token and store it
-            const idToken = await result.user.getIdToken(true);
-            localStorage.setItem('fb_token', idToken);
-            localStorage.setItem('user_email', result.user.email || '');
+            await saveUserData(result.user);
 
-            setToastMessage('✅ Registro con Google exitoso');
+            setToastMessage('✅ ¡Registro con Google exitoso!');
             setShowToast(true);
-            setTimeout(() => history.push('/main/home'), 500);
+            setTimeout(() => history.replace('/main/home'), 500);
         } catch (error: unknown) {
             console.error('Google register error:', error);
-            setToastMessage('Error registrando con Google');
+            let msg = 'Error registrando con Google';
+            if (error && typeof error === 'object' && 'code' in error) {
+                const code = (error as any).code;
+                if (code === 'auth/popup-closed-by-user') msg = 'Registro cancelado';
+                else if (code === 'auth/network-request-failed') msg = 'Sin conexión a internet';
+            }
+            setToastMessage(msg);
             setShowToast(true);
         } finally {
             setLoading(false);
@@ -118,6 +136,7 @@ const Register: React.FC = () => {
                                     onChange={e => setName(e.target.value)}
                                     placeholder="Tu nombre"
                                     disabled={loading}
+                                    autoComplete="name"
                                 />
                             </div>
 
@@ -129,6 +148,7 @@ const Register: React.FC = () => {
                                     onChange={e => setEmail(e.target.value)}
                                     placeholder="tu@email.com"
                                     disabled={loading}
+                                    autoComplete="email"
                                 />
                             </div>
 
@@ -140,6 +160,7 @@ const Register: React.FC = () => {
                                     onChange={e => setPassword(e.target.value)}
                                     placeholder="Mínimo 6 caracteres"
                                     disabled={loading}
+                                    autoComplete="new-password"
                                 />
                             </div>
 
@@ -151,6 +172,7 @@ const Register: React.FC = () => {
                                     onChange={e => setConfirmPassword(e.target.value)}
                                     placeholder="Repite tu contraseña"
                                     disabled={loading}
+                                    autoComplete="new-password"
                                 />
                             </div>
 
@@ -180,7 +202,14 @@ const Register: React.FC = () => {
                     </div>
                 </div>
 
-                <IonToast isOpen={showToast} onDidDismiss={() => setShowToast(false)} message={toastMessage} duration={3000} position="top" color={toastMessage.includes('✅') ? 'success' : 'danger'} />
+                <IonToast 
+                    isOpen={showToast} 
+                    onDidDismiss={() => setShowToast(false)} 
+                    message={toastMessage} 
+                    duration={3000} 
+                    position="top" 
+                    color={toastMessage.includes('✅') ? 'success' : 'danger'} 
+                />
             </IonContent>
         </IonPage>
     );
