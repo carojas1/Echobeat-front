@@ -6,6 +6,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { usePlayer } from '../contexts/PlayerContext';
 import { auth } from '../firebase/config';
 import api from '../services/api.service';
+import SupportChat from '../components/SupportChat';
 import './Profile.css';
 
 interface UserProfile {
@@ -24,6 +25,7 @@ const Profile: React.FC = () => {
     // UI State
     const [showSettings, setShowSettings] = useState(false);
     const [showPrivacy, setShowPrivacy] = useState(false);
+    const [showSupportChat, setShowSupportChat] = useState(false);
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
     
     const [user, setUser] = useState<UserProfile | null>(null);
@@ -63,7 +65,7 @@ const Profile: React.FC = () => {
     };
 
     const handleContactSupport = () => {
-        window.open('mailto:carojas@sudamericnao.edu.ec?subject=Soporte%20EchoBeat', '_system');
+        setShowSupportChat(true);
     };
 
     const handleMenuClick = (id: number) => {
@@ -105,15 +107,7 @@ const Profile: React.FC = () => {
 
                         <div className="profile-stats">
                             <div className="stat-item">
-                                <p className="stat-value">0</p>
-                                <p className="stat-label">Subidas</p>
-                            </div>
-                            <div className="stat-item">
-                                <p className="stat-value">0</p>
-                                <p className="stat-label">Reproducciones</p>
-                            </div>
-                            <div className="stat-item">
-                                <p className="stat-value">100</p>
+                                <p className="stat-value">10</p>
                                 <p className="stat-label">Créditos</p>
                             </div>
                         </div>
@@ -231,6 +225,12 @@ const Profile: React.FC = () => {
                 </IonModal>
 
             </IonContent>
+
+            {/* Support Chat */}
+            <SupportChat 
+                isOpen={showSupportChat} 
+                onClose={() => setShowSupportChat(false)} 
+            />
         </IonPage>
     );
 };

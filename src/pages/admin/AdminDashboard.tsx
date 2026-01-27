@@ -37,6 +37,7 @@ import {
   checkmarkCircle,
   play,
   ban,
+  chatbubbles,
 } from "ionicons/icons";
 import { useHistory } from "react-router-dom";
 import { auth } from "../../firebase/config";
@@ -76,7 +77,7 @@ const AdminDashboard: React.FC = () => {
   const { playSong } = usePlayer();
 
   const [activeTab, setActiveTab] = useState<
-    "overview" | "users" | "songs" | "settings"
+    "overview" | "users" | "songs" | "support" | "settings"
   >("overview");
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -85,14 +86,32 @@ const AdminDashboard: React.FC = () => {
   // Data - Start completely empty
   const [users, setUsers] = useState<User[]>([]);
   const [songs, setSongs] = useState<Song[]>([]);
+  
+  // Support messages from localStorage
+  interface SupportMessage {
+    id: string;
+    text: string;
+    sender: 'user' | 'support';
+    timestamp: number;
+  }
+  const [supportMessages, setSupportMessages] = useState<SupportMessage[]>([]);
 
-  // 🧹 CLEANUP: Remove mock data on mount
+  // 🧹 CLEANUP: Remove mock data on mount & load support messages
   useEffect(() => {
     localStorage.removeItem("echobeat_songs");
     localStorage.removeItem("echobeat_users");
     localStorage.removeItem("token"); // Old backend JWT
     localStorage.removeItem("user"); // Old backend user
-  }, []);
+    
+    // Load support messages
+    const storedMessages = localStorage.getItem('support_chat_messages');
+    if (storedMessages) {
+      const msgs = JSON.parse(storedMessages);
+      // Filter only user messages
+      const userMsgs = msgs.filter((m: SupportMessage) => m.sender === 'user');
+      setSupportMessages(userMsgs);
+    }
+  }, [activeTab]);
 
   // 🔥 BACKEND: Load data from backend on mount
   useEffect(() => {
@@ -272,7 +291,12 @@ const AdminDashboard: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar className="admin-toolbar">
-          <IonTitle>🛡️ Panel de Administración</IonTitle>
+          <IonTitle>
+            <div className="admin-title">
+              <img src="/logo.png" alt="EchoBeat" className="admin-logo" />
+              <span>Admin</span>
+            </div>
+          </IonTitle>
           <IonButton slot="end" fill="clear" onClick={handleLogout}>
             <IonIcon icon={logOut} />
           </IonButton>
@@ -301,6 +325,10 @@ const AdminDashboard: React.FC = () => {
           <IonSegmentButton value="songs">
             <IonIcon icon={musicalNotes} />
             <IonLabel>Canciones</IonLabel>
+          </IonSegmentButton>
+          <IonSegmentButton value="support">
+            <IonIcon icon={chatbubbles} />
+            <IonLabel>Soporte</IonLabel>
           </IonSegmentButton>
           <IonSegmentButton value="settings">
             <IonIcon icon={settings} />
@@ -377,54 +405,62 @@ const AdminDashboard: React.FC = () => {
         {activeTab === "users" && (
           <div className="admin-users">
             <h2>Gestión de Usuarios ({users.length})</h2>
-            <IonList>
-              {users.map((user) => (
-                <IonItem key={user.id} className="user-item">
-                  <IonAvatar slot="start">
-                    <IonIcon
-                      icon={personCircle}
-                      style={{
-                        fontSize: "40px",
-                        color: user.role === "ADMIN" ? "#f59e0b" : "#3b82f6",
-                      }}
-                    />
-                  </IonAvatar>
-                  <IonLabel>
-                    <h2>{user.displayName}</h2>
-                    <p>{user.email}</p>
-                    <p>
-                      Registrado: {formatDate(user.createdAt)}{" "}
-                      {user.role === "ADMIN" && "• 👑 Admin"}
-                    </p>
-                  </IonLabel>
-                  <IonBadge
-                    color={user.status === "ACTIVE" ? "success" : "danger"}
-                    slot="end"
-                  >
-                    {user.status === "ACTIVE" ? "Activo" : "Bloqueado"}
-                  </IonBadge>
-                  <IonButton
-                    fill="clear"
-                    onClick={() => toggleUserStatus(user.id)}
-                    slot="end"
-                  >
-                    <IonIcon
-                      icon={user.status === "ACTIVE" ? ban : checkmarkCircle}
-                    />
-                  </IonButton>
-                  {user.role !== "ADMIN" && (
-                    <IonButton
-                      fill="clear"
-                      className="delete-btn"
-                      onClick={() => handleDeleteUser(user.id)}
+            {users.length === 0 ? (
+              <div className="empty-state-container">
+                <IonIcon icon={people} className="empty-icon" />
+                <h3>No hay usuarios registrados</h3>
+                <p>Los usuarios aparecerán aquí cuando se registren en la app</p>
+              </div>
+            ) : (
+              <IonList className="users-list">
+                {users.map((user) => (
+                  <IonItem key={user.id} className="user-item">
+                    <IonAvatar slot="start">
+                      <IonIcon
+                        icon={personCircle}
+                        style={{
+                          fontSize: "40px",
+                          color: user.role === "ADMIN" ? "#f59e0b" : "#3b82f6",
+                        }}
+                      />
+                    </IonAvatar>
+                    <IonLabel>
+                      <h2>{user.displayName}</h2>
+                      <p>{user.email}</p>
+                      <p>
+                        Registrado: {formatDate(user.createdAt)}{" "}
+                        {user.role === "ADMIN" && "• 👑 Admin"}
+                      </p>
+                    </IonLabel>
+                    <IonBadge
+                      color={user.status === "ACTIVE" ? "success" : "danger"}
                       slot="end"
                     >
-                      <IonIcon icon={trash} />
+                      {user.status === "ACTIVE" ? "Activo" : "Bloqueado"}
+                    </IonBadge>
+                    <IonButton
+                      fill="clear"
+                      onClick={() => toggleUserStatus(user.id)}
+                      slot="end"
+                    >
+                      <IonIcon
+                        icon={user.status === "ACTIVE" ? ban : checkmarkCircle}
+                      />
                     </IonButton>
-                  )}
-                </IonItem>
-              ))}
-            </IonList>
+                    {user.role !== "ADMIN" && (
+                      <IonButton
+                        fill="clear"
+                        className="delete-btn"
+                        onClick={() => handleDeleteUser(user.id)}
+                        slot="end"
+                      >
+                        <IonIcon icon={trash} />
+                      </IonButton>
+                    )}
+                  </IonItem>
+                ))}
+              </IonList>
+            )}
           </div>
         )}
 
@@ -432,54 +468,40 @@ const AdminDashboard: React.FC = () => {
         {activeTab === "songs" && (
           <div className="admin-songs">
             <h2>
-              Gestión de Canciones ({Array.isArray(songs) ? songs.length : 0})
+              Canciones ({Array.isArray(songs) ? songs.length : 0})
             </h2>
             {!Array.isArray(songs) || songs.length === 0 ? (
-              <div
-                style={{
-                  textAlign: "center",
-                  padding: "60px 20px",
-                  opacity: 0.6,
-                }}
-              >
-                <p style={{ fontSize: "48px", marginBottom: "16px" }}>🎵</p>
-                <p style={{ fontSize: "18px", marginBottom: "8px" }}>
-                  No hay canciones subidas
-                </p>
-                <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.6)" }}>
-                  Usa el botón + para subir tu primera canción
-                </p>
+              <div className="empty-state-container">
+                <IonIcon icon={musicalNotes} className="empty-icon" />
+                <h3>No hay canciones</h3>
+                <p>Usa el botón + para subir canciones</p>
               </div>
             ) : (
-              <IonList>
+              <div className="songs-grid">
                 {songs.map((song) => (
-                  <IonItem key={song.id} className="song-item">
-                    <IonIcon icon={musicalNotes} slot="start" />
-                    <IonLabel>
-                      <h2>{song.title}</h2>
-                      <p>
-                        {song.artist} • {song.album || "Sin álbum"}
-                      </p>
-                      <p>{song.playCount.toLocaleString()} reproducciones</p>
-                    </IonLabel>
-                    <IonButton
-                      fill="clear"
-                      slot="end"
-                      onClick={() => handlePlaySong(song)}
-                    >
-                      <IonIcon icon={play} />
-                    </IonButton>
-                    <IonButton
-                      fill="clear"
-                      className="delete-btn"
-                      slot="end"
-                      onClick={() => handleDeleteSong(song.id)}
-                    >
-                      <IonIcon icon={trash} />
-                    </IonButton>
-                  </IonItem>
+                  <div key={song.id} className="song-card">
+                    <div className="song-cover">
+                      {song.coverUrl ? (
+                        <img src={song.coverUrl} alt={song.title} />
+                      ) : (
+                        <IonIcon icon={musicalNotes} />
+                      )}
+                    </div>
+                    <div className="song-info">
+                      <h3>{song.title}</h3>
+                      <p>{song.artist}</p>
+                    </div>
+                    <div className="song-actions">
+                      <button className="play-btn" onClick={() => handlePlaySong(song)}>
+                        <IonIcon icon={play} />
+                      </button>
+                      <button className="delete-btn" onClick={() => handleDeleteSong(song.id)}>
+                        <IonIcon icon={trash} />
+                      </button>
+                    </div>
+                  </div>
                 ))}
-              </IonList>
+              </div>
             )}
 
             <IonFab vertical="bottom" horizontal="end" slot="fixed">
@@ -487,6 +509,73 @@ const AdminDashboard: React.FC = () => {
                 <IonIcon icon={add} />
               </IonFabButton>
             </IonFab>
+          </div>
+        )}
+
+        {/* Support Tab */}
+        {activeTab === "support" && (
+          <div className="admin-support">
+            <h2>Mensajes de Soporte</h2>
+            <p style={{ opacity: 0.7, marginBottom: '20px' }}>
+              Mensajes de usuarios que necesitan ayuda ({supportMessages.length})
+            </p>
+            
+            {/* Info card */}
+            <IonCard className="support-info-card">
+              <IonCardContent>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <IonIcon icon={chatbubbles} style={{ fontSize: '32px', color: '#3B82F6' }} />
+                  <div>
+                    <h3 style={{ margin: 0, color: '#fff' }}>Sistema de Soporte</h3>
+                    <p style={{ margin: '4px 0 0 0', opacity: 0.7, fontSize: '14px' }}>
+                      Los mensajes de los usuarios se envían a:<br />
+                      <strong style={{ color: '#60A5FA' }}>carojas@sudamericano.edu.ec</strong>
+                    </p>
+                  </div>
+                </div>
+              </IonCardContent>
+            </IonCard>
+
+            {/* Messages or Empty State */}
+            <IonCard>
+              <IonCardHeader>
+                <IonCardTitle>
+                  <IonIcon icon={chatbubbles} style={{ marginRight: '8px' }} />
+                  Mensajes recibidos ({supportMessages.length})
+                </IonCardTitle>
+              </IonCardHeader>
+              <IonCardContent>
+                {supportMessages.length === 0 ? (
+                  <div className="empty-state-container" style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}>
+                    <IonIcon icon={chatbubbles} className="empty-icon" />
+                    <h3>No hay mensajes pendientes</h3>
+                    <p>Los usuarios pueden contactarte desde Perfil → Ayuda y Soporte</p>
+                  </div>
+                ) : (
+                  <IonList className="support-messages-list">
+                    {supportMessages.map((msg) => (
+                      <IonItem key={msg.id} className="support-message-item">
+                        <IonAvatar slot="start">
+                          <IonIcon icon={personCircle} style={{ fontSize: '40px', color: '#3b82f6' }} />
+                        </IonAvatar>
+                        <IonLabel>
+                          <h2>Usuario</h2>
+                          <p className="message-text">{msg.text}</p>
+                          <p className="message-time">
+                            {new Date(msg.timestamp).toLocaleString('es-EC', {
+                              day: '2-digit',
+                              month: 'short',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
+                        </IonLabel>
+                      </IonItem>
+                    ))}
+                  </IonList>
+                )}
+              </IonCardContent>
+            </IonCard>
           </div>
         )}
 

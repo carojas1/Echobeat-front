@@ -30,16 +30,16 @@ interface CreateMoodModalProps {
 const EMOJI_OPTIONS = ['🎵', '🎸', '🎹', '🎤', '💫', '✨', '🌙', '☀️', '🔥', '💜', '💙', '💚', '❤️', '🧡', '💛', '🖤', '🌈', '⭐', '🎧', '🎶'];
 
 const COLOR_OPTIONS = [
-  '#3B82F6', // Blue
-  '#8B5CF6', // Purple
-  '#EC4899', // Pink
-  '#EF4444', // Red
-  '#F97316', // Orange
-  '#EAB308', // Yellow
-  '#22C55E', // Green
-  '#06B6D4', // Cyan
-  '#6366F1', // Indigo
-  '#A855F7', // Violet
+  '#60A5FA', // Blue pastel
+  '#A78BFA', // Purple pastel
+  '#F472B6', // Pink pastel
+  '#FB7185', // Red pastel
+  '#FDBA74', // Orange pastel
+  '#FCD34D', // Yellow pastel
+  '#86EFAC', // Green pastel
+  '#67E8F9', // Cyan pastel
+  '#A5B4FC', // Indigo pastel
+  '#C4B5FD', // Violet pastel
 ];
 
 const CreateMoodModal: React.FC<CreateMoodModalProps> = ({ isOpen, onClose, onCreated }) => {

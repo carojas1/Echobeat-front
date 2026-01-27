@@ -42,7 +42,8 @@
 }
 
 .modal-header h2 {
-    font-size: 22px;
+    font-family: 'Dancing Script', 'Brush Script MT', cursive;
+    font-size: 28px;
     font-weight: 700;
     color: #fff;
     margin: 0;
@@ -183,7 +184,8 @@
 }
 
 .preview-name {
-    font-size: 18px;
+    font-family: 'Dancing Script', 'Brush Script MT', cursive;
+    font-size: 24px;
     font-weight: 600;
     color: #fff;
 }
