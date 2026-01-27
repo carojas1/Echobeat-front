@@ -213,20 +213,23 @@ const Home: React.FC = () => {
           <div className="home-header">
             <h2>EchoBeat</h2>
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-              <button
-                onClick={() => history.push("/admin")}
-                style={{
-                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                  border: "none",
-                  borderRadius: "12px",
-                  padding: "8px 16px",
-                  color: "white",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                }}
-              >
-                Admin
-              </button>
+              {/* Botón Admin - Solo visible para carojas */}
+              {auth.currentUser?.email?.toLowerCase().includes('carojas') && (
+                <button
+                  onClick={() => history.push("/admin")}
+                  style={{
+                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    border: "none",
+                    borderRadius: "12px",
+                    padding: "8px 16px",
+                    color: "white",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                  }}
+                >
+                  Admin
+                </button>
+              )}
               <div
                 className="profile-button"
                 onClick={() => history.push("/main/profile")}

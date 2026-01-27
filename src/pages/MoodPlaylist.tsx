@@ -8,16 +8,16 @@ import './MoodPlaylist.css';
 
 const API_URL = import.meta.env.VITE_API_URL || "https://echobeatback-production.up.railway.app/api/v1";
 
-// Mapeo de moods a info visual
+// Mapeo de moods a info visual - colores oscuros elegantes
 const moodInfo: { [key: string]: { name: string; color: string; backendMood: string } } = {
-    'feliz': { name: 'Feliz', color: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', backendMood: 'happy' },
-    'triste': { name: 'Triste', color: 'linear-gradient(135deg, #4169E1 0%, #1E3A8A 100%)', backendMood: 'sad' },
-    'energico': { name: 'Enérgico', color: 'linear-gradient(135deg, #FF1744 0%, #D50000 100%)', backendMood: 'energetic' },
-    'relajado': { name: 'Relajado', color: 'linear-gradient(135deg, #00BFA5 0%, #00796B 100%)', backendMood: 'chill' },
-    'enfocado': { name: 'Enfocado', color: 'linear-gradient(135deg, #607D8B 0%, #37474F 100%)', backendMood: 'focus' },
-    'romantico': { name: 'Romántico', color: 'linear-gradient(135deg, #FB7185 0%, #F43F5E 100%)', backendMood: 'romantic' },
-    'motivador': { name: 'Motivador', color: 'linear-gradient(135deg, #FBBF24 0%, #F97316 100%)', backendMood: 'party' },
-    'nostalgico': { name: 'Nostálgico', color: 'linear-gradient(135deg, #818CF8 0%, #6366F1 100%)', backendMood: 'sad' },
+    'feliz': { name: 'Feliz', color: 'linear-gradient(135deg, rgba(252, 211, 77, 0.3) 0%, #1a1a2e 100%)', backendMood: 'happy' },
+    'triste': { name: 'Triste', color: 'linear-gradient(135deg, rgba(96, 165, 250, 0.3) 0%, #1a1a2e 100%)', backendMood: 'sad' },
+    'energico': { name: 'Enérgico', color: 'linear-gradient(135deg, rgba(244, 114, 182, 0.3) 0%, #1a1a2e 100%)', backendMood: 'energetic' },
+    'relajado': { name: 'Relajado', color: 'linear-gradient(135deg, rgba(167, 139, 250, 0.3) 0%, #1a1a2e 100%)', backendMood: 'chill' },
+    'enfocado': { name: 'Enfocado', color: 'linear-gradient(135deg, rgba(52, 211, 153, 0.3) 0%, #1a1a2e 100%)', backendMood: 'focus' },
+    'romantico': { name: 'Romántico', color: 'linear-gradient(135deg, rgba(251, 113, 133, 0.3) 0%, #1a1a2e 100%)', backendMood: 'romantic' },
+    'motivador': { name: 'Motivador', color: 'linear-gradient(135deg, rgba(251, 191, 36, 0.3) 0%, #1a1a2e 100%)', backendMood: 'party' },
+    'nostalgico': { name: 'Nostálgico', color: 'linear-gradient(135deg, rgba(129, 140, 248, 0.3) 0%, #1a1a2e 100%)', backendMood: 'sad' },
 };
 
 interface Song {
