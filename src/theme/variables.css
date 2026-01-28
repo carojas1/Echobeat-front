@@ -30,6 +30,12 @@
     --warning: #F59E0B;
     --info: #3B82F6;
 
+    /* ===== Gold/Yellow Accent ===== */
+    --gold-primary: #FFD700;
+    --gold-light: #FFE55C;
+    --gold-dark: #DAA520;
+    --gold-glow: rgba(255, 215, 0, 0.4);
+
     /* ===== Gradients ===== */
     --gradient-blue: linear-gradient(135deg, #2563EB 0%, #3B82F6 50%, #60A5FA 100%);
     --gradient-blue-vertical: linear-gradient(180deg, #2563EB 0%, #3B82F6 100%);
@@ -108,6 +114,97 @@
     --z-modal: 1050;
     --z-popover: 1060;
     --z-tooltip: 1070;
+}
+
+/* ===== ECHOBEAT AMARRADA TEXT - Theme-Adaptive Gold Cursive Style ===== */
+
+/* Dark Theme (default) - Bright Gold */
+:root {
+    --amarrada-primary: #FFD700;
+    --amarrada-secondary: #FFE55C;
+    --amarrada-dark: #DAA520;
+    --amarrada-glow: rgba(255, 215, 0, 0.4);
+    --amarrada-shadow: 0 0 15px rgba(255, 215, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Light Theme - Darker Gold for Better Contrast */
+body.light-theme {
+    --amarrada-primary: #B8860B;
+    --amarrada-secondary: #996515;
+    --amarrada-dark: #8B6914;
+    --amarrada-glow: rgba(184, 134, 11, 0.3);
+    --amarrada-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 8px rgba(184, 134, 11, 0.2);
+}
+
+/* Global Amarrada Class */
+.text-amarrada,
+.echobeat-title {
+    font-family: 'Dancing Script', 'Brush Script MT', cursive !important;
+    color: var(--amarrada-primary) !important;
+    text-shadow: var(--amarrada-shadow);
+}
+
+/* Main App Headers - Amarrada Style */
+.home-header h2,
+.mood-title,
+.mood-hero h1,
+.library-header h2,
+.section-header h3,
+.now-playing-header h3,
+.profile-name {
+    font-family: 'Dancing Script', 'Brush Script MT', cursive !important;
+    color: var(--amarrada-primary) !important;
+    text-shadow: var(--amarrada-shadow);
+}
+
+/* Song Titles with Subtle Gold Accent */
+.song-info h4,
+.track-title,
+.mini-info h4 {
+    color: var(--amarrada-secondary) !important;
+}
+
+/* Section Titles */
+.section-title {
+    font-family: 'Dancing Script', 'Brush Script MT', cursive !important;
+    color: var(--amarrada-primary) !important;
+    text-shadow: var(--amarrada-shadow);
+    font-size: 24px !important;
+}
+
+/* Buttons with Amarrada Text */
+.quick-action-btn span,
+.play-all-btn,
+.add-songs-btn {
+    font-family: 'Dancing Script', 'Brush Script MT', cursive !important;
+}
+
+/* ion-title in toolbars */
+ion-title {
+    font-family: 'Dancing Script', 'Brush Script MT', cursive !important;
+    color: var(--amarrada-primary) !important;
+    text-shadow: var(--amarrada-shadow);
+}
+
+/* Light theme specific overrides for better readability */
+body.light-theme .text-amarrada,
+body.light-theme .echobeat-title,
+body.light-theme .home-header h2,
+body.light-theme .mood-title,
+body.light-theme .library-header h2,
+body.light-theme .section-header h3,
+body.light-theme .section-title,
+body.light-theme .profile-name,
+body.light-theme ion-title {
+    color: var(--amarrada-primary) !important;
+    text-shadow: var(--amarrada-shadow);
+}
+
+/* Light theme song titles - more subtle */
+body.light-theme .song-info h4,
+body.light-theme .track-title,
+body.light-theme .mini-info h4 {
+    color: var(--amarrada-secondary) !important;
 }
 
 body.light-theme {

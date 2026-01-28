@@ -16,6 +16,7 @@ import { usePlayer } from "../contexts/PlayerContext";
 import { DEFAULT_COVER_IMAGE } from "../config/constants";
 import { getSongs } from "../services/api.service";
 import UploadSongModal from "../components/UploadSongModal";
+import { downloadSong } from "../services/download.service";
 import "./Home.css";
 
 interface User {
@@ -293,9 +294,16 @@ const Home: React.FC = () => {
                       <div className="song-overlay">
                         <button
                           className="download-button"
-                          onClick={(e) => {
+                          onClick={async (e) => {
                             e.stopPropagation();
-                            window.open(song.audioUrl, '_blank');
+                            setToastMessage('⏳ Descargando...');
+                            setShowToast(true);
+                            const result = await downloadSong(
+                              song.audioUrl,
+                              `${song.artist} - ${song.title}.mp3`
+                            );
+                            setToastMessage(result.success ? '✅ Canción descargada' : '❌ Error al descargar');
+                            setShowToast(true);
                           }}
                           title="Descargar"
                         >

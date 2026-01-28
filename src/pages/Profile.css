@@ -55,7 +55,8 @@ ion-back-button {
     font-family: 'Dancing Script', 'Brush Script MT', cursive;
     font-size: 32px;
     font-weight: 700;
-    color: #fff;
+    color: var(--amarrada-primary, #FFD700);
+    text-shadow: var(--amarrada-shadow, 0 0 15px rgba(255, 215, 0, 0.4));
     margin: 0 0 8px 0;
 }
 
@@ -347,7 +348,8 @@ ion-toggle {
 }
 
 .light-theme .profile-name {
-    color: #1a1a1a;
+    color: #DAA520;
+    text-shadow: 0 0 10px rgba(218, 165, 32, 0.3), 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .light-theme .profile-email {

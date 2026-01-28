@@ -28,18 +28,25 @@
 }
 
 .login-header h1 {
-    font-size: 2.5rem;
-    font-weight: 800;
+    font-family: 'Dancing Script', 'Brush Script MT', cursive !important;
+    font-size: 3.2rem;
+    font-weight: 700;
     margin: 10px 0 5px;
-    background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+    color: var(--amarrada-primary, #FFD700);
+    background: linear-gradient(135deg, var(--amarrada-primary, #FFD700) 0%, var(--amarrada-dark, #DAA520) 50%, var(--amarrada-secondary, #FFE55C) 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 15px var(--amarrada-glow, rgba(255, 215, 0, 0.3)));
+    letter-spacing: 2px;
 }
 
 .subtitle {
-    color: #94a3b8;
+    font-family: 'Dancing Script', 'Brush Script MT', cursive !important;
+    color: var(--amarrada-dark, #DAA520);
     margin: 0;
-    font-size: 1rem;
+    font-size: 1.3rem;
+    text-shadow: 0 0 10px var(--amarrada-glow, rgba(255, 215, 0, 0.3));
 }
 
 /* INPUTS */

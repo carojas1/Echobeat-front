@@ -1,8 +1,9 @@
 // Firebase configuration
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, browserLocalPersistence, setPersistence } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, indexedDBLocalPersistence, browserLocalPersistence, setPersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { Capacitor } from '@capacitor/core';
 
 // Modo desarrollo
 export const DEV_MODE = false;
@@ -24,10 +25,13 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-// Configurar persistencia LOCAL (sobrevive a recargas y cierres de app)
-setPersistence(auth, browserLocalPersistence)
+// Configurar persistencia - usar indexedDB en native, browserLocal en web
+const isNative = Capacitor.isNativePlatform();
+const persistence = isNative ? indexedDBLocalPersistence : browserLocalPersistence;
+
+setPersistence(auth, persistence)
     .then(() => {
-        console.log('✅ Firebase Auth: Persistencia LOCAL configurada');
+        console.log(`✅ Firebase Auth: Persistencia ${isNative ? 'IndexedDB' : 'browserLocal'} configurada`);
     })
     .catch((error) => {
         console.warn('⚠️ Firebase Auth: No se pudo configurar persistencia:', error.message);

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">EchoBeat</string>
+    <string name="title_activity_main">EchoBeat</string>
+    <string name="package_name">com.echobeat.app</string>
+    <string name="custom_url_scheme">com.echobeat.app</string>
+</resources>

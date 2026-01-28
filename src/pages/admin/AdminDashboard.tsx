@@ -94,7 +94,7 @@ const AdminDashboard: React.FC = () => {
       try {
         // Parallel fetching
         const [songsRes, usersRes, supportRes, firestoreSupportRes] = await Promise.all([
-          getSongs({ page: 1, limit: 100 }).catch(() => ({ data: [] })),
+          getSongs({ page: 1, limit: 100 }).catch(() => ({ data: [], total: 0 })),
           getFirebaseUsers().catch(() => ({ users: [] })),
           getSupportMessages().catch(() => ({ data: { messages: [] } })),
           getAllSupportMessages().catch(() => [])
@@ -110,8 +110,8 @@ const AdminDashboard: React.FC = () => {
 
 
         if (isMounted) {
-            // 1. Songs extraction (Standard)
-            const loadedSongs = Array.isArray(songsRes) ? songsRes : songsRes?.data || [];
+            // 1. Songs extraction (Simple format: { data: Song[] })
+            const loadedSongs = songsRes?.data || [];
             
             // 2. Firebase Users extraction (CRITICAL FIX)
             // Backend returns: { "users": [...], "total": 50 }
@@ -235,7 +235,7 @@ const AdminDashboard: React.FC = () => {
       // Recargar canciones del backend
       const songsResponse = await getSongs({ page: 1, limit: 100 });
       if (songsResponse && songsResponse.data) {
-        setSongs(songsResponse.data);
+        setSongs(songsResponse.data as Song[]);
       }
       setToastMessage("✅ Canción eliminada");
       setShowToast(true);

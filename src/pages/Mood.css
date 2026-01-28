@@ -24,7 +24,8 @@
     font-family: 'Dancing Script', 'Brush Script MT', cursive;
     font-size: 32px;
     font-weight: 700;
-    color: #fff;
+    color: var(--amarrada-primary, #FFD700);
+    text-shadow: var(--amarrada-shadow, 0 0 15px rgba(255, 215, 0, 0.4));
     margin: 0;
 }
 
@@ -147,7 +148,8 @@
 }
 
 .light-theme .mood-header h2 {
-    color: #1e293b;
+    color: var(--amarrada-primary, #B8860B);
+    text-shadow: var(--amarrada-shadow);
 }
 
 .light-theme .mood-subtitle {

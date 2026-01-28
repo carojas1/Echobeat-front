@@ -13,6 +13,7 @@ import {
 } from 'ionicons/icons';
 import { usePlayer } from '../contexts/PlayerContext';
 import { DEFAULT_COVER_IMAGE } from '../config/constants';
+import { downloadSong } from '../services/download.service';
 import './GlobalNowPlaying.css';
 // ✅ Componente de EQ estable con Sliders y Vocal Remover
 const StableEqualizer: React.FC<{ visible: boolean }> = React.memo(({ visible }) => {
@@ -167,6 +168,7 @@ export const GlobalNowPlaying: React.FC = () => {
 
     const [isFavorite, setIsFavorite] = useState(false);
     const [showEQ, setShowEQ] = useState(false); // Por defecto cerrado
+    const [downloadToast, setDownloadToast] = useState<string | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
     const formatTime = useCallback((seconds: number) => {
@@ -236,7 +238,15 @@ export const GlobalNowPlaying: React.FC = () => {
                     <div className="now-playing-actions">
                         <button
                             className="download-btn"
-                            onClick={() => window.open(currentSong.audioUrl, '_blank')}
+                            onClick={async () => {
+                                setDownloadToast('⏳ Descargando...');
+                                const result = await downloadSong(
+                                    currentSong.audioUrl,
+                                    `${currentSong.artist} - ${currentSong.title}.mp3`
+                                );
+                                setDownloadToast(result.success ? '✅ Descargado' : '❌ Error');
+                                setTimeout(() => setDownloadToast(null), 2000);
+                            }}
                             title="Descargar canción"
                         >
                             <IonIcon icon={cloudDownload} />
@@ -248,6 +258,21 @@ export const GlobalNowPlaying: React.FC = () => {
                             <IonIcon icon={isFavorite ? heart : heartOutline} />
                         </button>
                     </div>
+                    {downloadToast && (
+                        <div className="download-toast" style={{
+                            position: 'absolute',
+                            bottom: '16px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            background: 'rgba(0,0,0,0.8)',
+                            padding: '8px 16px',
+                            borderRadius: '8px',
+                            color: '#fff',
+                            fontSize: '14px'
+                        }}>
+                            {downloadToast}
+                        </div>
+                    )}
                 </div>
 
                 <div className="now-playing-progress-section">

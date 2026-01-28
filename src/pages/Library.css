@@ -23,7 +23,8 @@
     font-family: 'Dancing Script', 'Brush Script MT', cursive;
     font-size: 32px;
     font-weight: 700;
-    color: #fff;
+    color: var(--amarrada-primary, #FFD700);
+    text-shadow: var(--amarrada-shadow, 0 0 15px rgba(255, 215, 0, 0.4));
     margin: 0;
 }
 
@@ -113,9 +114,11 @@
 }
 
 .section-title {
-    font-size: 20px;
+    font-family: 'Dancing Script', 'Brush Script MT', cursive;
+    font-size: 24px;
     font-weight: 700;
-    color: #fff;
+    color: var(--amarrada-primary, #FFD700);
+    text-shadow: var(--amarrada-shadow, 0 0 15px rgba(255, 215, 0, 0.4));
     margin: 0 0 16px 0;
 }
 

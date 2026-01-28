@@ -263,7 +263,7 @@ export const deleteSong = async (songId: string): Promise<void> => {
             try {
                 const coverRef = ref(storage, `covers/${songId}.jpg`);
                 await deleteObject(coverRef);
-            } catch (e) {
+            } catch {
                 console.warn('Cover file not found in storage');
             }
         }

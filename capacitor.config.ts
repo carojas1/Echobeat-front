@@ -4,43 +4,104 @@ const config: CapacitorConfig = {
   appId: 'com.echobeat.app',
   appName: 'EchoBeat',
   webDir: 'dist',
-  
-  // Configuración del servidor para producción
+
+  // Server configuration for production
   server: {
-    // En producción, usa los archivos locales (no un servidor remoto)
     androidScheme: 'https',
-    // Permitir cleartext solo para desarrollo local
     cleartext: false,
   },
-  
-  // Plugins configuration
+
+  // All plugins configuration
   plugins: {
-    // StatusBar config
+    // StatusBar - Dark theme
     StatusBar: {
       style: 'Dark',
-      backgroundColor: '#121212',
+      backgroundColor: '#000000',
     },
-    // Keyboard config
+
+    // Keyboard - Dark style
     Keyboard: {
       resize: 'body',
       style: 'dark',
       resizeOnFullScreen: true,
     },
-    // SplashScreen config
+
+    // SplashScreen - Black background
     SplashScreen: {
       launchShowDuration: 2000,
       launchAutoHide: true,
-      backgroundColor: '#121212',
+      backgroundColor: '#000000',
       androidScaleType: 'CENTER_CROP',
       showSpinner: false,
+      splashFullScreen: true,
+      splashImmersive: true,
+    },
+
+    // Local Notifications
+    LocalNotifications: {
+      smallIcon: 'ic_stat_icon_config_sample',
+      iconColor: '#3B82F6',
+      sound: 'beep.wav',
+    },
+
+    // Filesystem - For music downloads
+    Filesystem: {
+      // No specific config needed
+    },
+
+    // Network - Connection detection
+    Network: {
+      // No specific config needed
+    },
+
+    // Toast - Native toasts
+    Toast: {
+      // No specific config needed
+    },
+
+    // Share - Social sharing
+    Share: {
+      // No specific config needed
+    },
+
+    // Browser - External links
+    Browser: {
+      // No specific config needed
+    },
+
+    // App - App state management
+    App: {
+      // No specific config needed
+    },
+
+    // Haptics - Vibration feedback
+    Haptics: {
+      // No specific config needed
+    },
+
+    // Device - Device info
+    Device: {
+      // No specific config needed
+    },
+
+    // Preferences - Local storage
+    Preferences: {
+      // No specific config needed
+    },
+
+    // Firebase Authentication - Native Google Sign-In
+    FirebaseAuthentication: {
+      skipNativeAuth: false,
+      providers: ['google.com'],
     },
   },
-  
-  // Android specific config
+
+  // Android specific configuration
   android: {
     allowMixedContent: true,
     captureInput: true,
-    webContentsDebuggingEnabled: false, // false para producción
+    webContentsDebuggingEnabled: false,
+    backgroundColor: '#000000',
   },
 };
 

@@ -4,6 +4,7 @@ import { play, cloudDownload } from 'ionicons/icons';
 import { useParams } from 'react-router-dom';
 import { usePlayer } from '../contexts/PlayerContext';
 import { DEFAULT_COVER_IMAGE } from '../config/constants';
+import { downloadSong } from '../services/download.service';
 import './MoodPlaylist.css';
 
 const API_URL = import.meta.env.VITE_API_URL || "https://echobeatback-production.up.railway.app/api/v1";
@@ -195,9 +196,15 @@ const MoodPlaylist: React.FC = () => {
                                         </div>
                                         <button
                                             className="track-download-btn"
-                                            onClick={(e) => {
+                                            onClick={async (e) => {
                                                 e.stopPropagation();
-                                                window.open(song.audioUrl, '_blank');
+                                                const result = await downloadSong(
+                                                    song.audioUrl,
+                                                    `${song.artist} - ${song.title}.mp3`
+                                                );
+                                                if (!result.success) {
+                                                    console.error('Download failed:', result.error);
+                                                }
                                             }}
                                             title="Descargar"
                                         >

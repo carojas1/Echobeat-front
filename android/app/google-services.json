@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "367705500486",
+    "project_id": "echo-beat-77c21",
+    "storage_bucket": "echo-beat-77c21.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:367705500486:android:409a46f2ad4d92f4d41347",
+        "android_client_info": {
+          "package_name": "com.echobeat.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "367705500486-296lju17djb5me5j290n3iqas88m9epv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.echobeat.app",
+            "certificate_hash": "79630e31043f6b3834dcbf2944fcdbe5a3d6db2e"
+          }
+        },
+        {
+          "client_id": "367705500486-n9cre9lthofs5adj33c27akv0lrnsg40.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBH_moyfFUtV18G-iLWUaJp367SS52ml08"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "367705500486-n9cre9lthofs5adj33c27akv0lrnsg40.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
