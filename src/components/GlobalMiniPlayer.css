@@ -1,5 +1,5 @@
 /* ========================================
-   GLOBAL MINI PLAYER - ELEGANTE
+   GLOBAL MINI PLAYER - PREMIUM DESIGN
    ======================================== */
 
 .global-mini-player {
@@ -8,13 +8,27 @@
     left: 0;
     right: 0;
     z-index: 100;
-    background: #1a1a1a;
-    border-top: 1px solid #282828;
+    background: rgba(15, 15, 25, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(59, 130, 246, 0.2);
     padding: 10px 16px;
     display: flex;
     align-items: center;
     gap: 12px;
-    cursor: pointer;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 /* Progress bar */
@@ -24,23 +38,35 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: #333;
+    background: rgba(59, 130, 246, 0.2);
 }
 
 .mini-progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #2563EB 0%, #3B82F6 100%);
     transition: width 0.3s linear;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+/* Content wrapper - clickable area */
+.mini-player-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
 }
 
 /* Song cover */
 .mini-cover {
-    width: 44px;
-    height: 44px;
-    border-radius: 6px;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
     overflow: hidden;
     flex-shrink: 0;
-    background: #282828;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .mini-cover img {
@@ -67,47 +93,85 @@
 
 .mini-info p {
     font-size: 12px;
-    color: #888;
+    color: rgba(255, 255, 255, 0.6);
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-/* Controls */
+/* Controls container */
 .mini-controls {
     display: flex;
     align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
 }
 
+/* Play button */
 .mini-play-btn {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background: #fff;
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.4);
 }
 
 .mini-play-btn:hover {
     transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5);
+}
+
+.mini-play-btn:active {
+    transform: scale(0.95);
 }
 
 .mini-play-btn ion-icon {
-    font-size: 18px;
-    color: #000;
+    font-size: 20px;
+    color: #fff;
     margin-left: 2px;
+}
+
+/* Close button */
+.mini-close-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mini-close-btn:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: #ef4444;
+    transform: scale(1.1);
+}
+
+.mini-close-btn:active {
+    transform: scale(0.95);
+}
+
+.mini-close-btn ion-icon {
+    font-size: 16px;
+    color: #ef4444;
 }
 
 /* ===== TEMA CLARO ===== */
 .light-theme .global-mini-player {
-    background: #fff;
+    background: rgba(255, 255, 255, 0.95);
     border-top: 1px solid #e0e0e0;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.1);
 }
 
 .light-theme .mini-progress-bar {
@@ -127,9 +191,16 @@
 }
 
 .light-theme .mini-play-btn {
-    background: #1a1a1a;
+    background: linear-gradient(135deg, #2563EB 0%, #1d4ed8 100%);
 }
 
-.light-theme .mini-play-btn ion-icon {
-    color: #fff;
+.light-theme .mini-close-btn {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* ===== iOS Safe Area ===== */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .global-mini-player {
+        bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+    }
 }

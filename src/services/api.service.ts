@@ -100,12 +100,22 @@ export interface User {
   createdAt: string;
 }
 
+export interface FirebaseUser {
+  uid: string;
+  email: string;
+  displayName?: string;
+  photoURL?: string;
+  metadata?: {
+    creationTime?: string;
+    lastSignInTime?: string;
+  };
+  disabled: boolean;
+}
+
+// Get users from PostgreSQL (Sync status)
 export async function getUsers(params?: {
   page?: number;
   limit?: number;
-  q?: string;
-  role?: string;
-  status?: string;
 }): Promise<{ data: User[]; total: number }> {
   try {
     const queryParams = new URLSearchParams(
@@ -117,6 +127,35 @@ export async function getUsers(params?: {
   } catch {
     return { data: [], total: 0 };
   }
+}
+
+// Get raw Firebase Users (The "Real" list)
+export async function getFirebaseUsers(): Promise<any> {
+  try {
+    const res = await authFetch(`${API_URL}/admin/firebase-users`);
+    if (!res.ok) throw new Error("Failed to fetch firebase users");
+    return res.json();
+  } catch (error) {
+    console.warn("Using mock users due to API error");
+    return { users: [] };
+  }
+}
+
+// Delete Firebase User
+export async function deleteFirebaseUser(uid: string): Promise<void> {
+  const res = await authFetch(`${API_URL}/admin/firebase-users/${uid}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw new Error("Failed to delete firebase user");
+}
+
+// Toggle Block/Unblock (Disable in Firebase)
+export async function toggleFirebaseUser(uid: string, disabled: boolean): Promise<void> {
+   const res = await authFetch(`${API_URL}/admin/firebase-users/${uid}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ disabled })
+  });
+  if (!res.ok) throw new Error("Failed to toggle user status");
 }
 
 export async function updateUser(
@@ -144,6 +183,54 @@ export async function deleteUser(id: string): Promise<void> {
   if (!res.ok) throw new Error("Failed to delete user");
 }
 
+// ==================== SUPPORT ====================
+
+export interface SupportMessage {
+    id: string;
+    userId: string;
+    userEmail: string;
+    message: string;
+    createdAt: string;
+    isAdmin?: boolean; // True if sent by admin
+    status: 'PENDING' | 'REPLIED';
+}
+
+// Admin: Get all messages
+export async function getSupportMessages(): Promise<any> {
+    try {
+        const res = await authFetch(`${API_URL}/admin/support/messages`);
+        if (!res.ok) return { data: { messages: [] } };
+        return res.json();
+    } catch {
+        return { data: { messages: [] } };
+    }
+}
+
+// Admin: Reply to user
+export async function sendAdminSupportReply(data: { targetUserId: string, message: string }): Promise<void> {
+    const res = await authFetch(`${API_URL}/admin/support/reply`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('Failed to send reply');
+}
+
+// User: Send message
+export async function sendSupportMessage(data: { userId: string, message: string, userEmail: string }): Promise<void> {
+    const res = await authFetch(`${API_URL}/support/contact`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('Failed to send message');
+}
+
+
 // ==================== SONGS - UPLOAD ====================
 
 export async function uploadSong(formData: FormData): Promise<Song> {
@@ -163,8 +250,8 @@ export async function uploadSong(formData: FormData): Promise<Song> {
       throw new Error(text || `Error ${res.status}`);
     }
     return await res.json();
-  } catch (e: any) {
-    if (e?.name === "AbortError") {
+  } catch (e: unknown) {
+    if (e instanceof Error && e.name === "AbortError") {
       throw new Error(
         "Upload tardó demasiado (timeout). Revisa backend/Cloudinary.",
       );

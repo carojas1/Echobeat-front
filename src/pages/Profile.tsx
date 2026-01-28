@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { IonContent, IonPage, IonIcon, IonButton, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonToggle, IonModal, IonRange, IonLabel, IonList, IonItem } from '@ionic/react';
-import { person, settings, notifications, helpCircle, shield, logOut, chevronForward, moon, sunny, volumeHigh, mail, key, time } from 'ionicons/icons';
+import { person, settings, notifications, helpCircle, shield, logOut, chevronForward, chevronDown, moon, sunny, volumeHigh, mail, key, time } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import { usePlayer } from '../contexts/PlayerContext';
@@ -31,21 +31,28 @@ const Profile: React.FC = () => {
     const [user, setUser] = useState<UserProfile | null>(null);
 
     // Cargar datos del usuario
+    // Cargar datos del usuario
     useEffect(() => {
-        const currentUser = auth.currentUser;
-        if (currentUser) {
-            setUser({
-                displayName: currentUser.displayName || 'Usuario',
-                email: currentUser.email || 'usuario@echobeat.com',
-                photoURL: currentUser.photoURL,
-                uid: currentUser.uid,
-                creationTime: currentUser.metadata.creationTime
-            });
-        }
+        // Use onAuthStateChanged for reliable user detection
+        const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+             if (currentUser) {
+                setUser({
+                    displayName: currentUser.displayName || localStorage.getItem('user_name') || 'Usuario',
+                    email: currentUser.email || '',
+                    photoURL: currentUser.photoURL,
+                    uid: currentUser.uid,
+                    creationTime: currentUser.metadata.creationTime
+                });
+            } else {
+                setUser(null);
+            }
+        });
         
         // Load notification preference
         const notifPref = localStorage.getItem('settings_notifications');
         if (notifPref !== null) setNotificationsEnabled(notifPref === 'true');
+
+        return () => unsubscribe();
     }, []);
 
     const toggleNotifications = (e: CustomEvent) => {
@@ -102,15 +109,8 @@ const Profile: React.FC = () => {
                                 <IonIcon icon={person} />
                             )}
                         </div>
-                        <h2 className="profile-name">{user?.displayName || 'Usuario EchoBeat'}</h2>
-                        <p className="profile-email">{user?.email || 'usuario@echobeat.com'}</p>
-
-                        <div className="profile-stats">
-                            <div className="stat-item">
-                                <p className="stat-value">10</p>
-                                <p className="stat-label">Créditos</p>
-                            </div>
-                        </div>
+                        <h2 className="profile-name">{user?.displayName || localStorage.getItem('user_email') || 'Usuario Invitado'}</h2>
+                        <p className="profile-email">{user?.email || ''}</p>
                     </div>
 
                     {/* Menu Section */}
@@ -118,65 +118,70 @@ const Profile: React.FC = () => {
                         <h3 className="section-title">General</h3>
                         <div className="profile-menu">
                             {menuItems.map((item) => (
-                                <div key={item.id} className="menu-item" onClick={() => !item.isToggle && handleMenuClick(item.id)}>
-                                    <div className="menu-icon">
-                                        <IonIcon icon={item.icon} />
+                                <React.Fragment key={item.id}>
+                                    <div className="menu-item" onClick={() => !item.isToggle && handleMenuClick(item.id)}>
+                                        <div className="menu-icon">
+                                            <IonIcon icon={item.icon} />
+                                        </div>
+                                        <div className="menu-content">
+                                            <h4 className="menu-title">{item.title}</h4>
+                                            <p className="menu-subtitle">{item.subtitle}</p>
+                                        </div>
+                                        <div className="menu-action">
+                                            {item.isToggle ? (
+                                                <IonToggle 
+                                                    checked={notificationsEnabled} 
+                                                    onIonChange={toggleNotifications}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                />
+                                            ) : (
+                                                <IonIcon icon={item.id === 1 && showSettings ? chevronDown : chevronForward} />
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className="menu-content">
-                                        <h4 className="menu-title">{item.title}</h4>
-                                        <p className="menu-subtitle">{item.subtitle}</p>
-                                    </div>
-                                    <div className="menu-action">
-                                        {item.isToggle ? (
-                                            <IonToggle 
-                                                checked={notificationsEnabled} 
-                                                onIonChange={toggleNotifications}
-                                                onClick={(e) => e.stopPropagation()}
-                                            />
-                                        ) : (
-                                            <IonIcon icon={chevronForward} />
-                                        )}
-                                    </div>
-                                </div>
+
+                                    {/* Settings Panel - Accordion Style */}
+                                    {item.id === 1 && showSettings && (
+                                        <div className="settings-panel fade-in" style={{ margin: '0 10px 15px', borderRadius: '12px' }}>
+                                            <div className="setting-header">Ajustes de la App</div>
+                                            
+                                            {/* Theme */}
+                                            <div className="setting-row">
+                                                <div className="setting-info">
+                                                    <IonIcon icon={isDark ? moon : sunny} className="setting-icon-small" />
+                                                    <span>Tema {isDark ? 'Oscuro' : 'Claro'}</span>
+                                                </div>
+                                                <IonToggle checked={isDark} onIonChange={toggleTheme} />
+                                            </div>
+
+                                            {/* Volume */}
+                                            <div className="setting-row-col">
+                                                <div className="setting-info">
+                                                    <IonIcon icon={volumeHigh} className="setting-icon-small" />
+                                                    <span>Volumen ({Math.round(volume * 100)}%)</span>
+                                                </div>
+                                                <IonRange 
+                                                    min={0} max={1} step={0.01} 
+                                                    value={volume} 
+                                                    onIonInput={(e) => setVolume(e.detail.value as number)}
+                                                    className="volume-slider-settings"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+                                </React.Fragment>
                             ))}
                         </div>
-
-                        {/* Settings Panel Expansion */}
-                        {showSettings && (
-                            <div className="settings-panel fade-in">
-                                <div className="setting-header">Ajustes de la App</div>
-                                
-                                {/* Theme */}
-                                <div className="setting-row">
-                                    <div className="setting-info">
-                                        <IonIcon icon={isDark ? moon : sunny} className="setting-icon-small" />
-                                        <span>Tema {isDark ? 'Oscuro' : 'Claro'}</span>
-                                    </div>
-                                    <IonToggle checked={isDark} onIonChange={toggleTheme} />
-                                </div>
-
-                                {/* Volume */}
-                                <div className="setting-row-col">
-                                    <div className="setting-info">
-                                        <IonIcon icon={volumeHigh} className="setting-icon-small" />
-                                        <span>Volumen ({Math.round(volume * 100)}%)</span>
-                                    </div>
-                                    <IonRange 
-                                        min={0} max={1} step={0.01} 
-                                        value={volume} 
-                                        onIonInput={(e) => setVolume(e.detail.value as number)}
-                                        className="volume-slider-settings"
-                                    />
-                                </div>
-                            </div>
-                        )}
                     </div>
+
+
 
                     {/* Logout Button */}
                     <IonButton
                         expand="block"
                         className="logout-button"
                         onClick={handleLogout}
+                        style={{ marginTop: '30px' }}
                     >
                         <IonIcon icon={logOut} slot="start" />
                         Cerrar Sesión

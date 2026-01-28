@@ -10,10 +10,6 @@ import {
   IonSegment,
   IonSegmentButton,
   IonLabel,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
   IonList,
   IonItem,
   IonAvatar,
@@ -21,23 +17,18 @@ import {
   IonToast,
   IonFab,
   IonFabButton,
-  IonInput,
-  IonTextarea,
 } from "@ionic/react";
 import {
   people,
   musicalNotes,
-  settings,
-  statsChart,
   add,
   trash,
-  cloudUpload,
   logOut,
   personCircle,
-  checkmarkCircle,
   play,
-  ban,
   chatbubbles,
+  send,
+  chevronForward
 } from "ionicons/icons";
 import { useHistory } from "react-router-dom";
 import { auth } from "../../firebase/config";
@@ -45,20 +36,13 @@ import { usePlayer } from "../../contexts/PlayerContext";
 import {
   getSongs,
   deleteSong as apiDeleteSong,
-  getUsers,
+  getFirebaseUsers,
+  deleteFirebaseUser,
+  getSupportMessages,
+  SupportMessage
 } from "../../services/api.service";
 import UploadSongModal from "../../components/UploadSongModal";
 import "./AdminDashboard.css";
-
-interface User {
-  id: string;
-  email: string;
-  displayName: string;
-  role: "USER" | "ADMIN";
-  status: "ACTIVE" | "BLOCKED";
-  createdAt: string;
-  avatar?: string;
-}
 
 interface Song {
   id: string;
@@ -72,152 +56,112 @@ interface Song {
   mood?: string;
 }
 
+interface FirebaseUser {
+  uid: string;
+  id?: string;
+  email?: string;
+  displayName?: string;
+  disabled?: boolean;
+}
+
 const AdminDashboard: React.FC = () => {
   const history = useHistory();
   const { playSong } = usePlayer();
 
   const [activeTab, setActiveTab] = useState<
-    "overview" | "users" | "songs" | "support" | "settings"
-  >("overview");
+    "users" | "songs" | "support"
+  >("users");
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [showUploadModal, setShowUploadModal] = useState(false);
 
-  // Data - Start completely empty
-  const [users, setUsers] = useState<User[]>([]);
+  // Data
+  const [users, setUsers] = useState<FirebaseUser[]>([]);
   const [songs, setSongs] = useState<Song[]>([]);
-  
-  // Support messages from localStorage
-  interface SupportMessage {
-    id: string;
-    text: string;
-    sender: 'user' | 'support';
-    timestamp: number;
-  }
   const [supportMessages, setSupportMessages] = useState<SupportMessage[]>([]);
+  const [selectedChatUser, setSelectedChatUser] = useState<string | null>(null);
 
-  // 🧹 CLEANUP: Remove mock data on mount & load support messages
+  // Load data from backend
   useEffect(() => {
-    localStorage.removeItem("echobeat_songs");
-    localStorage.removeItem("echobeat_users");
-    localStorage.removeItem("token"); // Old backend JWT
-    localStorage.removeItem("user"); // Old backend user
-    
-    // Load support messages
-    const storedMessages = localStorage.getItem('support_chat_messages');
-    if (storedMessages) {
-      const msgs = JSON.parse(storedMessages);
-      // Filter only user messages
-      const userMsgs = msgs.filter((m: SupportMessage) => m.sender === 'user');
-      setSupportMessages(userMsgs);
-    }
-  }, [activeTab]);
+    let isMounted = true;
 
-  // 🔥 BACKEND: Load data from backend on mount
-  useEffect(() => {
-    let isMounted = true; // Flag para evitar setState en componente desmontado
-
-    const loadDataFromBackend = async () => {
+    const loadData = async () => {
       try {
-        // Cargar canciones del backend
-        const songsResponse = await getSongs({ page: 1, limit: 100 });
-        // DEFENSIVE: Asegurar que siempre sea un array
-        if (isMounted && songsResponse && Array.isArray(songsResponse.data)) {
-          setSongs(songsResponse.data);
-        } else if (isMounted) {
-          setSongs([]); // Asegurar array vacío
-        }
-      } catch {
-        if (isMounted) {
-          setSongs([]); // Array vacío si falla
-        }
-      }
+        // Parallel fetching
+        const [songsRes, usersRes, supportRes] = await Promise.all([
+          getSongs({ page: 1, limit: 100 }).catch(() => ({ data: [] })),
+          getFirebaseUsers().catch(() => ({ users: [] })),
+          getSupportMessages().catch(() => ({ data: { messages: [] } }))
+        ]);
 
-      try {
-        // Cargar usuarios del backend
-        const usersResponse = await getUsers({ page: 1, limit: 100 });
-        // DEFENSIVE: Asegurar que siempre sea un array
-        if (isMounted && usersResponse && Array.isArray(usersResponse.data)) {
-          setUsers(usersResponse.data);
-        } else if (isMounted) {
-          setUsers([]);
-        }
-      } catch {
         if (isMounted) {
-          setUsers([]);
+            // 1. Songs extraction (Standard)
+            const loadedSongs = Array.isArray(songsRes) ? songsRes : songsRes?.data || [];
+            
+            // 2. Firebase Users extraction (CRITICAL FIX)
+            // Backend returns: { "users": [...], "total": 50 }
+            const realUsers = usersRes.users || usersRes.data?.users || [];
+            console.log("✅ Fixed Firebase Users Loaded:", realUsers.length);
+
+            // 3. Support Messages extraction (CRITICAL FIX)
+            // Backend returns: { "data": { "messages": [ ... ] } }
+            // Check nested structure properly
+            let realMessages = [];
+            if (supportRes.data && Array.isArray(supportRes.data.messages)) {
+                realMessages = supportRes.data.messages;
+            } else if (Array.isArray(supportRes.messages)) {
+                realMessages = supportRes.messages;
+            } else if (Array.isArray(supportRes)) {
+                realMessages = supportRes;
+            }
+             
+            console.log("✅ Fixed Messages Loaded:", realMessages.length, realMessages);
+            
+            setSongs(loadedSongs);
+            setUsers(realUsers);
+            setSupportMessages(realMessages);
         }
+      } catch (error) {
+        console.error("❌ Error loading dashboard data:", error);
       }
     };
 
-    loadDataFromBackend();
+    loadData();
 
-    // Cleanup: marcar como desmontado cuando el componente se desmonte
     return () => {
       isMounted = false;
     };
-  }, []);
-
-  // 🔥 ELIMINAR: Ya no guardamos en localStorage, el backend es la fuente de verdad
-  // useEffect(() => {
-  //     try {
-  //         localStorage.setItem('echobeat_songs', JSON.stringify(songs));
-  //     } catch (error) {
-  //         console.error('Error guardando canciones:', error);
-  //     }
-  // }, [songs]);
-
-  // useEffect(() => {
-  //     try {
-  //         localStorage.setItem('echobeat_users', JSON.stringify(users));
-  //     } catch (error) {
-  //         console.error('Error guardando usuarios:', error);
-  //     }
-  // }, [users]);
-
-  // Stats calculated from data
-  const stats = {
-    totalUsers: users.length,
-    activeUsers: users.filter((u) => u.status === "ACTIVE").length,
-    blockedUsers: users.filter((u) => u.status === "BLOCKED").length,
-    totalSongs: songs.length,
-    totalPlays:
-      Array.isArray(songs) && songs.length > 0
-        ? songs.reduce((acc, s) => acc + (s.playCount || 0), 0)
-        : 0,
-  };
+  }, [activeTab]);
 
   const handleLogout = async () => {
-    await auth.signOut();
-    localStorage.removeItem("fb_token");
-    localStorage.removeItem("user_email");
-    history.push("/login");
-  };
-
-  // Toggle user status
-  const toggleUserStatus = (userId: string) => {
-    setUsers(
-      users.map((u) =>
-        u.id === userId
-          ? {
-              ...u,
-              status:
-                u.status === "ACTIVE"
-                  ? ("BLOCKED" as const)
-                  : ("ACTIVE" as const),
-            }
-          : u,
-      ),
-    );
-    setToastMessage("✅ Estado del usuario actualizado");
-    setShowToast(true);
+    try {
+      await auth.signOut();
+      localStorage.removeItem("fb_token");
+      localStorage.removeItem("user_email");
+      history.push("/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
 
   // Delete user
-  const handleDeleteUser = (userId: string) => {
-    if (!confirm("¿Estás seguro de eliminar este usuario?")) return;
-    setUsers(users.filter((u) => u.id !== userId));
-    setToastMessage("✅ Usuario eliminado");
-    setShowToast(true);
+  const handleDeleteUser = async (uid: string, email: string) => {
+    if (email === 'carojas@sudamericano.edu.ec') {
+        setToastMessage("⚠️ No puedes eliminar al administrador principal");
+        setShowToast(true);
+        return;
+    }
+
+    if (!confirm("¿Estás seguro de eliminar este usuario de Firebase?")) return;
+    try {
+        await deleteFirebaseUser(uid);
+        setUsers(users.filter((u) => u.uid !== uid));
+        setToastMessage("✅ Usuario eliminado de Firebase");
+        setShowToast(true);
+    } catch {
+        setToastMessage("❌ Error al eliminar usuario");
+        setShowToast(true);
+    }
   };
 
   // Delete song - Backend version
@@ -278,14 +222,7 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  // Format date
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("es-EC", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
+
 
   return (
     <IonPage>
@@ -301,105 +238,34 @@ const AdminDashboard: React.FC = () => {
             <IonIcon icon={logOut} />
           </IonButton>
         </IonToolbar>
+        
+        <IonToolbar className="admin-tabs-toolbar">
+          <IonSegment 
+            value={activeTab} 
+            onIonChange={(e) => setActiveTab(e.detail.value as "users" | "songs" | "support")}
+            className="admin-segment"
+          >
+            <IonSegmentButton value="users">
+              <IonIcon icon={people} />
+              <IonLabel>USUARIOS</IonLabel>
+            </IonSegmentButton>
+            <IonSegmentButton value="songs">
+              <IonIcon icon={musicalNotes} />
+              <IonLabel>CANCIONES</IonLabel>
+            </IonSegmentButton>
+            <IonSegmentButton value="support">
+              <IonIcon icon={chatbubbles} />
+              {/* Badge for unread could go here */}
+              <IonLabel>SOPORTE</IonLabel>
+            </IonSegmentButton>
+          </IonSegment>
+        </IonToolbar>
       </IonHeader>
 
       <IonContent className="admin-content">
-        {/* Tabs */}
-        <IonSegment
-          value={activeTab}
-          onIonChange={(e) =>
-            setActiveTab(
-              e.detail.value as "overview" | "users" | "songs" | "settings",
-            )
-          }
-          className="admin-tabs"
-        >
-          <IonSegmentButton value="overview">
-            <IonIcon icon={statsChart} />
-            <IonLabel>Resumen</IonLabel>
-          </IonSegmentButton>
-          <IonSegmentButton value="users">
-            <IonIcon icon={people} />
-            <IonLabel>Usuarios</IonLabel>
-          </IonSegmentButton>
-          <IonSegmentButton value="songs">
-            <IonIcon icon={musicalNotes} />
-            <IonLabel>Canciones</IonLabel>
-          </IonSegmentButton>
-          <IonSegmentButton value="support">
-            <IonIcon icon={chatbubbles} />
-            <IonLabel>Soporte</IonLabel>
-          </IonSegmentButton>
-          <IonSegmentButton value="settings">
-            <IonIcon icon={settings} />
-            <IonLabel>Config</IonLabel>
-          </IonSegmentButton>
-        </IonSegment>
-
-        {/* Overview Tab */}
-        {activeTab === "overview" && (
-          <div className="admin-overview">
-            <h2>Bienvenida, Carolina 👋</h2>
-            <p className="admin-subtitle">Dashboard de EchoBeat</p>
-
-            <div className="stats-grid">
-              <IonCard className="stat-card">
-                <IonCardContent>
-                  <IonIcon icon={people} className="stat-icon" />
-                  <div className="stat-value">{stats.totalUsers}</div>
-                  <div className="stat-label">Usuarios Totales</div>
-                </IonCardContent>
-              </IonCard>
-
-              <IonCard className="stat-card">
-                <IonCardContent>
-                  <IonIcon
-                    icon={checkmarkCircle}
-                    className="stat-icon success"
-                  />
-                  <div className="stat-value">{stats.activeUsers}</div>
-                  <div className="stat-label">Usuarios Activos</div>
-                </IonCardContent>
-              </IonCard>
-
-              <IonCard className="stat-card">
-                <IonCardContent>
-                  <IonIcon icon={musicalNotes} className="stat-icon" />
-                  <div className="stat-value">{stats.totalSongs}</div>
-                  <div className="stat-label">Canciones</div>
-                </IonCardContent>
-              </IonCard>
-
-              <IonCard className="stat-card">
-                <IonCardContent>
-                  <IonIcon icon={statsChart} className="stat-icon" />
-                  <div className="stat-value">
-                    {stats.totalPlays.toLocaleString()}
-                  </div>
-                  <div className="stat-label">Reproducciones</div>
-                </IonCardContent>
-              </IonCard>
-            </div>
-
-            <div className="quick-actions">
-              <h3>Acciones Rápidas</h3>
-              <div className="action-buttons">
-                <IonButton onClick={() => setActiveTab("users")}>
-                  <IonIcon slot="start" icon={people} />
-                  Ver Usuarios
-                </IonButton>
-                <IonButton onClick={() => setShowUploadModal(true)}>
-                  <IonIcon slot="start" icon={cloudUpload} />
-                  Subir Canción
-                </IonButton>
-                <IonButton onClick={() => setActiveTab("songs")}>
-                  <IonIcon slot="start" icon={musicalNotes} />
-                  Ver Canciones
-                </IonButton>
-              </div>
-            </div>
-          </div>
-        )}
+        
+        {/* Main Content Area */}
+        <div className="admin-container">
 
         {/* Users Tab */}
         {activeTab === "users" && (
@@ -409,49 +275,41 @@ const AdminDashboard: React.FC = () => {
               <div className="empty-state-container">
                 <IonIcon icon={people} className="empty-icon" />
                 <h3>No hay usuarios registrados</h3>
-                <p>Los usuarios aparecerán aquí cuando se registren en la app</p>
+                <p>Los usuarios aparecerán aquí cuando se registren en Firebase</p>
               </div>
             ) : (
               <IonList className="users-list">
                 {users.map((user) => (
-                  <IonItem key={user.id} className="user-item">
+                  <IonItem key={user.uid || user.id} className="user-item">
                     <IonAvatar slot="start">
                       <IonIcon
                         icon={personCircle}
                         style={{
                           fontSize: "40px",
-                          color: user.role === "ADMIN" ? "#f59e0b" : "#3b82f6",
+                          color: "#3b82f6",
                         }}
                       />
                     </IonAvatar>
                     <IonLabel>
-                      <h2>{user.displayName}</h2>
+                      <h2>{user.displayName || user.email?.split('@')[0]}</h2>
                       <p>{user.email}</p>
                       <p>
-                        Registrado: {formatDate(user.createdAt)}{" "}
-                        {user.role === "ADMIN" && "• 👑 Admin"}
+                        ID: <span style={{ fontFamily: 'monospace', opacity: 0.7 }}>{user.uid || user.id}</span>
                       </p>
                     </IonLabel>
                     <IonBadge
-                      color={user.status === "ACTIVE" ? "success" : "danger"}
+                      color={user.disabled ? "danger" : "success"}
                       slot="end"
                     >
-                      {user.status === "ACTIVE" ? "Activo" : "Bloqueado"}
+                      {user.disabled ? "Bloqueado" : "Activo"}
                     </IonBadge>
-                    <IonButton
-                      fill="clear"
-                      onClick={() => toggleUserStatus(user.id)}
-                      slot="end"
-                    >
-                      <IonIcon
-                        icon={user.status === "ACTIVE" ? ban : checkmarkCircle}
-                      />
-                    </IonButton>
-                    {user.role !== "ADMIN" && (
+                   
+                    {/* Protected Delete Button */}
+                    {user.email !== 'carojas@sudamericano.edu.ec' && (
                       <IonButton
                         fill="clear"
                         className="delete-btn"
-                        onClick={() => handleDeleteUser(user.id)}
+                        onClick={() => user.uid && handleDeleteUser(user.uid, user.email || '')}
                         slot="end"
                       >
                         <IonIcon icon={trash} />
@@ -512,115 +370,107 @@ const AdminDashboard: React.FC = () => {
           </div>
         )}
 
-        {/* Support Tab */}
+
+
+        {/* Support Tab - Re-implemented Chat UI */}
         {activeTab === "support" && (
-          <div className="admin-support">
-            <h2>Mensajes de Soporte</h2>
-            <p style={{ opacity: 0.7, marginBottom: '20px' }}>
-              Mensajes de usuarios que necesitan ayuda ({supportMessages.length})
-            </p>
-            
-            {/* Info card */}
-            <IonCard className="support-info-card">
-              <IonCardContent>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <IonIcon icon={chatbubbles} style={{ fontSize: '32px', color: '#3B82F6' }} />
-                  <div>
-                    <h3 style={{ margin: 0, color: '#fff' }}>Sistema de Soporte</h3>
-                    <p style={{ margin: '4px 0 0 0', opacity: 0.7, fontSize: '14px' }}>
-                      Los mensajes de los usuarios se envían a:<br />
-                      <strong style={{ color: '#60A5FA' }}>carojas@sudamericano.edu.ec</strong>
-                    </p>
-                  </div>
-                </div>
-              </IonCardContent>
-            </IonCard>
-
-            {/* Messages or Empty State */}
-            <IonCard>
-              <IonCardHeader>
-                <IonCardTitle>
-                  <IonIcon icon={chatbubbles} style={{ marginRight: '8px' }} />
-                  Mensajes recibidos ({supportMessages.length})
-                </IonCardTitle>
-              </IonCardHeader>
-              <IonCardContent>
-                {supportMessages.length === 0 ? (
-                  <div className="empty-state-container" style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}>
-                    <IonIcon icon={chatbubbles} className="empty-icon" />
-                    <h3>No hay mensajes pendientes</h3>
-                    <p>Los usuarios pueden contactarte desde Perfil → Ayuda y Soporte</p>
-                  </div>
-                ) : (
-                  <IonList className="support-messages-list">
-                    {supportMessages.map((msg) => (
-                      <IonItem key={msg.id} className="support-message-item">
-                        <IonAvatar slot="start">
-                          <IonIcon icon={personCircle} style={{ fontSize: '40px', color: '#3b82f6' }} />
+          <div className="admin-support-chat-container">
+            {/* Sidebar: User List */}
+            <div className={`chat-sidebar ${selectedChatUser ? 'hidden-mobile' : ''}`}>
+              <div className="chat-header">
+                <h2>Mensajes</h2>
+              </div>
+              <div className="chat-user-list">
+                {Array.from(new Set(supportMessages.map(m => m.userId)))
+                  .map(userId => {
+                    const userMsgs = supportMessages.filter(m => m.userId === userId);
+                    const lastMsg = userMsgs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
+                    const userName = lastMsg.userEmail?.split('@')[0] || 'Usuario';
+                    
+                    return (
+                      <div 
+                        key={userId} 
+                        className={`chat-user-item ${selectedChatUser === userId ? 'active' : ''}`}
+                        onClick={() => setSelectedChatUser(userId)}
+                      >
+                        <IonAvatar className="chat-avatar">
+                          <IonIcon icon={personCircle} />
                         </IonAvatar>
-                        <IonLabel>
-                          <h2>Usuario</h2>
-                          <p className="message-text">{msg.text}</p>
-                          <p className="message-time">
-                            {new Date(msg.timestamp).toLocaleString('es-EC', {
-                              day: '2-digit',
-                              month: 'short',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </p>
-                        </IonLabel>
-                      </IonItem>
-                    ))}
-                  </IonList>
-                )}
-              </IonCardContent>
-            </IonCard>
+                        <div className="chat-user-info">
+                          <h3>{userName}</h3>
+                          <p>{lastMsg.message.substring(0, 30)}...</p>
+                        </div>
+                        <span className="chat-time">
+                          {new Date(lastMsg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                    );
+                  })}
+                  {supportMessages.length === 0 && (
+                     <div className="empty-chat-list">
+                        <IonIcon icon={chatbubbles} />
+                        <p>No hay mensajes</p>
+                     </div>
+                  )}
+              </div>
+            </div>
+
+            {/* Main: Chat Window */}
+            <div className={`chat-window ${!selectedChatUser ? 'hidden-mobile' : ''}`}>
+               {selectedChatUser ? (
+                 <>
+                   <div className="chat-window-header">
+                      <IonButton fill="clear" className="back-button-mobile" onClick={() => setSelectedChatUser(null)}>
+                        <IonIcon icon={chevronForward} style={{ transform: 'rotate(180deg)' }} />
+                      </IonButton>
+                      <div className="chat-user-details">
+                        <IonAvatar>
+                           <IonIcon icon={personCircle} />
+                        </IonAvatar>
+                        <div>
+                            <h3>{supportMessages.find(m => m.userId === selectedChatUser)?.userEmail}</h3>
+                            <span style={{ fontSize: '0.8rem', opacity: 0.6 }}>Conectado</span>
+                        </div>
+                      </div>
+                   </div>
+                   
+                   <div className="chat-messages-area">
+                      {supportMessages
+                        .filter(m => m.userId === selectedChatUser)
+                        .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+                        .map(msg => (
+                          <div key={msg.id} className={`chat-bubble ${msg.isAdmin ? 'sent' : 'received'}`}>
+                             <div className="message-content">{msg.message}</div>
+                             <div className="message-timestamp">
+                               {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                             </div>
+                          </div>
+                      ))}
+                      
+                      <div className="chat-reply-placeholder">
+                        <p>ℹ️ Responde a este usuario vía email: <strong>{supportMessages.find(m => m.userId === selectedChatUser)?.userEmail}</strong></p>
+                        <a 
+                          href={`mailto:${supportMessages.find(m => m.userId === selectedChatUser)?.userEmail}?subject=Respuesta a tu mensaje de soporte&body=Hola, respondiendo a tu mensaje: ...`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="reply-button-link"
+                        >
+                          <IonIcon icon={send} /> Responder por Email
+                        </a>
+                      </div>
+                   </div>
+                 </>
+               ) : (
+                 <div className="no-chat-selected">
+                    <IonIcon icon={chatbubbles} />
+                    <h3>Selecciona un usuario para ver sus mensajes</h3>
+                 </div>
+               )}
+            </div>
           </div>
         )}
-
-        {/* Settings Tab */}
-        {activeTab === "settings" && (
-          <div className="admin-settings">
-            <h2>Configuración</h2>
-
-            <IonCard>
-              <IonCardHeader>
-                <IonCardTitle>General</IonCardTitle>
-              </IonCardHeader>
-              <IonCardContent>
-                <IonItem>
-                  <IonLabel>Nombre del Sitio</IonLabel>
-                  <IonInput value="EchoBeat" />
-                </IonItem>
-                <IonItem>
-                  <IonLabel>Descripción</IonLabel>
-                  <IonTextarea value="Tu música, tu ritmo" />
-                </IonItem>
-              </IonCardContent>
-            </IonCard>
-
-            <IonCard>
-              <IonCardHeader>
-                <IonCardTitle>Estado del Sistema</IonCardTitle>
-              </IonCardHeader>
-              <IonCardContent>
-                <IonItem>
-                  <IonLabel>Modo</IonLabel>
-                  <IonBadge color="warning">Demo Local</IonBadge>
-                </IonItem>
-                <IonItem>
-                  <IonLabel>Backend</IonLabel>
-                  <IonBadge color="medium">No conectado</IonBadge>
-                </IonItem>
-              </IonCardContent>
-            </IonCard>
-
-            <IonButton expand="block" className="save-settings-btn">
-              Guardar Configuración
-            </IonButton>
-          </div>
-        )}
+        
+        </div>
 
         {/* Upload Modal - Use new reusable component */}
         <UploadSongModal

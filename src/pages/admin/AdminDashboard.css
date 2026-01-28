@@ -440,6 +440,30 @@
     padding: 20px 20px 12px;
 }
 
+/* Chat Input Area */
+.chat-input-area {
+    padding: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+}
+
+/* Chat bubble cleanup overwrite */
+.chat-bubble.received {
+  background: #2d3748; /* Dark Gray for THEM */
+  color: #fff;
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+}
+
+.chat-bubble.sent {
+  background: #2563eb; /* Blue for ME (Admin) */
+  color: #fff;
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+}
+
 .admin-settings ion-card-title {
     color: #fff;
     font-size: 18px;

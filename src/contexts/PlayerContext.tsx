@@ -22,6 +22,7 @@ interface PlayerContextType {
   eq: EQ;
   playSong: (song: Song) => Promise<void>;
   togglePlayPause: () => Promise<void>;
+  stopSong: () => void;
   seek: (position: number) => void;
   setEQ: (next: Partial<EQ>) => void;
   setVolume: (vol: number) => void;
@@ -246,6 +247,19 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   }, []);
 
+  // Stop song and clear player
+  const stopSong = useCallback(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+    setCurrentSong(undefined);
+    setIsPlaying(false);
+    setProgress(0);
+    setShowNowPlaying(false);
+  }, []);
+
   const value = useMemo(
     () => ({
       currentSong,
@@ -256,13 +270,14 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       eq,
       playSong,
       togglePlayPause,
+      stopSong,
       seek,
       setEQ,
       setVolume,
       showNowPlaying,
       setShowNowPlaying,
     }),
-    [currentSong, isPlaying, progress, duration, volume, eq, playSong, togglePlayPause, seek, setEQ, setVolume, showNowPlaying],
+    [currentSong, isPlaying, progress, duration, volume, eq, playSong, togglePlayPause, stopSong, seek, setEQ, setVolume, showNowPlaying],
   );
 
   return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>;
