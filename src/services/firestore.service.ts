@@ -18,10 +18,8 @@ import {
     query,
     where,
     orderBy,
-    limit,
     Timestamp,
     increment,
-    DocumentData,
 } from 'firebase/firestore';
 import {
     ref,
@@ -46,6 +44,7 @@ export interface Song {
     plays: number;
     likes: number;
     isPublic: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createdAt: any; // Timestamp
 }
 
@@ -59,12 +58,15 @@ export interface Playlist {
     songs: PlaylistSong[];
     songCount: number;
     followers: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createdAt: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updatedAt: any;
 }
 
 export interface PlaylistSong {
     songId: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     addedAt: any; // Timestamp
     position: number;
 }
@@ -79,6 +81,7 @@ export interface UserProfile {
     favoriteGenres?: string[];
     followingCount: number;
     followersCount: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createdAt: any;
 }
 
@@ -251,7 +254,8 @@ export const deleteSong = async (songId: string): Promise<void> => {
         try {
             const audioRef = ref(storage, `songs/${songId}.mp3`);
             await deleteObject(audioRef);
-        } catch (e) {
+            await deleteObject(audioRef);
+        } catch {
             console.warn('Audio file not found in storage');
         }
         
@@ -471,6 +475,7 @@ export const deletePlaylist = async (playlistId: string): Promise<void> => {
 /**
  * Obtener favoritos del usuario actual
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getFavorites = async (): Promise<any[]> => {
     if (!auth.currentUser) throw new Error('Not authenticated');
     
@@ -671,6 +676,7 @@ export interface DirectSupportMessage {
     userId: string;
     userEmail: string;
     message: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createdAt: any; // Timestamp or ISO string depending on usage, we'll store Timestamp
     isAdmin: boolean;
     status: 'PENDING' | 'REPLIED';

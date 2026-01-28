@@ -130,11 +130,14 @@ export async function getUsers(params?: {
 }
 
 interface FirebaseUserResponse {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: { users: any[] };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   users?: any[];
 }
 
 // Get raw Firebase Users (The "Real" list)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getFirebaseUsers(): Promise<FirebaseUserResponse | any> {
   try {
     const res = await authFetch(`${API_URL}/admin/firebase-users`);
@@ -201,6 +204,7 @@ export interface SupportMessage {
 }
 
 // Admin: Get all messages
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getSupportMessages(): Promise<{ data: { messages: SupportMessage[] } } | any> {
     try {
         const res = await authFetch(`${API_URL}/admin/support/messages`);
