@@ -5,9 +5,10 @@
 
 /* ===== Main Toolbar ===== */
 .admin-toolbar {
-    --background: linear-gradient(135deg, #000000 0%, #0a0a15 50%, #0f1525 100%);
+    --background: rgba(10, 10, 20, 0.95);
     --color: #fff;
-    border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+    backdrop-filter: blur(20px);
 }
 
 .admin-toolbar ion-title {
@@ -458,10 +459,21 @@
 }
 
 .chat-bubble.sent {
-  background: #2563eb; /* Blue for ME (Admin) */
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); /* Blue gradient for ME */
   color: #fff;
   align-self: flex-end;
-  border-bottom-right-radius: 2px;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+}
+
+.download-btn {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #fff !important;
+}
+
+.download-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
 }
 
 .admin-settings ion-card-title {

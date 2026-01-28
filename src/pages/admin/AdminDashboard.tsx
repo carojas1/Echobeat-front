@@ -28,7 +28,8 @@ import {
   play,
   chatbubbles,
   send,
-  chevronForward
+  chevronForward,
+  download
 } from "ionicons/icons";
 import { useHistory } from "react-router-dom";
 import { auth } from "../../firebase/config";
@@ -43,6 +44,7 @@ import {
 } from "../../services/api.service";
 import UploadSongModal from "../../components/UploadSongModal";
 import "./AdminDashboard.css";
+import "./AdminChat.css";
 
 interface Song {
   id: string;
@@ -107,15 +109,23 @@ const AdminDashboard: React.FC = () => {
             // Backend returns: { "data": { "messages": [ ... ] } }
             // Check nested structure properly
             let realMessages = [];
-            if (supportRes.data && Array.isArray(supportRes.data.messages)) {
+            if (supportRes.data?.data?.messages && Array.isArray(supportRes.data.data.messages)) {
+                // Handle double nesting: { data: { data: { messages: [] } } }
+                realMessages = supportRes.data.data.messages;
+            } else if (supportRes.data?.messages && Array.isArray(supportRes.data.messages)) {
+                 // Handle single nesting: { data: { messages: [] } }
                 realMessages = supportRes.data.messages;
+            } else if (Array.isArray(supportRes.data)) {
+                // Handle direct array in data: { data: [] }
+                realMessages = supportRes.data;
             } else if (Array.isArray(supportRes.messages)) {
                 realMessages = supportRes.messages;
             } else if (Array.isArray(supportRes)) {
                 realMessages = supportRes;
             }
              
-            console.log("✅ Fixed Messages Loaded:", realMessages.length, realMessages);
+            console.log("✅ Fixed Messages Loaded (Raw):", supportRes);
+            console.log("✅ Fixed Messages Loaded (Parsed):", realMessages.length, realMessages);
             
             setSongs(loadedSongs);
             setUsers(realUsers);
@@ -195,6 +205,20 @@ const AdminDashboard: React.FC = () => {
       duration: song.duration,
     });
     setToastMessage(`▶️ Reproduciendo: ${song.title}`);
+    setShowToast(true);
+  };
+
+  const handleDownloadSong = (song: Song) => {
+    // Create a temporary anchor element
+    const link = document.createElement('a');
+    link.href = song.fileUrl;
+    link.target = '_blank';
+    link.download = `${song.artist} - ${song.title}.mp3`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    setToastMessage(`⬇️ Descargando: ${song.title}`);
     setShowToast(true);
   };
 
@@ -350,10 +374,13 @@ const AdminDashboard: React.FC = () => {
                       <p>{song.artist}</p>
                     </div>
                     <div className="song-actions">
-                      <button className="play-btn" onClick={() => handlePlaySong(song)}>
+                      <button className="download-btn" onClick={() => handleDownloadSong(song)} title="Descargar">
+                        <IonIcon icon={download} />
+                      </button>
+                      <button className="play-btn" onClick={() => handlePlaySong(song)} title="Reproducir">
                         <IonIcon icon={play} />
                       </button>
-                      <button className="delete-btn" onClick={() => handleDeleteSong(song.id)}>
+                      <button className="delete-btn" onClick={() => handleDeleteSong(song.id)} title="Eliminar">
                         <IonIcon icon={trash} />
                       </button>
                     </div>
