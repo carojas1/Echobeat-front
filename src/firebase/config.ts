@@ -1,6 +1,8 @@
-// Firebase configuration - Robusto para APK
+// Firebase configuration
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, browserLocalPersistence, setPersistence } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 // Modo desarrollo
 export const DEV_MODE = false;
@@ -19,6 +21,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
 
 // Configurar persistencia LOCAL (sobrevive a recargas y cierres de app)
 setPersistence(auth, browserLocalPersistence)

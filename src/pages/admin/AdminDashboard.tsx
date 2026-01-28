@@ -29,7 +29,8 @@ import {
   chatbubbles,
   send,
   chevronForward,
-  download
+  download,
+  refresh
 } from "ionicons/icons";
 import { useHistory } from "react-router-dom";
 import { auth } from "../../firebase/config";
@@ -40,8 +41,9 @@ import {
   getFirebaseUsers,
   deleteFirebaseUser,
   getSupportMessages,
-  SupportMessage
+  SupportMessage,
 } from "../../services/api.service";
+import { getAllSupportMessages } from "../../services/firestore.service";
 import UploadSongModal from "../../components/UploadSongModal";
 import "./AdminDashboard.css";
 import "./AdminChat.css";
@@ -82,6 +84,7 @@ const AdminDashboard: React.FC = () => {
   const [songs, setSongs] = useState<Song[]>([]);
   const [supportMessages, setSupportMessages] = useState<SupportMessage[]>([]);
   const [selectedChatUser, setSelectedChatUser] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // Load data from backend
   useEffect(() => {
@@ -90,11 +93,21 @@ const AdminDashboard: React.FC = () => {
     const loadData = async () => {
       try {
         // Parallel fetching
-        const [songsRes, usersRes, supportRes] = await Promise.all([
+        const [songsRes, usersRes, supportRes, firestoreSupportRes] = await Promise.all([
           getSongs({ page: 1, limit: 100 }).catch(() => ({ data: [] })),
           getFirebaseUsers().catch(() => ({ users: [] })),
-          getSupportMessages().catch(() => ({ data: { messages: [] } }))
+          getSupportMessages().catch(() => ({ data: { messages: [] } })),
+          getAllSupportMessages().catch(() => [])
         ]);
+
+        if (isMounted) {
+            // ... (rest of logic) ...
+            
+            // Re-run this logic? 
+            // Better to factor out loadData vs loadSupport, but for minimal diff:
+            // logic inside loadData handles it.
+        }
+
 
         if (isMounted) {
             // 1. Songs extraction (Standard)
@@ -102,34 +115,39 @@ const AdminDashboard: React.FC = () => {
             
             // 2. Firebase Users extraction (CRITICAL FIX)
             // Backend returns: { "users": [...], "total": 50 }
-            const realUsers = usersRes.users || usersRes.data?.users || [];
+            const realUsers = usersRes.data?.users || usersRes.users || [];
             console.log("✅ Fixed Firebase Users Loaded:", realUsers.length);
 
-            // 3. Support Messages extraction (CRITICAL FIX)
-            // Backend returns: { "data": { "messages": [ ... ] } }
-            // Check nested structure properly
-            let realMessages = [];
+            // 3. Support Messages extraction (API)
+            let apiMessages: SupportMessage[] = [];
             if (supportRes.data?.data?.messages && Array.isArray(supportRes.data.data.messages)) {
-                // Handle double nesting: { data: { data: { messages: [] } } }
-                realMessages = supportRes.data.data.messages;
+                apiMessages = supportRes.data.data.messages;
             } else if (supportRes.data?.messages && Array.isArray(supportRes.data.messages)) {
-                 // Handle single nesting: { data: { messages: [] } }
-                realMessages = supportRes.data.messages;
+                apiMessages = supportRes.data.messages;
             } else if (Array.isArray(supportRes.data)) {
-                // Handle direct array in data: { data: [] }
-                realMessages = supportRes.data;
+                apiMessages = supportRes.data;
             } else if (Array.isArray(supportRes.messages)) {
-                realMessages = supportRes.messages;
+                apiMessages = supportRes.messages;
             } else if (Array.isArray(supportRes)) {
-                realMessages = supportRes;
+                apiMessages = supportRes;
             }
+
+            // 4. Merge API + Firestore Messages (Avoiding duplicates if possible)
+            // We use Firestore messages mostly for New messages that API doesn't have
+            const firestoreMessages = firestoreSupportRes as unknown as SupportMessage[];
+            
+            // Simple merge: Firestore is source of truth for new stuff
+            const allMessages = [...apiMessages, ...firestoreMessages];
+            
+            // Remove duplicates by ID? 
+            // Firestore IDs are strings, API/Postgres IDs might be UUIDs. usually disjoint sets if systems are split.
+            const uniqueMessages = Array.from(new Map(allMessages.map(item => [item.id, item])).values());
              
-            console.log("✅ Fixed Messages Loaded (Raw):", supportRes);
-            console.log("✅ Fixed Messages Loaded (Parsed):", realMessages.length, realMessages);
+            console.log("✅ Merged Messages Loaded:", uniqueMessages.length);
             
             setSongs(loadedSongs);
             setUsers(realUsers);
-            setSupportMessages(realMessages);
+            setSupportMessages(uniqueMessages);
         }
       } catch (error) {
         console.error("❌ Error loading dashboard data:", error);
@@ -138,10 +156,44 @@ const AdminDashboard: React.FC = () => {
 
     loadData();
 
+    // Auto-refresh support messages every 15 seconds (API)
+    const intervalId = setInterval(() => {
+        if (activeTab === 'support') {
+             getSupportMessages().then(res => {
+                 if (!isMounted) return;
+                 
+                 let newMsgs: SupportMessage[] = [];
+                 // Parse Logic same as loadData
+                 if (res.data?.data?.messages && Array.isArray(res.data.data.messages)) {
+                    newMsgs = res.data.data.messages;
+                 } else if (res.data?.messages && Array.isArray(res.data.messages)) {
+                    newMsgs = res.data.messages;
+                 } else if (Array.isArray(res.data)) {
+                    newMsgs = res.data;
+                 } else if (Array.isArray(res.messages)) {
+                    newMsgs = res.messages;
+                 } else if (Array.isArray(res)) {
+                    newMsgs = res;
+                 }
+
+                 if (newMsgs.length > 0) {
+                     console.log("🔄 Auto-refreshing API messages...");
+                     setSupportMessages(prev => {
+                         // Merge strategy: Unique IDs
+                         const combined = [...prev, ...newMsgs];
+                         const unique = Array.from(new Map(combined.map(item => [item.id, item])).values());
+                         return unique;
+                     });
+                 }
+             }).catch(err => console.error("Poll error:", err));
+        }
+    }, 15000);
+
     return () => {
       isMounted = false;
+      clearInterval(intervalId);
     };
-  }, [activeTab]);
+  }, [activeTab, refreshKey]);
 
   const handleLogout = async () => {
     try {
@@ -406,6 +458,9 @@ const AdminDashboard: React.FC = () => {
             <div className={`chat-sidebar ${selectedChatUser ? 'hidden-mobile' : ''}`}>
               <div className="chat-header">
                 <h2>Mensajes</h2>
+                <IonButton fill="clear" size="small" onClick={() => setRefreshKey(prev => prev + 1)}>
+                    <IonIcon icon={refresh} />
+                </IonButton>
               </div>
               <div className="chat-user-list">
                 {Array.from(new Set(supportMessages.map(m => m.userId)))

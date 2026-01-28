@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { IonIcon, IonSpinner } from '@ionic/react';
 import { close, send, chatbubbleEllipses } from 'ionicons/icons';
-// Firebase auth available for future enhancement
+import { 
+  getCurrentUser,
+  sendSupportMessage
+} from '../services/api.service';
 import './SupportChat.css';
 
 interface Message {
   id: string;
   text: string;
   sender: 'user' | 'support';
-  timestamp: number;
+  timestamp: string;
 }
 
 interface SupportChatProps {
@@ -22,66 +25,78 @@ const SupportChat: React.FC<SupportChatProps> = ({ isOpen, onClose }) => {
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Cargar mensajes guardados
+  // Cargar mensajes ALMACENADOS POR USUARIO (Fix de Privacidad)
   useEffect(() => {
     if (isOpen) {
-      const stored = localStorage.getItem('support_chat_messages');
-      if (stored) {
-        setMessages(JSON.parse(stored));
-      } else {
-        // Mensaje de bienvenida
-        const welcome: Message = {
-          id: 'welcome',
-          text: '¡Hola! 👋 Soy el soporte de EchoBeat. ¿En qué puedo ayudarte hoy?',
-          sender: 'support',
-          timestamp: Date.now()
-        };
-        setMessages([welcome]);
+      const user = getCurrentUser();
+      if (user) {
+          const storageKey = `support_chat_${user.uid}`;
+          const stored = localStorage.getItem(storageKey);
+          if (stored) {
+            setMessages(JSON.parse(stored));
+          } else {
+            // Mensaje de bienvenida inicial
+            setMessages([{
+              id: 'welcome',
+              text: '¡Hola! 👋 Soy el soporte de EchoBeat. ¿En qué puedo ayudarte hoy?',
+              sender: 'support',
+              timestamp: new Date().toISOString()
+            }]);
+          }
       }
     }
   }, [isOpen]);
 
-  // Scroll al último mensaje
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  const saveMessages = (msgs: Message[]) => {
-    localStorage.setItem('support_chat_messages', JSON.stringify(msgs));
+  // Guardar mensajes localmente por usuario
+  const saveMessages = (newMessages: Message[]) => {
+      const user = getCurrentUser();
+      if (user) {
+          const storageKey = `support_chat_${user.uid}`;
+          localStorage.setItem(storageKey, JSON.stringify(newMessages));
+      }
   };
 
   const handleSend = async () => {
     if (!newMessage.trim()) return;
 
+    const user = getCurrentUser();
+    if (!user) return;
+
     setSending(true);
 
-    // Agregar mensaje del usuario
     const userMsg: Message = {
-      id: `msg_${Date.now()}`,
-      text: newMessage.trim(),
-      sender: 'user',
-      timestamp: Date.now()
+        id: `msg_${Date.now()}`,
+        text: newMessage.trim(),
+        sender: 'user',
+        timestamp: new Date().toISOString()
     };
 
+    // UI Optimistic Update
     const updatedMessages = [...messages, userMsg];
     setMessages(updatedMessages);
     saveMessages(updatedMessages);
     setNewMessage('');
 
-    // Simular respuesta automática
-    setTimeout(() => {
-      const autoReply: Message = {
-        id: `reply_${Date.now()}`,
-        text: 'Gracias por tu mensaje. Nuestro equipo de soporte lo revisará pronto. También puedes escribirnos directamente a carojas@sudamericano.edu.ec',
-        sender: 'support',
-        timestamp: Date.now()
-      };
-      const withReply = [...updatedMessages, autoReply];
-      setMessages(withReply);
-      saveMessages(withReply);
-      setSending(false);
-    }, 1000);
+    try {
+        // Send to Backend API
+        await sendSupportMessage({
+            userId: user.uid,
+            userEmail: user.email || 'anonymous',
+            message: userMsg.text
+        });
+        console.log("✅ Message sent to API successfully");
+    } catch (error) {
+        console.error("❌ Error sending to API:", error);
+        // Save locally is already done by the optimistic update + cache
+    } finally {
+        setSending(false);
+    }
   };
+
+  // Scroll al último mensaje
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -90,9 +105,13 @@ const SupportChat: React.FC<SupportChatProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const formatTime = (timestamp: number) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  const formatTime = (timestamp: string) => {
+    try {
+        const date = new Date(timestamp);
+        return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    } catch {
+        return "";
+    }
   };
 
   if (!isOpen) return null;
@@ -118,20 +137,16 @@ const SupportChat: React.FC<SupportChatProps> = ({ isOpen, onClose }) => {
 
         {/* Messages */}
         <div className="chat-messages">
-          {messages.map(msg => (
-            <div 
-              key={msg.id} 
-              className={`message ${msg.sender === 'user' ? 'message-user' : 'message-support'}`}
-            >
-              <p>{msg.text}</p>
-              <span className="message-time">{formatTime(msg.timestamp)}</span>
-            </div>
-          ))}
-          {sending && (
-            <div className="message message-support typing">
-              <IonSpinner name="dots" />
-            </div>
-          )}
+             {messages.map(msg => (
+                <div 
+                  key={msg.id} 
+                  className={`message ${msg.sender === 'user' ? 'message-user' : 'message-support'}`}
+                >
+                  <p>{msg.text}</p>
+                  <span className="message-time">{formatTime(msg.timestamp)}</span>
+                </div>
+             ))}
+             
           <div ref={messagesEndRef} />
         </div>
 
@@ -150,7 +165,7 @@ const SupportChat: React.FC<SupportChatProps> = ({ isOpen, onClose }) => {
             onClick={handleSend}
             disabled={!newMessage.trim() || sending}
           >
-            <IonIcon icon={send} />
+            {sending ? <IonSpinner name="crescent" style={{ width: 20, height: 20, color: 'white' }} /> : <IonIcon icon={send} />}
           </button>
         </div>
 

@@ -663,3 +663,102 @@ export const getPlaylistSongsDetails = async (playlistId: string): Promise<Song[
         return [];
     }
 };
+
+// ==================== SUPPORT (Direct Firestore) ====================
+
+export interface DirectSupportMessage {
+    id: string;
+    userId: string;
+    userEmail: string;
+    message: string;
+    createdAt: any; // Timestamp or ISO string depending on usage, we'll store Timestamp
+    isAdmin: boolean;
+    status: 'PENDING' | 'REPLIED';
+}
+
+/**
+ * Send support message directly to Firestore
+ */
+export const sendSupportMessage = async (data: { userId: string, message: string, userEmail: string }): Promise<void> => {
+    if (!auth.currentUser) throw new Error('Not authenticated');
+
+    try {
+        await addDoc(collection(db, 'support'), {
+            userId: data.userId,
+            userEmail: data.userEmail,
+            message: data.message,
+            createdAt: Timestamp.now(), // Use server timestamp
+            isAdmin: false,
+            status: 'PENDING',
+            read: false
+        });
+    } catch (error) {
+        console.error('Error sending support message:', error);
+        throw error;
+    }
+};
+
+/**
+ * Get user support messages directly from Firestore
+ */
+export const getUserSupportMessages = async (): Promise<DirectSupportMessage[]> => {
+    if (!auth.currentUser) return [];
+
+    try {
+        const supportRef = collection(db, 'support');
+        const q = query(
+            supportRef,
+            where('userId', '==', auth.currentUser.uid),
+            orderBy('createdAt', 'asc')
+        );
+        
+        const snapshot = await getDocs(q);
+        
+        return snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                userId: data.userId,
+                userEmail: data.userEmail,
+                message: data.message,
+                // Convert timestamp to ISO string for frontend consistency
+                createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
+                isAdmin: data.isAdmin || false,
+                status: data.status || 'PENDING'
+            } as DirectSupportMessage;
+        });
+    } catch (error) {
+        console.error('Error getting support messages:', error);
+        return [];
+    }
+};
+
+/**
+ * Get ALL support messages (Admin)
+ */
+export const getAllSupportMessages = async (): Promise<DirectSupportMessage[]> => {
+    if (!auth.currentUser) return [];
+
+    try {
+        const supportRef = collection(db, 'support');
+        const q = query(supportRef, orderBy('createdAt', 'desc'));
+        
+        const snapshot = await getDocs(q);
+        
+        return snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                userId: data.userId,
+                userEmail: data.userEmail,
+                message: data.message,
+                createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
+                isAdmin: data.isAdmin || false,
+                status: data.status || 'PENDING'
+            } as DirectSupportMessage;
+        });
+    } catch (error) {
+        console.error('Error getting all support messages:', error);
+        return [];
+    }
+};

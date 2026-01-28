@@ -129,13 +129,18 @@ export async function getUsers(params?: {
   }
 }
 
+interface FirebaseUserResponse {
+  data?: { users: any[] };
+  users?: any[];
+}
+
 // Get raw Firebase Users (The "Real" list)
-export async function getFirebaseUsers(): Promise<any> {
+export async function getFirebaseUsers(): Promise<FirebaseUserResponse | any> {
   try {
     const res = await authFetch(`${API_URL}/admin/firebase-users`);
     if (!res.ok) throw new Error("Failed to fetch firebase users");
     return res.json();
-  } catch (error) {
+  } catch {
     console.warn("Using mock users due to API error");
     return { users: [] };
   }
@@ -196,7 +201,7 @@ export interface SupportMessage {
 }
 
 // Admin: Get all messages
-export async function getSupportMessages(): Promise<any> {
+export async function getSupportMessages(): Promise<{ data: { messages: SupportMessage[] } } | any> {
     try {
         const res = await authFetch(`${API_URL}/admin/support/messages`);
         if (!res.ok) return { data: { messages: [] } };
@@ -220,7 +225,7 @@ export async function sendAdminSupportReply(data: { targetUserId: string, messag
 
 // User: Send message
 export async function sendSupportMessage(data: { userId: string, message: string, userEmail: string }): Promise<void> {
-    const res = await authFetch(`${API_URL}/support/contact`, {
+    const res = await authFetch(`${API_URL}/support/messages`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -228,6 +233,22 @@ export async function sendSupportMessage(data: { userId: string, message: string
         body: JSON.stringify(data)
     });
     if (!res.ok) throw new Error('Failed to send message');
+}
+
+// User: Get my history
+export async function getUserSupportMessages(): Promise<SupportMessage[]> {
+    try {
+        const res = await authFetch(`${API_URL}/support/messages`);
+        if (!res.ok) return [];
+        const json = await res.json();
+        // Handle potential nested data structure similar to admin
+        if (json.data && Array.isArray(json.data.messages)) return json.data.messages;
+        if (json.data && Array.isArray(json.data)) return json.data;
+        if (Array.isArray(json)) return json;
+        return [];
+    } catch {
+        return [];
+    }
 }
 
 
@@ -298,6 +319,12 @@ const api = {
   getUsers,
   updateUser,
   deleteUser,
+  // Support
+  getSupportMessages,
+  sendAdminSupportReply,
+  sendSupportMessage,
+  getUserSupportMessages,
+  // Songs
   uploadSong,
   deleteSong,
   updateSong,
